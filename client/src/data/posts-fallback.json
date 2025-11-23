@@ -1,0 +1,22 @@
+[
+  {
+    "id": "1",
+    "title": "Welcome to Mthunzi Trust",
+    "shortDescription": "An introduction to Mthunzi Trust and our mission.",
+    "fullStory": "Welcome to the Mthunzi Trust blog. This is a fallback post used when the API is unavailable.",
+    "image": "/uploads/sample-blog-1.jpg",
+    "author": "Mthunzi Team",
+    "location": "",
+    "createdAt": "2024-01-01T08:00:00.000Z"
+  },
+  {
+    "id": "2",
+    "title": "Our Work in the Community",
+    "shortDescription": "A short summary of recent activities and impact.",
+    "fullStory": "We partner with community organisations to support education and wellbeing. This is a fallback example post.",
+    "image": "/uploads/sample-blog-2.jpg",
+    "author": "Mthunzi Team",
+    "location": "",
+    "createdAt": "2024-02-15T12:00:00.000Z"
+  }
+]
