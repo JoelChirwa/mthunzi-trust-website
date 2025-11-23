@@ -19,6 +19,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // const __dirname = path.resolve();
+const __dirname = path.resolve();
 
 app.use(express.json()); // allows us to accept JSON data in the req.body
 
@@ -57,18 +58,18 @@ app.use('/uploads', express.static(uploadsPath))
 app.use('/api/uploads', uploadRoutes)
 
 
-// if (process.env.NODE_ENV === "production") {
-// 	const clientDistPath = path.join(__dirname, "client", "dist");
-// 	const indexPath = path.resolve(__dirname, "client", "dist", "index.html");
-// 	console.log("NODE_ENV=", process.env.NODE_ENV);
-// 	console.log("Serving static from:", clientDistPath, "index exists:", fs.existsSync(indexPath));
+if (process.env.NODE_ENV === "production") {
+	const clientDistPath = path.join(__dirname, "client", "dist");
+	const indexPath = path.resolve(__dirname, "client", "dist", "index.html");
+	console.log("NODE_ENV=", process.env.NODE_ENV);
+	console.log("Serving static from:", clientDistPath, "index exists:", fs.existsSync(indexPath));
 
-// 	app.use(express.static(clientDistPath));
-// 	// Use a RegExp matcher to avoid path-to-regexp parsing errors for '*' patterns
-// 	app.get(/.*/, (req, res) => {
-// 		res.sendFile(indexPath);
-// 	});
-// }
+	app.use(express.static(clientDistPath));
+	// Serve client index.html for any non-API route so the SPA can handle routing
+	app.get(/.*/, (req, res) => {
+		res.sendFile(indexPath);
+	});
+}
 
 app.listen(PORT, '0.0.0.0', () => {
 	connectDB();
