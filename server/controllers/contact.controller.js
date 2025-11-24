@@ -33,29 +33,32 @@ export const submitContact = async (req, res) => {
 
   try {
     const to = process.env.CONTACT_NOTIFY_EMAIL || process.env.EMAIL_USERNAME || process.env.EMAIL_FROM
-    await sendEmail(to, safeSubject, html)
+
+    // Send emails in background (non-blocking) so transient SMTP issues don't cause request timeouts.
+    // Log any failures for operator visibility.
+    sendEmail(to, safeSubject, html).catch((err) => {
+      console.error('Failed to send admin notification email:', err && err.message ? err.message : err)
+    })
 
     // Send confirmation to the submitter (best-effort). Use reply-to so admins can reply directly.
-    try {
-      const confirmSubject = 'Mthunzi Trust — we received your message'
-      const confirmHtml = `
-        <div style="font-family: Arial, Helvetica, sans-serif;color:#222;max-width:700px;margin:0 auto">
-          <div style="padding:18px;border-radius:8px;background:#ffffff;border:1px solid #e6e6e6">
-            <h2 style="margin-top:0;color:#0f5132">Thanks for contacting Mthunzi Trust</h2>
-            <p style="color:#555">Hi ${String(fullName)},</p>
-            <p style="color:#555">Thanks for reaching out. We have received your message and will respond as soon as possible.</p>
-            <p style="color:#666;font-size:13px">Regards,<br/>Mthunzi Trust</p>
-          </div>
+    const confirmSubject = 'Mthunzi Trust — we received your message'
+    const confirmHtml = `
+      <div style="font-family: Arial, Helvetica, sans-serif;color:#222;max-width:700px;margin:0 auto">
+        <div style="padding:18px;border-radius:8px;background:#ffffff;border:1px solid #e6e6e6">
+          <h2 style="margin-top:0;color:#0f5132">Thanks for contacting Mthunzi Trust</h2>
+          <p style="color:#555">Hi ${String(fullName)},</p>
+          <p style="color:#555">Thanks for reaching out. We have received your message and will respond as soon as possible.</p>
+          <p style="color:#666;font-size:13px">Regards,<br/>Mthunzi Trust</p>
         </div>
-      `
-      const replyTo = process.env.CONTACT_NOTIFY_EMAIL || process.env.EMAIL_USERNAME || process.env.EMAIL_FROM
-      await sendEmail(String(email), confirmSubject, confirmHtml, { replyTo })
-    } catch (confirmErr) {
+      </div>
+    `
+    const replyTo = process.env.CONTACT_NOTIFY_EMAIL || process.env.EMAIL_USERNAME || process.env.EMAIL_FROM
+    sendEmail(String(email), confirmSubject, confirmHtml, { replyTo }).catch((confirmErr) => {
       console.warn('Failed to send confirmation email to submitter:', confirmErr && confirmErr.message ? confirmErr.message : confirmErr)
-      // don't fail the whole request if confirmation fails
-    }
+    })
 
-    return res.status(200).json({ message: 'Message sent' })
+    // Return success quickly; emails are best-effort.
+    return res.status(200).json({ message: 'Message received' })
   } catch (err) {
     console.error('contact submit error', err)
     return res.status(500).json({ error: 'Failed to send message' })

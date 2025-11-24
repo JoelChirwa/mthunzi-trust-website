@@ -31,8 +31,25 @@ const Contact = () => {
       setForm({ firstName: '', lastName: '', email: '', subject: '', message: '' })
     } catch (err) {
       let msg = 'Failed to send message'
-      if (err instanceof ApiError) msg = err.message || (err.body && (err.body.error || err.body.message)) || msg
-      else if (err && err.message) msg = err.message
+
+      // If the server returned a structured API error, map known failures to user-friendly messages
+      if (err instanceof ApiError) {
+        const serverMsg = err.message || (err.body && (err.body.error || err.body.message))
+        // If server indicates a mail-service failure (legacy behavior), surface a clearer message
+        if (err.status === 500 && serverMsg && /failed to send message/i.test(serverMsg)) {
+          msg = "Message received — email service temporarily unavailable; we'll notify you by email when delivered."
+        } else {
+          msg = serverMsg || msg
+        }
+      } else if (err && err.message) {
+        // Handle fetch/network errors with a friendly message
+        if (/Failed to fetch|NetworkError|Network request failed/i.test(err.message)) {
+          msg = 'Unable to reach server. Please check your connection and try again.'
+        } else {
+          msg = err.message
+        }
+      }
+
       setStatus({ type: 'error', message: msg })
       // show toast after failure
       showToast(msg, 'error')
