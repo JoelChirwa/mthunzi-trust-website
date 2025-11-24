@@ -6,11 +6,10 @@ import crypto from "crypto";
 import { sendEmail } from "../utils/emailService.js";
 import speakeasy from 'speakeasy';
 const COOKIE_NAME = 'mthunzi_admin';
-// Authorized admin emails. Add more emails here as needed.
-const ALLOWED_ADMIN_EMAILS = [
-    'chirwajj@gmail.com',
-    'symonsatisat@gmail.com'
-];
+// Authorized admin emails. Can be set via env `ALLOWED_ADMIN_EMAILS` as a comma-separated list.
+// Fallback to the hard-coded list for local/dev.
+const DEFAULT_ALLOWED = ['chirwajj@gmail.com', 'symonsatisat@gmail.com'];
+const ALLOWED_ADMIN_EMAILS = (process.env.ALLOWED_ADMIN_EMAILS && String(process.env.ALLOWED_ADMIN_EMAILS).split(',').map(s => s.trim().toLowerCase()).filter(Boolean)) || DEFAULT_ALLOWED;
 
 function isAllowedAdminEmail(email) {
         if (!email) return false;
@@ -110,7 +109,9 @@ export const adminLogin = async (req, res) => {
 
             const subject = 'Your admin verification code';
             const html = `<p>Your verification code is: <strong>${verificationCode}</strong></p><p>This code expires in 15 minutes.</p>`;
-            await sendEmail(admin.email, subject, html, { replyTo: process.env.EMAIL_FROM });
+            sendEmail(admin.email, subject, html, { replyTo: process.env.EMAIL_FROM }).catch((err) => {
+                console.error('Failed to send admin verification email:', err && err.message ? err.message : err)
+            })
         } catch (e) {
             console.error('Error generating/sending verification code:', e && e.message);
             // proceed to return challenge even if email sending failed; client will show prompt
@@ -152,7 +153,9 @@ export const adminMaster = async (req, res) => {
                 await newVerificationCode.save();
                 const subject = 'Your admin verification code';
                 const html = `<p>Your verification code is: <strong>${verificationCode}</strong></p><p>This code expires in 15 minutes.</p>`;
-                await sendEmail(admin.email, subject, html, { replyTo: process.env.EMAIL_FROM });
+                sendEmail(admin.email, subject, html, { replyTo: process.env.EMAIL_FROM }).catch((err) => {
+                    console.error('Failed to send admin verification email (master):', err && err.message ? err.message : err)
+                })
             } catch (e) {
                 console.error('Error generating/sending verification code (master):', e && e.message);
             }
@@ -299,7 +302,9 @@ export const requestPasswordReset = async (req, res) => {
         // Send the verification code via email
         const subject = 'Password Reset Verification Code';
         const html = `<p>Your password reset verification code is: <strong>${verificationCode}</strong></p><p>This code expires in 15 minutes.</p>`;
-        await sendEmail(admin.email, subject, html, { replyTo: process.env.EMAIL_FROM });
+        sendEmail(admin.email, subject, html, { replyTo: process.env.EMAIL_FROM }).catch((err) => {
+            console.error('Failed to send password reset verification email:', err && err.message ? err.message : err)
+        })
 
         res.status(200).json({ success: true, message: "Verification code sent to email" });
     } catch (error) {
