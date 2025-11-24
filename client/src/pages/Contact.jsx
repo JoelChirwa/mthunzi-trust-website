@@ -6,6 +6,7 @@ import { FaPhoneAlt, FaMapMarkerAlt, FaInbox, FaEnvelope, FaClock, FaFacebookF, 
 const Contact = () => {
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', subject: '', message: '' })
   const [status, setStatus] = useState(null)
+  const [loading, setLoading] = useState(false)
   const { showToast } = useToast()
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
@@ -20,10 +21,12 @@ const Contact = () => {
       return
     }
     setStatus(null)
+    setLoading(true)
     try {
       await apiFetchJson('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ firstName, lastName, email, subject, message }) })
       const successMsg = 'Thanks — your message has been sent.'
       setStatus({ type: 'success', message: successMsg })
+      // show toast after successful send
       showToast(successMsg, 'success')
       setForm({ firstName: '', lastName: '', email: '', subject: '', message: '' })
     } catch (err) {
@@ -31,7 +34,10 @@ const Contact = () => {
       if (err instanceof ApiError) msg = err.message || (err.body && (err.body.error || err.body.message)) || msg
       else if (err && err.message) msg = err.message
       setStatus({ type: 'error', message: msg })
+      // show toast after failure
       showToast(msg, 'error')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -168,9 +174,11 @@ const Contact = () => {
                 <textarea id="message" name="message" value={form.message} onChange={handleChange} className="w-full px-4 py-3 rounded border border-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 h-36" placeholder="Write your message"></textarea>
               </div>
 
-              <div className="flex items-center gap-4">
-                <button type="submit" className="inline-flex items-center justify-center bg-yellow-400 hover:bg-yellow-500 text-green-900 font-semibold px-6 py-3 rounded">Send Message</button>
-                <span className="text-sm text-gray-500">Or email us directly at <a className="text-blue-500 underline" href="mailto:info@mthunzitrust.org">info@mthunzitrust.org</a></span>
+              <div className="flex flex-col md:flex-row items-center gap-4">
+                <button type="submit" disabled={loading} aria-busy={loading} className="inline-flex items-center justify-center bg-yellow-400 hover:bg-yellow-500 text-green-900 font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded disabled:opacity-60 whitespace-nowrap text-center">
+                  {loading ? 'Sending...' : 'Send Message'}
+                </button>
+                <span className="text-sm text-gray-500 text-center">Or email us directly at <a className="text-blue-500 underline" href="mailto:info@mthunzitrust.org">info@mthunzitrust.org</a></span>
               </div>
             </form>
           </section>

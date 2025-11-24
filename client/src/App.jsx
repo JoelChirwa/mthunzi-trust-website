@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
+import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
 import About from './pages/About'
 import Footer from './components/Footer'
@@ -23,6 +24,7 @@ const App = () => {
     <BrowserRouter>
       <ToastProvider>
       <Header />
+      <ScrollToTop />
       <Routes>
        <Route path="/" element={<Home />} />
        <Route path="/about" element={<About />} />

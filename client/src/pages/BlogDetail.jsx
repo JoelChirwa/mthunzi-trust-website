@@ -80,9 +80,9 @@ const BlogDetail = () => {
   if (!post) return <div className="container mx-auto p-6">Not found</div>
 
   return (
-    <main className="container mx-auto px-20 py-20">
+    <main className="container mx-auto px-4 sm:px-6 lg:px-20 py-8 sm:py-12">
       <Link to="/blog" className="text-sm text-green-600 hover:underline mb-4 inline-block">← Back to all blogs</Link>
-      <article className="bg-white rounded-lg shadow p-8">
+      <article className="bg-white rounded-lg shadow p-6 sm:p-8">
         {post.image && (
           <img
             src={normalizeImageUrl(post.image)}
@@ -91,7 +91,7 @@ const BlogDetail = () => {
             onError={(e) => { e.currentTarget.src = 'https://via.placeholder.com/800x400?text=No+Image' }}
           />
         )}
-        <h1 className="text-2xl font-bold mb-2">{post.title}</h1>
+        <h1 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2 leading-tight">{post.title}</h1>
         <div className="flex items-center gap-3 text-sm text-gray-500 mb-4">
           <div className="flex-1">
             {post.author && <span>{post.author}</span>}
@@ -107,7 +107,7 @@ const BlogDetail = () => {
           )}
         </div>
 
-        <div className="prose max-w-none text-gray-800" dangerouslySetInnerHTML={{ __html: (post.fullStory || post.shortDescription || '').replace(/\n/g, '<br/>') }} />
+        <div className="prose max-w-none text-gray-800 text-base sm:text-lg" dangerouslySetInnerHTML={{ __html: (post.fullStory || post.shortDescription || '').replace(/\n/g, '<br/>') }} />
 
         <div className="mt-6 flex gap-3 items-center">
           <Link to="/blog" className="text-green-600 hover:underline">← Back to all blogs</Link>

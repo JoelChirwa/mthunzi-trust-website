@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import aboutImg from '../assets/about.jpg'
 import { FaLightbulb, FaEye, FaPuzzlePiece, FaShieldAlt, FaBolt, FaCheckCircle, FaHandshake, FaUsers } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import { normalizeImageUrl } from '../utils/api.js'
@@ -11,6 +10,9 @@ import phiillemonImg from '../assets/Phiillemon.jpg'
 import symonImg from '../assets/symon.jpg'
 import harryImg from '../assets/harry.jpg'
 import paulImg from '../assets/paul.jpg'
+import eltonImg from '../assets/elton.jpg'
+import felisterImg from '../assets/felister.jpg'
+
 
 const objectives = [
   'To promote environmental sustainability through advocacy, community-based activities and capacity building.',
@@ -46,10 +48,10 @@ const TEAM = [
   { name: 'Joel Chirwa', role: 'ICT & Grants Manager', photo: joelImg },
   { name: "Chisomo Ching'ombe", role: 'Administrative Secretary', photo: chisomoImg },
   { name: 'Alexina Chirwa', role: 'Program Manager', photo: alexinaImg },
-  { name: 'Symon Poul', role: 'Researcher Officer', photo: paulImg },
-  { name: 'Felister Ngalande', role: 'Monitoring & Evaluation Manager',  },
+  { name: 'Symon Poul', role: 'Research Officer', photo: paulImg },
+  { name: 'Felister Ngalande', role: 'Monitoring & Evaluation Manager', photo: felisterImg },
   { name: 'Phiillemon Banda', role: 'Community Engagement Officer', photo: phiillemonImg },
-  { name: 'Elton Makombe', role: 'Administration Officer' },
+  { name: 'Elton Makombe', role: 'Administration Officer', photo: eltonImg },
 ]
 
 const fadeUp = {
@@ -234,9 +236,9 @@ const About = () => {
 
   return (
     <section className="text-gray-800 bg-amber-200 rounded-lg">
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <motion.h1
-          className="text-3xl md:text-4xl font-bold mb-6 text-gray-900"
+          className="text-3xl md:text-4xl font-bold mb-6 text-gray-900 text-center"
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
@@ -267,20 +269,10 @@ const About = () => {
         </div>
       </div>
 
-      <div className="relative min-h-[70vh] sm:min-h-screen overflow-hidden">
-        {/* Background image + coloured overlay */}
-        <div className="absolute inset-0">
-          <img
-            src={aboutImg}
-            alt="Community"
-            className="w-full h-full object-cover brightness-75 lg:filter lg:blur-sm"
-          />
-          <div className="absolute inset-0 bg-yellow-600/30 lg:bg-yellow-600/45 mix-blend-multiply" />
-        </div>
-
-        <div className='px-12'> 
-          <div className="relative z-10 container mx-auto px-6 py-12 md:py-20">
-            <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-12">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-10 bg-emerald-800 rounded-lg">
+        <div className='px-4 sm:px-12'>
+          <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8 md:py-10">
+            <div className="flex flex-col lg:flex-row items-start gap-6 lg:gap-12">
               {/* Left boxed card */}
               <motion.aside
                 className="lg:w-5/12 w-full flex items-center"
@@ -290,14 +282,14 @@ const About = () => {
                 variants={fadeUp}
                 custom={0.05}
               >
-                <div className="w-full border border-white/90 rounded-md p-6 md:p-8 text-white backdrop-blur-sm animate-fadeUp">
+                <div className="w-full border rounded-md p-4 sm:p-6 bg-white">
                   <div className="flex items-start gap-3 mb-5">
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 flex items-center justify-center text-white text-lg md:text-xl">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-green-100 flex items-center justify-center text-green-700 text-lg md:text-xl">
                       <FaLightbulb />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-base md:text-lg">Our Mission</h4>
-                      <p className="text-sm md:text-base mt-2">
+                      <h4 className="font-semibold text-base md:text-lg text-gray-900">Our Mission</h4>
+                      <p className="text-sm md:text-base mt-2 text-gray-700">
                         To empower youth and communities through education, entrepreneurship, environmental sustainability,
                         agriculture and sexual and reproductive health rights (SRHR), fostering holistic and sustainable
                         development in Malawi.
@@ -306,12 +298,12 @@ const About = () => {
                   </div>
 
                   <div className="flex items-start gap-3 mb-5">
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 flex items-center justify-center text-white text-lg md:text-xl">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-green-100 flex items-center justify-center text-green-700 text-lg md:text-xl">
                       <FaEye />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-base md:text-lg">Our Vision</h4>
-                      <p className="text-sm md:text-base mt-2">
+                      <h4 className="font-semibold text-base md:text-lg text-gray-900">Our Vision</h4>
+                      <p className="text-sm md:text-base mt-2 text-gray-700">
                         A thriving Malawi where empowered youth lead in sustainable development, economic growth and
                         environmental protection, achieving healthier, educated and resilient communities.
                       </p>
@@ -319,12 +311,12 @@ const About = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 flex items-center justify-center text-white text-lg md:text-xl">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-green-100 flex items-center justify-center text-green-700 text-lg md:text-xl">
                       <FaPuzzlePiece />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-base md:text-lg">Legality</h4>
-                      <ul className="list-disc list-inside text-sm md:text-sm mt-2 space-y-2">
+                      <h4 className="font-semibold text-base md:text-lg text-gray-900">Legality</h4>
+                      <ul className="list-disc list-inside text-sm md:text-sm mt-2 space-y-2 text-gray-700">
                         <li>Registered under Trustees Act as a Trustee.</li>
                       </ul>
                     </div>
@@ -332,10 +324,10 @@ const About = () => {
                 </div>
               </motion.aside>
 
-              {/* Right objectives list */}
+              {/* Right objectives list - card grid for clarity and responsiveness */}
               <div className="lg:w-7/12 w-full ">
                 <motion.h2
-                  className="text-xl md:text-2xl font-bold text-white mb-4 md:mb-6 tracking-wider"
+                  className="text-xl md:text-2xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6 tracking-wider"
                   initial="hidden"
                   whileInView="show"
                   viewport={{ once: true }}
@@ -345,18 +337,23 @@ const About = () => {
                   SPECIFIC OBJECTIVES
                 </motion.h2>
 
-                <div className="bg-transparent rounded-md divide-y divide-white/20 overflow-hidden shadow-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {objectives.map((obj, idx) => (
                     <motion.div
                       key={idx}
-                      className="py-4 md:py-6"
+                      className="bg-white rounded-lg p-3 sm:p-4 shadow-sm hover:shadow-md transition-shadow duration-200"
                       initial="hidden"
                       whileInView="show"
                       viewport={{ once: true }}
                       variants={fadeUp}
                       custom={0.18 + idx * 0.04}
                     >
-                      <p className="text-white/90 leading-relaxed text-sm md:text-base">{obj}</p>
+                      <div className="flex items-start gap-3">
+                        <div className="flex-none mt-1">
+                          <FaCheckCircle className="w-6 h-6 text-green-600" />
+                        </div>
+                        <p className="text-gray-800 leading-relaxed text-sm sm:text-base">{obj}</p>
+                      </div>
                     </motion.div>
                   ))}
                 </div>
@@ -367,11 +364,11 @@ const About = () => {
       </div>
         
       {/* Values */}
-      <div className="container mx-auto px-6 py-12">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-10">
         <div className="max-w-4xl mx-auto">
           <div>
             <motion.h3
-              className="text-2xl font-bold mb-4 text-center"
+              className="text-2xl font-bold mb-3 sm:mb-4 text-center"
               initial="hidden"
               whileInView="show"
               viewport={{ once: true }}
@@ -381,7 +378,7 @@ const About = () => {
               Core Values
             </motion.h3>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 pr-4 lg:pr-8">
               {coreValues.map((v, i) => {
                 const Icon = v.icon
                 const open = openIndex === i
@@ -399,7 +396,7 @@ const About = () => {
                         type="button"
                         onClick={() => setOpenIndex(open ? null : i)}
                         aria-expanded={open}
-                        className="w-full flex items-center justify-between p-4 hover:bg-gray-50"
+                        className="w-full flex items-center justify-between p-3 sm:p-4 hover:bg-gray-50"
                       >
                         <div className="flex items-center gap-3">
                           <span className="inline-flex items-center justify-center w-9 h-9 rounded text-gray-700">
@@ -410,7 +407,7 @@ const About = () => {
                         <span className="text-gray-500">{open ? '−' : '+'}</span>
                       </button>
 
-                      <div className={`px-4 pb-4 transition-all duration-200 ${open ? 'pt-3 max-h-40 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
+                      <div className={`px-3 sm:px-4 pb-4 transition-all duration-200 ${open ? 'pt-3 max-h-40 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
                         <p className="text-sm text-gray-700">{v.desc}</p>
                       </div>
                     </div>
