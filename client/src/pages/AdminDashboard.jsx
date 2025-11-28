@@ -4,12 +4,14 @@ import { isAdminAuthenticated, setAdminAuthenticated, logoutAdmin } from '../uti
 import { apiFetchJson, ApiError, normalizeImageUrl } from '../utils/api.js'
 import { useToast } from '../context/ToastContext'
 
-const sections = ['Overview', 'Blogs', 'Partners']
+const sections = ['Overview', 'Blogs', 'Partners', 'Events', 'Jobs']
 
 const AdminDashboard = () => {
   const navigate = useNavigate?.() || (() => {})
   const [active, setActive] = useState('Overview')
   const [posts, setPosts] = useState([])
+  const [jobs, setJobs] = useState([])
+  const [events, setEvents] = useState([])
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
   const [partners, setPartners] = useState([])
@@ -18,11 +20,7 @@ const AdminDashboard = () => {
   const [initialLoading, setInitialLoading] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [showCreateAdmin, setShowCreateAdmin] = useState(false)
-  const [newAdminEmail, setNewAdminEmail] = useState('')
-  const [newAdminPassword, setNewAdminPassword] = useState('')
-  const [creatingAdmin, setCreatingAdmin] = useState(false)
-  const [createAdminMsg, setCreateAdminMsg] = useState(null)
+  const [subscribersCount, setSubscribersCount] = useState(0)
   const [logoutLoading, setLogoutLoading] = useState(false)
   const { showToast } = useToast()
 
@@ -104,6 +102,44 @@ const AdminDashboard = () => {
     return () => { cancelled = true }
   }, [active])
 
+
+  useEffect(() => {
+    let cancelled = false
+    async function fetchJobs() {
+      try {
+        const data = await apiFetchJson('/api/jobs', { credentials: 'include' })
+        if (cancelled) return
+        const list = Array.isArray(data) ? data : []
+        setJobs(list)
+      } catch (err) {
+        if (cancelled) return
+        try { console.error('fetchJobs error', err) } catch (e) {}
+      }
+    }
+
+    if (active === 'Jobs') fetchJobs()
+    return () => { cancelled = true }
+  }, [active])
+
+
+  useEffect(() => {
+    let cancelled = false
+    async function fetchEvents() {
+      try {
+        const data = await apiFetchJson('/api/events', { credentials: 'include' })
+        if (cancelled) return
+        const list = Array.isArray(data) ? data : []
+        setEvents(list)
+      } catch (err) {
+        if (cancelled) return
+        try { console.error('fetchEvents error', err) } catch (e) {}
+      }
+    }
+
+    if (active === 'Events') fetchEvents()
+    return () => { cancelled = true }
+  }, [active])
+
   // Also fetch blogs once at mount so overview counts show up
   useEffect(() => {
     let cancelled = false
@@ -141,6 +177,26 @@ const AdminDashboard = () => {
             })
             try { window.history.replaceState({}, document.title) } catch (e) {}
           }
+        } catch (e) { /* ignore */ }
+        // fetch jobs count for overview
+        try {
+          const d4 = await apiFetchJson('/api/jobs')
+          const jList = Array.isArray(d4) ? d4 : []
+          setJobs(jList)
+        } catch (e) { /* ignore */ }
+
+        // fetch events count for overview
+        try {
+          const d5 = await apiFetchJson('/api/events')
+          const eList = Array.isArray(d5) ? d5 : []
+          setEvents(eList)
+        } catch (e) { /* ignore */ }
+
+        // fetch subscribers count for overview (protected)
+        try {
+          const d6 = await apiFetchJson('/api/newsletter', { credentials: 'include' })
+          const count = d6 && typeof d6.count === 'number' ? d6.count : (Array.isArray(d6) ? d6.length : 0)
+          setSubscribersCount(count)
         } catch (e) { /* ignore */ }
       } catch (e) {
         // ignore
@@ -223,64 +279,33 @@ const AdminDashboard = () => {
               <p className="mb-4">Select a section from the left to manage content. You can create, edit or remove items for Blogs and Partners.</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="p-4 border rounded">Blogs<br />
-                  <span className="text-2xl font-semibold">{initialLoading ? (
-                    <svg className="inline-block h-6 w-6 animate-spin text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
-                  ) : (posts.length || 0)}</span>
-                </div>
-                      <div className="p-4 border rounded">Partners<br />
-                        <span className="text-2xl font-semibold">{initialLoading ? (
-                          <svg className="inline-block h-6 w-6 animate-spin text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
-                        ) : (partners.length || 0)}</span>
-                      </div>
+                    <span className="text-2xl font-semibold">{initialLoading ? (
+                      <svg className="inline-block h-6 w-6 animate-spin text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                    ) : (posts.length || 0)}</span>
+                  </div>
+                        <div className="p-4 border rounded">Partners<br />
+                          <span className="text-2xl font-semibold">{initialLoading ? (
+                            <svg className="inline-block h-6 w-6 animate-spin text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                          ) : (partners.length || 0)}</span>
+                        </div>
+                        <div className="p-4 border rounded">Subscribers<br />
+                          <span className="text-2xl font-semibold">{initialLoading ? (
+                            <svg className="inline-block h-6 w-6 animate-spin text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                          ) : (subscribersCount || 0)}</span>
+                        </div>
+                        <div className="p-4 border rounded">Events<br />
+                          <span className="text-2xl font-semibold">{initialLoading ? (
+                            <svg className="inline-block h-6 w-6 animate-spin text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                          ) : (events.length || 0)}</span>
+                        </div>
+                        <div className="p-4 border rounded">Jobs<br />
+                          <span className="text-2xl font-semibold">{initialLoading ? (
+                            <svg className="inline-block h-6 w-6 animate-spin text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                          ) : (jobs.length || 0)}</span>
+                        </div>
               </div>
 
-              <div className="mt-6 border-t pt-4">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-semibold">Admin Users</h3>
-                  <button className="px-3 py-1 bg-blue-600 text-white rounded" onClick={() => { setShowCreateAdmin(s => !s); setCreateAdminMsg(null) }}>{showCreateAdmin ? 'Close' : 'Create Admin'}</button>
-                </div>
-
-                {showCreateAdmin && (
-                  <form className="space-y-3" onSubmit={async (e) => {
-                    e.preventDefault()
-                    setCreateAdminMsg(null)
-                    setCreatingAdmin(true)
-                    try {
-                          const res = await apiFetch('/api/admin/admins', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            credentials: 'include',
-                            body: JSON.stringify({ email: newAdminEmail, password: newAdminPassword })
-                          })
-                          const data = await res.json().catch(() => ({}))
-                      setCreatingAdmin(false)
-                      if (!res.ok) {
-                        setCreateAdminMsg(data && (data.error || data.message) ? (data.error || data.message) : 'Failed')
-                        return
-                      }
-                      setCreateAdminMsg('Admin created')
-                      setNewAdminEmail('')
-                      setNewAdminPassword('')
-                    } catch (err) {
-                      setCreatingAdmin(false)
-                      setCreateAdminMsg('Network error')
-                    }
-                  }}>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Email</label>
-                      <input className="w-full px-3 py-2 border rounded" value={newAdminEmail} onChange={e => setNewAdminEmail(e.target.value)} type="email" placeholder="admin@example.org" required />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Password (min 8 chars)</label>
-                      <input className="w-full px-3 py-2 border rounded" value={newAdminPassword} onChange={e => setNewAdminPassword(e.target.value)} type="password" placeholder="Strong password" required minLength={8} />
-                    </div>
-                    {createAdminMsg && <div className="text-sm text-red-600">{createAdminMsg}</div>}
-                    <div>
-                      <button className="px-4 py-2 bg-green-600 text-white rounded" disabled={creatingAdmin}>{creatingAdmin ? 'Creating…' : 'Create Admin'}</button>
-                    </div>
-                  </form>
-                )}
-              </div>
+              {/* Admin Users management removed per request */}
             </div>
           )}
 
@@ -363,6 +388,106 @@ const AdminDashboard = () => {
               )}
             </div>
           )}
+
+            {/* Jobs */}
+            {/* Events */}
+            {active === 'Events' && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold">All Events</h2>
+                  <div className="flex items-center gap-3">
+                    <div className="text-sm text-gray-600">{events.length} total</div>
+                    <button className="bg-green-600 text-white px-4 py-2 rounded" onClick={() => navigate('/admin/events/create')}>Create new Event</button>
+                  </div>
+                </div>
+
+                {events.length === 0 ? (
+                  <div className="p-6 border rounded text-gray-600">No events available. <button className="ml-3 px-3 py-1 bg-green-600 text-white rounded" onClick={() => navigate('/admin/events/create')}>Create new Event</button></div>
+                ) : (
+                  <div className="space-y-4">
+                    {events.map(ev => {
+                      const id = ev._id || ev.id
+                      return (
+                        <article key={id} className="p-4 border rounded flex items-start gap-4">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-lg">{ev.title}</h3>
+                            <div className="text-sm text-gray-600 mt-1">{ev.location || 'Location not specified'}</div>
+                            <div className="text-xs text-gray-400 mt-2">{ev.startsAt ? new Date(ev.startsAt).toLocaleString() : ''}</div>
+                          </div>
+                          <div className="flex flex-col gap-2">
+                            <button className="px-3 py-1 bg-yellow-400 rounded text-gray-900" onClick={() => navigate(`/admin/events/edit/${id}`)}>Edit</button>
+                            <button className="px-3 py-1 bg-red-600 text-white rounded" onClick={async () => {
+                              const ok = window.confirm('Delete this event? This cannot be undone.')
+                              if (!ok) return
+                              const backup = events
+                              setEvents(prev => prev.filter(x => (x.id || x._id) !== id))
+                              try {
+                                await apiFetchJson(`/api/events/${id}`, { method: 'DELETE', credentials: 'include' })
+                                showToast('Event deleted', 'success')
+                              } catch (e) {
+                                try { console.error('Delete event failed', e) } catch (err) {}
+                                const msg = e && e.message ? String(e.message) : 'Failed to delete'
+                                showToast(msg, 'error')
+                                setEvents(backup)
+                              }
+                            }}>Delete</button>
+                          </div>
+                        </article>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {active === 'Jobs' && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold">All Jobs</h2>
+                  <div className="flex items-center gap-3">
+                    <div className="text-sm text-gray-600">{jobs.length} total</div>
+                    <button className="bg-green-600 text-white px-4 py-2 rounded" onClick={() => navigate('/admin/jobs/create')}>Create new Job</button>
+                  </div>
+                </div>
+
+                {jobs.length === 0 ? (
+                  <div className="p-6 border rounded text-gray-600">No job postings available. <button className="ml-3 px-3 py-1 bg-green-600 text-white rounded" onClick={() => navigate('/admin/jobs/create')}>Create new Job</button></div>
+                ) : (
+                  <div className="space-y-4">
+                    {jobs.map(j => {
+                      const id = j._id || j.id
+                      return (
+                        <article key={id} className="p-4 border rounded flex items-start gap-4">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-lg">{j.title}</h3>
+                            <div className="text-sm text-gray-600 mt-1">{j.location || 'Location not specified'} — {j.type || 'Type not specified'}</div>
+                            <div className="text-xs text-gray-400 mt-2">{j.postedAt ? new Date(j.postedAt).toLocaleString() : ''}</div>
+                          </div>
+                          <div className="flex flex-col gap-2">
+                            <button className="px-3 py-1 bg-yellow-400 rounded text-gray-900" onClick={() => navigate(`/admin/jobs/edit/${id}`)}>Edit</button>
+                            <button className="px-3 py-1 bg-red-600 text-white rounded" onClick={async () => {
+                              const ok = window.confirm('Delete this job? This cannot be undone.')
+                              if (!ok) return
+                              const backup = jobs
+                              setJobs(prev => prev.filter(x => (x.id || x._id) !== id))
+                              try {
+                                await apiFetchJson(`/api/jobs/${id}`, { method: 'DELETE', credentials: 'include' })
+                                showToast('Job deleted', 'success')
+                              } catch (e) {
+                                try { console.error('Delete job failed', e) } catch (err) {}
+                                const msg = e && e.message ? String(e.message) : 'Failed to delete'
+                                showToast(msg, 'error')
+                                setJobs(backup)
+                              }
+                            }}>Delete</button>
+                          </div>
+                        </article>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
 
           
 

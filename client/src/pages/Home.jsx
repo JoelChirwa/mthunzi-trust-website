@@ -26,6 +26,9 @@ const Home = () => {
   const [partnersRemote, setPartnersRemote] = useState([])
   const [loadingPartners, setLoadingPartners] = useState(true)
   const [partnersError, setPartnersError] = useState(null)
+  const [events, setEvents] = useState([])
+  const [loadingEvents, setLoadingEvents] = useState(true)
+  const [eventsError, setEventsError] = useState(null)
 
   useEffect(() => {
     let cancelled = false
@@ -62,6 +65,22 @@ const Home = () => {
         setPartnersError(err && err.message ? err.message : 'Failed to load partners')
       } finally {
         if (!cancelled) setLoadingPartners(false)
+      }
+    })()
+
+    // fetch events (upcoming) to show before blog
+    ;(async () => {
+      setLoadingEvents(true)
+      setEventsError(null)
+      try {
+        const ev = await apiFetchJson('/api/events', { signal: ac.signal })
+        if (cancelled) return
+        setEvents(Array.isArray(ev) ? ev : [])
+      } catch (err) {
+        if (cancelled) return
+        setEventsError(err && err.message ? err.message : 'Failed to load events')
+      } finally {
+        if (!cancelled) setLoadingEvents(false)
       }
     })()
 
@@ -175,6 +194,31 @@ const Home = () => {
         </div>
       </section>
       
+      {/* Events (show only if there are upcoming events) */}
+      {(!loadingEvents && events && events.length > 0) && (
+        <section className="py-12 bg-white">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-4">Upcoming Events</h2>
+            <p className="text-center text-gray-700 mb-8 max-w-3xl mx-auto">Join our upcoming activities and events. Subscribe to receive notifications.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {events.slice(0,3).map(ev => {
+                const id = ev._id || ev.id
+                return (
+                  <article key={id} className="bg-white border border-gray-100 rounded-lg p-5 shadow-sm">
+                    <h3 className="font-semibold text-gray-900 mb-2">{ev.title}</h3>
+                    <p className="text-sm text-gray-600 mb-3">{ev.location || ''} {ev.startsAt ? ` — ${new Date(ev.startsAt).toLocaleString()}` : ''}</p>
+                    <p className="text-sm text-gray-600">{ev.description ? (ev.description.length > 200 ? ev.description.slice(0,200) + '…' : ev.description) : ''}</p>
+                  </article>
+                )
+              })}
+            </div>
+            <div className="mt-6 text-center">
+              <Link to="/events" className="inline-block text-green-600 hover:underline font-medium">See all events</Link>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Blog */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">

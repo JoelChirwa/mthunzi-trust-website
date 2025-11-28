@@ -2,7 +2,7 @@ import express from "express";
 import multer from 'multer'
 import path from 'path'
 
-import {  createBlog, deleteBlog, getBlog, getBlogs, updateBlog } from "../controllers/blog.controller.js";
+import { createBlog, deleteBlog, getBlog, getBlogs, updateBlog } from "../controllers/blog.controller.js";
 import { validateCreateBlog, validateUpdateBlog } from '../middlewares/blog.validation.js'
 
 const router = express.Router();
@@ -20,7 +20,6 @@ const upload = multer({ storage })
 
 router.get("/", getBlogs);
 router.get("/:id", getBlog);
-// accept a single file under field name `image`
 // accept a single file under field name `image`
 router.post("/", upload.single('image'), validateCreateBlog, createBlog);
 router.put("/:id", upload.single('image'), validateUpdateBlog, updateBlog);

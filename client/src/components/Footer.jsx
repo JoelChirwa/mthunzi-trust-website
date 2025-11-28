@@ -1,11 +1,34 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaInbox, FaFacebookF, FaInstagram, FaLinkedin } from 'react-icons/fa'
 import logo from '../assets/logo.jpg'
+import { apiFetchJson } from '../utils/api.js'
+import { useToast } from '../context/ToastContext'
 
 
 
 const Footer = () => {
+  const [email, setEmail] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const { showToast } = useToast()
+
+  const onSubmit = async (e) => {
+    e.preventDefault()
+    if (!email || !email.includes('@')) return showToast('Please enter a valid email', 'error')
+    setSubmitting(true)
+    try {
+      const data = await apiFetchJson('/api/newsletter', { method: 'POST', body: JSON.stringify({ email }), headers: { 'Content-Type': 'application/json' } })
+      showToast(data && data.message ? String(data.message) : 'Subscribed', 'success')
+      setEmail('')
+    } catch (err) {
+      try { console.error('newsletter subscribe failed', err) } catch (e) {}
+      const msg = (err && err.message) ? String(err.message) : 'Failed to subscribe'
+      showToast(msg, 'error')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   return (
     <footer className="bg-gray-900 text-white">
       <div className="container mx-auto px-6 py-12">
@@ -28,6 +51,7 @@ const Footer = () => {
             <ul className="space-y-2 text-sm text-gray-300">
               <li><Link to="/" className="hover:underline">Home</Link></li>
               <li><Link to="/about" className="hover:underline">About</Link></li>
+              <li><Link to="/careers" className="hover:underline">Careers</Link></li>
               <li><Link to="/programs" className="hover:underline">Programs</Link></li>
               <li><Link to="/blog" className="hover:underline">Blog</Link></li>
               <li><Link to="/contact" className="hover:underline">Contact</Link></li>
@@ -59,16 +83,18 @@ const Footer = () => {
             <h4 className="font-semibold mb-3">Stay connected</h4>
             <p className="text-sm text-gray-300 mb-4">Subscribe for updates about our work, events and opportunities to get involved.</p>
 
-            <form onSubmit={(e) => e.preventDefault()} className="items-center gap-2 flex-wrap sm:flex-nowrap">
+            <form onSubmit={onSubmit} className="items-center gap-2 flex-wrap sm:flex-nowrap">
               <label htmlFor="footer-email" className="sr-only">Email address</label>
               <input
                 id="footer-email"
                 type="email"
                 placeholder="Email address"
                 required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
                 className="flex-1 min-w-0 py-2 px-3 rounded-md text-gray-900 border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-400 mb-3"
               />
-              <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-md sm:mt-0">Subscribe</button>
+              <button type="submit" disabled={submitting} className="bg-green-500 text-white px-4 py-2 rounded-md sm:mt-0">{submitting ? 'Subscribing…' : 'Subscribe'}</button>
             </form>
 
             <div className="flex items-center gap-3 mt-6">

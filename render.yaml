@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: mthunzi-trust
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        value: ""
+      - key: JWT_SECRET
+        value: ""
+      - key: SMTP_HOST
+        value: ""
+      - key: SMTP_PORT
+        value: ""
+      - key: SMTP_USER
+        value: ""
+      - key: SMTP_PASS
+        value: ""

@@ -31,7 +31,8 @@ async function main() {
   const salt = await bcrypt.genSalt(10);
   const passwordHash = await bcrypt.hash(password, salt);
 
-  const admin = new Admin({ email, passwordHash });
+  // Store hashed password in the `password` field (model expects `password`)
+  const admin = new Admin({ email, password: passwordHash });
   await admin.save();
 
   console.log('Admin created:', email);

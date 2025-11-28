@@ -9,9 +9,25 @@ export async function apiFetch(path, options = {}) {
   // allow callers to pass absolute URLs directly
   const url = /^https?:\/\//i.test(path) ? path : (API_BASE.replace(/\/$/, '') + (path.startsWith('/') ? path : '/' + path));
   const method = (options && options.method) ? options.method.toUpperCase() : 'GET'
+
+  // Attach token if available
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const fetchOptions = {
+    ...options,
+    headers,
+  };
+
   try {
     console.debug('[apiFetch]', method, url, options && options.signal ? '(with signal)' : '')
-    const res = await fetch(url, options)
+    const res = await fetch(url, fetchOptions)
     return res
   } catch (err) {
     // Network-level failures (DNS, refused connection, CORS blocking, etc.)

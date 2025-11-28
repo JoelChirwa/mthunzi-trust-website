@@ -1,29 +1,44 @@
-// Simple validation middleware for create/update blog requests
-export function validateCreateBlog(req, res, next) {
-  const errors = {}
+import path from 'path'
+
+export const validateCreateBlog = (req, res, next) => {
   const body = req.body || {}
+  const title = (body.title || '').trim()
+  const shortDescription = (body.shortDescription || '').trim()
+  const fullStory = (body.fullStory || '').trim()
+
+  if (!title) return res.status(400).json({ success: false, message: 'Title is required' })
+  if (!shortDescription) return res.status(400).json({ success: false, message: 'Short description is required' })
+  if (!fullStory) return res.status(400).json({ success: false, message: 'Full story is required' })
+
+  // image may come from uploaded file or in the request body as a URL/path
   const hasFile = !!req.file
-
-  if (!body.title || !String(body.title).trim()) errors.title = 'Title is required'
-  if (!body.shortDescription || !String(body.shortDescription).trim()) errors.shortDescription = 'Short description is required'
-  if (!body.fullStory || !String(body.fullStory).trim()) errors.fullStory = 'Full story is required'
-  if (!hasFile && !(body.image && String(body.image).trim())) errors.image = 'Image is required'
-
-  if (Object.keys(errors).length) {
-    return res.status(400).json({ success: false, message: 'Validation failed', fields: errors })
+  const imageFromBody = typeof body.image === 'string' && body.image.trim() !== ''
+  if (!hasFile && !imageFromBody) {
+    return res.status(400).json({ success: false, message: 'Image is required (file upload or image path)' })
   }
-  return next()
+
+  next()
 }
 
-export function validateUpdateBlog(req, res, next) {
+export const validateUpdateBlog = (req, res, next) => {
   const body = req.body || {}
-  const hasFile = !!req.file
-  // For update, at least one updatable field should be provided
-  const allowed = ['title', 'shortDescription', 'fullStory', 'location', 'image']
-  const changes = Object.keys(body).filter(k => allowed.includes(k) && body[k] !== undefined && String(body[k]).trim() !== '')
-  if (!hasFile && changes.length === 0) {
-    // nothing to update
-    return res.status(400).json({ success: false, message: 'No fields to update' })
+
+  // If fields are provided they must not be empty strings
+  if (body.title !== undefined && String(body.title).trim() === '') {
+    return res.status(400).json({ success: false, message: 'Title cannot be empty' })
   }
-  return next()
+  if (body.shortDescription !== undefined && String(body.shortDescription).trim() === '') {
+    return res.status(400).json({ success: false, message: 'Short description cannot be empty' })
+  }
+  if (body.fullStory !== undefined && String(body.fullStory).trim() === '') {
+    return res.status(400).json({ success: false, message: 'Full story cannot be empty' })
+  }
+
+  // image may be updated with a file; an explicit empty string is allowed (handled by controller)
+  next()
+}
+
+export default {
+  validateCreateBlog,
+  validateUpdateBlog,
 }
