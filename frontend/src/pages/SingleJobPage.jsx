@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -10,16 +10,59 @@ import {
   Share2,
   Mail,
   ArrowRight,
+  Loader2,
 } from "lucide-react";
-import { jobsData } from "../data/jobsData";
 
 const SingleJobPage = () => {
   const { slug } = useParams();
-  const job = jobsData.find((j) => j.slug === slug);
+  const [job, setJob] = useState(null);
+  const [otherJobs, setOtherJobs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchJobDetails();
   }, [slug]);
+
+  const fetchJobDetails = async () => {
+    try {
+      setIsLoading(true);
+      // Fetch specifically by slug
+      const jobResponse = await fetch(
+        `${
+          import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+        }/jobs/slug/${slug}`
+      );
+      const jobData = await jobResponse.json();
+      setJob(jobData);
+
+      // Fetch others for sidebar
+      const othersResponse = await fetch(
+        `${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs`
+      );
+      const othersData = await othersResponse.json();
+      setOtherJobs(
+        othersData
+          .filter((j) => j.slug !== slug && j.status === "Open")
+          .slice(0, 4)
+      );
+    } catch (error) {
+      console.error("Error fetching job details:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+        <Loader2 className="w-16 h-16 text-primary-green animate-spin mb-4" />
+        <p className="text-gray-400 font-black uppercase tracking-widest text-sm">
+          Reviewing file...
+        </p>
+      </div>
+    );
+  }
 
   if (!job) {
     return (
@@ -81,7 +124,7 @@ const SingleJobPage = () => {
               </span>
               <span className="flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-primary-yellow" /> Deadline:{" "}
-                {job.deadline}
+                {new Date(job.deadline).toLocaleDateString()}
               </span>
             </div>
           </div>
@@ -94,11 +137,37 @@ const SingleJobPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
             {/* Job Description */}
             <div className="lg:col-span-2 space-y-12">
-              <div className="bg-white p-10 md:p-16 rounded-[3.5rem] shadow-xl border border-gray-100">
-                <article
-                  className="prose prose-lg prose-blue max-w-none prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tighter prose-headings:text-blue-900 prose-p:text-gray-600 prose-li:text-gray-600"
-                  dangerouslySetInnerHTML={{ __html: job.description }}
-                />
+              <div className="bg-white p-10 md:p-16 rounded-[3.5rem] border border-gray-100 shadow-sm relative overflow-hidden">
+                <div className="relative z-10 space-y-12">
+                  <div className="prose prose-lg prose-blue max-w-none prose-headings:font-black prose-headings:uppercase prose-headings:tracking-tighter prose-headings:text-blue-900 prose-p:text-gray-600 prose-li:text-gray-600">
+                    <h2 className="text-3xl font-black text-blue-900 border-b-4 border-primary-green inline-block mb-8">
+                      Role Overview
+                    </h2>
+                    <p className="whitespace-pre-wrap">{job.description}</p>
+                  </div>
+
+                  {job.requirements?.length > 0 && (
+                    <div className="space-y-6">
+                      <h2 className="text-3xl font-black text-blue-900 uppercase tracking-tighter flex items-center gap-4">
+                        <div className="w-8 h-8 rounded-lg bg-primary-green flex items-center justify-center text-white">
+                          <Briefcase className="w-4 h-4" />
+                        </div>
+                        Requirements
+                      </h2>
+                      <ul className="space-y-4">
+                        {job.requirements.map((req, idx) => (
+                          <li
+                            key={idx}
+                            className="flex items-start gap-4 text-gray-600 font-medium"
+                          >
+                            <div className="w-2 h-2 rounded-full bg-primary-green mt-2.5 flex-shrink-0" />
+                            {req}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Share Section */}
@@ -131,10 +200,10 @@ const SingleJobPage = () => {
                   <div className="space-y-6 mb-10">
                     <div className="flex items-center justify-between pb-4 border-b border-gray-50">
                       <span className="text-gray-400 text-sm font-bold uppercase tracking-widest flex items-center gap-2">
-                        <Briefcase className="w-4 h-4" /> Posted
+                        <Briefcase className="w-4 h-4" /> Type
                       </span>
                       <span className="text-blue-900 font-bold">
-                        {job.postedDate}
+                        {job.type}
                       </span>
                     </div>
 
@@ -143,7 +212,7 @@ const SingleJobPage = () => {
                         <Calendar className="w-4 h-4" /> Deadline
                       </span>
                       <span className="text-red-500 font-black">
-                        {job.deadline}
+                        {new Date(job.deadline).toLocaleDateString()}
                       </span>
                     </div>
                   </div>
@@ -166,22 +235,20 @@ const SingleJobPage = () => {
                     Other Openings
                   </h4>
                   <div className="space-y-4">
-                    {jobsData
-                      .filter((j) => j.slug !== slug)
-                      .map((otherJob) => (
-                        <Link
-                          key={otherJob.slug}
-                          to={`/careers/${otherJob.slug}`}
-                          className="block p-5 bg-white rounded-2xl border border-blue-100 hover:border-primary-green transition-all group"
-                        >
-                          <h5 className="font-black text-blue-900 mb-1 group-hover:text-primary-green transition-colors text-sm uppercase tracking-tight">
-                            {otherJob.title}
-                          </h5>
-                          <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest leading-none">
-                            {otherJob.location}
-                          </p>
-                        </Link>
-                      ))}
+                    {otherJobs.map((otherJob) => (
+                      <Link
+                        key={otherJob._id}
+                        to={`/careers/${otherJob.slug}`}
+                        className="block p-5 bg-white rounded-2xl border border-blue-100 hover:border-primary-green transition-all group"
+                      >
+                        <h5 className="font-black text-blue-900 mb-1 group-hover:text-primary-green transition-colors text-sm uppercase tracking-tight">
+                          {otherJob.title}
+                        </h5>
+                        <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest leading-none">
+                          {otherJob.location}
+                        </p>
+                      </Link>
+                    ))}
                   </div>
                 </div>
               </div>

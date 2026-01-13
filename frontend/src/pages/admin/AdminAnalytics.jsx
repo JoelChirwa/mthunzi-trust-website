@@ -21,9 +21,10 @@ const AdminAnalytics = () => {
     const fetchGeographicReach = async () => {
       try {
         const response = await fetch(
-          `${
-            import.meta.env.VITE_API_URL || "http://localhost:5000"
-          }/api/analytics/geographic-reach`
+          `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
+            /\/api$/,
+            ""
+          )}/api/analytics/geographic-reach`
         );
         const data = await response.json();
         if (data.success) {

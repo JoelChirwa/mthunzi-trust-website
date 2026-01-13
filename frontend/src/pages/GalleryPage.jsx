@@ -4,89 +4,45 @@ import {
   Image as ImageIcon,
   Maximize2,
   X,
-  ChevronLeft,
-  ChevronRight,
   Filter,
   Play,
+  Loader2,
 } from "lucide-react";
 
 const GalleryPage = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [activeFilter, setActiveFilter] = useState("All");
+  const [mediaItems, setMediaItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchGallery();
   }, []);
+
+  const fetchGallery = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/gallery`
+      );
+      const data = await response.json();
+      setMediaItems(data);
+    } catch (error) {
+      console.error("Error fetching gallery:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const categories = ["All", "Pictures", "Videos"];
 
-  const galleryImages = [
-    {
-      id: 1,
-      type: "picture",
-      url: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&auto=format&fit=crop&q=80",
-      title: "Youth Empowerment Workshop",
-      category: "Programs",
-    },
-    {
-      id: 2,
-      type: "picture",
-      url: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&auto=format&fit=crop&q=80",
-      title: "Tree Planting Initiative",
-      category: "Impact",
-    },
-    {
-      id: 3,
-      type: "video",
-      url: "https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=800&auto=format&fit=crop&q=80",
-      title: "Community Outreach Story",
-      category: "Community",
-    },
-    {
-      id: 4,
-      type: "picture",
-      url: "https://images.unsplash.com/photo-1524062794001-dc26bca829b7?w=800&auto=format&fit=crop&q=80",
-      title: "Sustainable Farming Project",
-      category: "Programs",
-    },
-    {
-      id: 5,
-      type: "video",
-      url: "https://images.unsplash.com/photo-1529390079861-159b978dd76c?w=800&auto=format&fit=crop&q=80",
-      title: "Educational Milestone 2024",
-      category: "Programs",
-    },
-    {
-      id: 6,
-      type: "picture",
-      url: "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=800&auto=format&fit=crop&q=80",
-      title: "Annual Charity Highlights",
-      category: "Events",
-    },
-    {
-      id: 7,
-      type: "video",
-      url: "https://images.unsplash.com/photo-1444653303775-9d2fa2118334?w=800&auto=format&fit=crop&q=80",
-      title: "Clean Water Project Launch",
-      category: "Impact",
-    },
-    {
-      id: 8,
-      type: "picture",
-      url: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800&auto=format&fit=crop&q=80",
-      title: "Global Volunteer Day",
-      category: "Events",
-    },
-  ];
-
-  const filteredImages =
-    activeFilter === "All"
-      ? galleryImages
-      : galleryImages.filter((img) =>
-          activeFilter === "Pictures"
-            ? img.type === "picture"
-            : img.type === "video"
-        );
+  const filteredImages = mediaItems.filter((img) => {
+    if (activeFilter === "All") return true;
+    if (activeFilter === "Pictures") return img.type === "picture";
+    if (activeFilter === "Videos") return img.type === "video";
+    return true;
+  });
 
   return (
     <motion.div
@@ -159,43 +115,62 @@ const GalleryPage = () => {
 
       {/* Gallery Grid */}
       <div className="container mx-auto px-4">
-        <div className="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
-          {filteredImages.map((image) => (
-            <motion.div
-              layout
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              key={image.id}
-              className="relative group cursor-none break-inside-avoid"
-              onClick={() => setSelectedImage(image)}
-            >
-              <div className="overflow-hidden rounded-[2.5rem] bg-gray-100 relative">
-                <img
-                  src={image.url}
-                  alt={image.title}
-                  className="w-full h-auto transition-transform duration-700 group-hover:scale-110"
-                />
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <Loader2 className="w-16 h-16 text-primary-green animate-spin mb-4" />
+            <p className="text-gray-400 font-black uppercase tracking-widest text-sm">
+              Developing visuals...
+            </p>
+          </div>
+        ) : filteredImages.length > 0 ? (
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
+            {filteredImages.map((image) => (
+              <motion.div
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                key={image._id}
+                className="relative group cursor-pointer break-inside-avoid"
+                onClick={() => setSelectedImage(image)}
+              >
+                <div className="overflow-hidden rounded-[2.5rem] bg-gray-100 relative shadow-sm hover:shadow-2xl transition-all duration-500">
+                  <img
+                    src={image.url}
+                    alt={image.title}
+                    className="w-full h-auto transition-transform duration-700 group-hover:scale-110"
+                  />
 
-                {/* Hover Overlay */}
-                <div className="absolute inset-0 bg-blue-900/60 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-10 backdrop-blur-sm">
-                  <div className="bg-primary-yellow/10 w-fit px-4 py-1 rounded-full text-primary-yellow font-black text-[10px] uppercase tracking-widest mb-4">
-                    {image.category}
-                  </div>
-                  <h3 className="text-white text-2xl font-black uppercase tracking-tighter leading-none mb-4">
-                    {image.title}
-                  </h3>
-                  <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-blue-900 group-hover:translate-y-0 translate-y-4 transition-transform duration-500">
-                    {image.type === "video" ? (
-                      <Play className="w-5 h-5 fill-current" />
-                    ) : (
-                      <Maximize2 className="w-5 h-5" />
-                    )}
+                  {/* Hover Overlay */}
+                  <div className="absolute inset-0 bg-blue-900/60 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-10 backdrop-blur-sm">
+                    <div className="bg-primary-yellow/10 w-fit px-4 py-1 rounded-full text-primary-yellow font-black text-[10px] uppercase tracking-widest mb-4">
+                      {image.type === "video" ? "Video" : "Capture"}
+                    </div>
+                    <h3 className="text-white text-2xl font-black uppercase tracking-tighter leading-none mb-4">
+                      {image.title}
+                    </h3>
+                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-blue-900 group-hover:translate-y-0 translate-y-4 transition-transform duration-500">
+                      {image.type === "video" ? (
+                        <Play className="w-5 h-5 fill-current" />
+                      ) : (
+                        <Maximize2 className="w-5 h-5" />
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20 border-2 border-dashed border-gray-100 rounded-[4rem]">
+            <ImageIcon className="w-16 h-16 text-gray-100 mx-auto mb-6" />
+            <h3 className="text-2xl font-black text-blue-900 uppercase">
+              Empty Canvas
+            </h3>
+            <p className="text-gray-400 mt-2">
+              We haven't uploaded any media yet. Check back soon!
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Lightbox */}
@@ -209,7 +184,7 @@ const GalleryPage = () => {
             onClick={() => setSelectedImage(null)}
           >
             <button
-              className="absolute top-10 right-10 w-16 h-16 bg-white/10 rounded-full flex items-center justify-center text-white hover:bg-white hover:text-blue-950 transition-all"
+              className="absolute top-10 right-10 w-16 h-16 bg-white/10 rounded-full flex items-center justify-center text-white hover:bg-white hover:text-blue-950 transition-all font-black"
               onClick={() => setSelectedImage(null)}
             >
               <X className="w-8 h-8" />
@@ -221,14 +196,28 @@ const GalleryPage = () => {
               className="relative max-w-6xl w-full h-full flex flex-col items-center justify-center gap-8"
               onClick={(e) => e.stopPropagation()}
             >
-              <img
-                src={selectedImage.url}
-                alt={selectedImage.title}
-                className="max-w-full max-h-[80vh] object-contain rounded-[3rem] shadow-2xl"
-              />
+              {selectedImage.type === "video" ? (
+                <div className="w-full aspect-video rounded-[3rem] overflow-hidden shadow-2xl bg-black">
+                  <iframe
+                    src={selectedImage.url}
+                    className="w-full h-full"
+                    title={selectedImage.title}
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              ) : (
+                <img
+                  src={selectedImage.url}
+                  alt={selectedImage.title}
+                  className="max-w-full max-h-[80vh] object-contain rounded-[3rem] shadow-2xl"
+                />
+              )}
               <div className="text-center">
                 <div className="text-primary-green font-black uppercase tracking-[0.3em] text-[10px] mb-2">
-                  {selectedImage.category}
+                  {new Date(selectedImage.createdAt).toLocaleDateString(
+                    undefined,
+                    { year: "numeric", month: "long", day: "numeric" }
+                  )}
                 </div>
                 <h2 className="text-white text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4">
                   {selectedImage.title}

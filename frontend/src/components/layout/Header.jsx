@@ -70,19 +70,25 @@ const Header = () => {
             whileHover={{ scale: 1.05 }}
             className="flex items-center space-x-2"
           >
-            <Link to="/" className="flex items-center space-x-3">
+            <Link to="/" className="flex items-center space-x-2 md:space-x-3">
               <img
                 src={logoImg}
                 alt="Mthunzi Logo"
                 className={`transition-all duration-300 rounded-full object-cover border-2 border-white/50 ${
-                  scrolled ? "w-10 h-10" : "w-12 h-12"
+                  scrolled
+                    ? "w-9 h-9 md:w-10 md:h-10"
+                    : "w-11 h-11 md:w-12 md:h-12"
                 }`}
               />
               <div className="flex flex-col">
-                <h1 className="font-poppins font-black text-xl md:text-2xl text-white tracking-tighter leading-none">
+                <h1
+                  className={`font-poppins font-black text-white tracking-tighter leading-none transition-all duration-300 ${
+                    scrolled ? "text-lg md:text-xl" : "text-xl md:text-2xl"
+                  }`}
+                >
                   MTHUNZI<span className="text-primary-yellow">.</span>
                 </h1>
-                <span className="text-[10px] text-white/70 uppercase tracking-[0.2em] font-bold">
+                <span className="text-[9px] md:text-[10px] text-white/70 uppercase tracking-[0.2em] font-bold">
                   Trust
                 </span>
               </div>
@@ -116,7 +122,7 @@ const Header = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden p-2 text-white bg-white/10 rounded-lg backdrop-blur-md border border-white/20"
+            className="lg:hidden p-2 text-white bg-white/5 hover:bg-white/10 rounded-xl backdrop-blur-md border border-white/10 transition-all z-[60]"
           >
             {isMenuOpen ? (
               <X className="w-6 h-6" />
@@ -126,32 +132,63 @@ const Header = () => {
           </button>
         </nav>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - Full Screen Overlay */}
         <AnimatePresence>
           {isMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden overflow-hidden bg-primary-green rounded-b-2xl shadow-2xl"
-            >
-              <div className="py-6 space-y-4 px-4 border-t border-white/10">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.path}
-                    className={`block py-3 text-lg font-bold tracking-wide transition-colors ${
-                      location.pathname === item.path
-                        ? "text-primary-yellow"
-                        : "text-white hover:text-primary-yellow"
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-            </motion.div>
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsMenuOpen(false)}
+                className="fixed inset-0 bg-blue-950/60 backdrop-blur-sm z-50 lg:hidden"
+              />
+
+              {/* Menu Content */}
+              <motion.div
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                className="fixed top-0 right-0 h-screen w-[85%] max-w-[400px] bg-primary-green shadow-2xl z-50 lg:hidden flex flex-col pt-24"
+              >
+                <div className="flex-1 px-8 space-y-2">
+                  {navItems.map((item, i) => (
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.1 }}
+                      key={item.name}
+                    >
+                      <Link
+                        to={item.path}
+                        className={`block py-6 text-3xl font-black tracking-tighter transition-all ${
+                          location.pathname === item.path
+                            ? "text-primary-yellow translate-x-2"
+                            : "text-white active:text-primary-yellow"
+                        }`}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {item.name}
+                      </Link>
+                      <div className="h-px w-full bg-white/10" />
+                    </motion.div>
+                  ))}
+                </div>
+
+                <div className="p-8 space-y-6">
+                  <div className="flex items-center gap-4 text-white/60">
+                    <Phone className="w-5 h-5" />
+                    <span className="font-bold">+265 996 654 088</span>
+                  </div>
+                  <div className="flex items-center gap-4 text-white/60">
+                    <Mail className="w-5 h-5" />
+                    <span className="font-bold">info@mthunzi.org</span>
+                  </div>
+                </div>
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
       </div>

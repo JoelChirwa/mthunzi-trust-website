@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Mail,
   Phone,
@@ -9,47 +9,39 @@ import {
   Clock,
   Users,
   MessageSquare,
+  Loader2,
 } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const Contact = ({ showHeader = true }) => {
+  const [settings, setSettings] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    subject: "",
+    subject: "General Inquiry",
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const contactPoints = [
-    {
-      icon: MapPin,
-      title: "Our Offices",
-      details: [
-        "P. O. Box 12, Chileka",
-        "Blantyre, Malawi",
-        "Lilongwe, Malawi",
-      ],
-      color: "text-green-600 bg-green-100",
-    },
-    {
-      icon: Phone,
-      title: "Phone Numbers",
-      details: ["+265 996 654 088", "+265 881 234 567", "Mon-Fri, 8AM-5PM"],
-      color: "text-blue-600 bg-blue-100",
-    },
-    {
-      icon: Mail,
-      title: "Email Addresses",
-      details: [
-        "mthunzitrust.mw@gmail.com",
-        "info@mthunzitrust.org",
-        "partnerships@mthunzitrust.org",
-      ],
-      color: "text-yellow-600 bg-yellow-100",
-    },
-  ];
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const response = await fetch(
+        `${
+          import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+        }/settings`
+      );
+      const data = await response.json();
+      setSettings(data);
+    } catch (error) {
+      console.error("Error fetching settings:", error);
+    }
+  };
 
   const inquiryTypes = [
     { id: "general", label: "General Inquiry", icon: MessageSquare },
@@ -70,24 +62,44 @@ const Contact = ({ showHeader = true }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    const loadingToast = toast.loading("Sending your message...");
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const response = await fetch(
+        `${
+          import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+        }/inquiries`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
 
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        subject: "",
-        message: "",
+      if (response.ok) {
+        setIsSubmitted(true);
+        toast.success("Message sent successfully!", { id: loadingToast });
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "General Inquiry",
+          message: "",
+        });
+        setTimeout(() => setIsSubmitted(false), 5000);
+      } else {
+        toast.error("Failed to send message. Please try again.", {
+          id: loadingToast,
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting inquiry:", error);
+      toast.error("An error occurred. Please try again later.", {
+        id: loadingToast,
       });
-    }, 3000);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -109,15 +121,15 @@ const Contact = ({ showHeader = true }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-xl text-gray-600 max-w-3xl mx-auto"
+              className="text-xl text-gray-600 max-w-3xl mx-auto font-light leading-relaxed"
             >
               Reach out to us for collaborations, inquiries, or to learn more
-              about our work
+              about our mission in Malawi.
             </motion.p>
           </div>
         )}
 
-        <div className="grid lg:grid-cols-3 gap-12">
+        <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
           {/* Left Column - Contact Points */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -125,43 +137,40 @@ const Contact = ({ showHeader = true }) => {
             viewport={{ once: true }}
             className="lg:col-span-1"
           >
-            <div className="bg-primary-green rounded-[3rem] p-10 text-white shadow-2xl shadow-primary-green/20 relative overflow-hidden h-full flex flex-col">
+            <div className="bg-primary-green rounded-3xl lg:rounded-[3rem] p-8 lg:p-10 text-white shadow-2xl shadow-primary-green/20 relative overflow-hidden h-full flex flex-col">
               {/* Decorative Circle */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-900/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
-              <div className="relative z-10 space-y-12 h-full flex flex-col">
+              <div className="relative z-10 space-y-8 lg:space-y-12 h-full flex flex-col">
                 {/* Offices */}
                 <div>
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
-                      <MapPin className="w-6 h-6" />
+                  <div className="flex items-center gap-4 mb-4 lg:mb-6">
+                    <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white/20 rounded-xl lg:rounded-2xl flex items-center justify-center">
+                      <MapPin className="w-5 h-5 lg:w-6 lg:h-6" />
                     </div>
-                    <h4 className="text-xl font-black uppercase tracking-tighter">
-                      Our Offices
+                    <h4 className="text-lg lg:text-xl font-black uppercase tracking-tighter text-white">
+                      Location
                     </h4>
                   </div>
-                  <ul className="space-y-2 text-white/80 font-medium">
-                    <li>P. O. Box 12, Chileka</li>
-                    <li>Blantyre, Malawi</li>
-                    <li>Lilongwe, Malawi</li>
+                  <ul className="space-y-2 text-white/80 font-medium text-sm lg:text-base">
+                    <li>{settings?.address || "Lilongwe, Malawi"}</li>
                   </ul>
                 </div>
 
                 {/* Phone */}
                 <div>
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
-                      <Phone className="w-6 h-6" />
+                  <div className="flex items-center gap-4 mb-4 lg:mb-6">
+                    <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white/20 rounded-xl lg:rounded-2xl flex items-center justify-center">
+                      <Phone className="w-5 h-5 lg:w-6 lg:h-6" />
                     </div>
-                    <h4 className="text-xl font-black uppercase tracking-tighter">
-                      Phone Numbers
+                    <h4 className="text-lg lg:text-xl font-black uppercase tracking-tighter text-white">
+                      Direct Line
                     </h4>
                   </div>
-                  <ul className="space-y-2 text-white/80 font-medium">
-                    <li>+265 996 654 088</li>
-                    <li>+265 881 234 567</li>
-                    <li className="text-white/40 text-sm mt-2 italic">
+                  <ul className="space-y-2 text-white/80 font-medium font-mono text-sm lg:text-base">
+                    <li>{settings?.phone || "+265 996 654 088"}</li>
+                    <li className="text-white/40 text-[9px] lg:text-[10px] font-black uppercase tracking-widest mt-2">
                       Mon-Fri, 8AM-5PM
                     </li>
                   </ul>
@@ -169,33 +178,33 @@ const Contact = ({ showHeader = true }) => {
 
                 {/* Email */}
                 <div>
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
-                      <Mail className="w-6 h-6" />
+                  <div className="flex items-center gap-4 mb-4 lg:mb-6">
+                    <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white/20 rounded-xl lg:rounded-2xl flex items-center justify-center">
+                      <Mail className="w-5 h-5 lg:w-6 lg:h-6" />
                     </div>
-                    <h4 className="text-xl font-black uppercase tracking-tighter">
-                      Email Addresses
+                    <h4 className="text-lg lg:text-xl font-black uppercase tracking-tighter text-white">
+                      Official Support
                     </h4>
                   </div>
-                  <ul className="space-y-2 text-white/80 font-medium break-all">
-                    <li>mthunzitrust.mw@gmail.com</li>
-                    <li>info@mthunzi.org</li>
-                    <li>partnerships@mthunzi.org</li>
+                  <ul className="space-y-2 text-white/80 font-medium break-all text-sm lg:text-base">
+                    <li>{settings?.email || "info@mthunzi.org"}</li>
                   </ul>
                 </div>
 
-                {/* Response Time - Integrated */}
-                <div className="mt-auto pt-12 border-t border-white/10">
-                  <div className="flex items-center gap-4 mb-4 text-primary-yellow">
-                    <Clock className="w-6 h-6" />
-                    <h4 className="font-black uppercase tracking-widest text-xs">
-                      Response Time
+                {/* Response Time */}
+                <div className="mt-8 lg:mt-auto pt-8 lg:pt-10 border-t border-white/10">
+                  <div className="flex items-center gap-4 mb-3 lg:mb-4 text-primary-yellow">
+                    <Clock className="w-5 h-5 lg:w-6 lg:h-6" />
+                    <h4 className="font-black uppercase tracking-widest text-[9px] lg:text-[10px]">
+                      Quick Response
                     </h4>
                   </div>
-                  <p className="text-white/60 text-sm leading-relaxed">
-                    We typically respond to inquiries within{" "}
-                    <span className="text-white font-bold">24-48 hours</span>.
-                    For urgent matters, please call our hotline.
+                  <p className="text-white/60 text-[11px] lg:text-xs leading-relaxed">
+                    Our team aims to respond to all inquiries within{" "}
+                    <span className="text-white font-bold">
+                      48 working hours
+                    </span>
+                    .
                   </p>
                 </div>
               </div>
@@ -209,220 +218,166 @@ const Contact = ({ showHeader = true }) => {
             viewport={{ once: true }}
             className="lg:col-span-2"
           >
-            <div className="bg-white p-12 rounded-[3.5rem] shadow-2xl border border-gray-100 relative overflow-hidden">
-              {/* Subtle background decoration for the form */}
+            <div className="bg-white p-6 md:p-14 rounded-3xl lg:rounded-[3.5rem] shadow-2xl border border-gray-100 relative overflow-hidden h-full">
               <div className="absolute top-0 right-0 w-64 h-64 bg-primary-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
 
-              {isSubmitted ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="text-center py-20 relative z-10"
-                >
-                  <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8">
-                    <CheckCircle className="w-12 h-12 text-green-600" />
-                  </div>
-                  <h3 className="text-4xl font-black text-blue-900 mb-4 tracking-tighter uppercase">
-                    Message Sent!
-                  </h3>
-                  <p className="text-gray-500 mb-10 max-w-md mx-auto text-lg leading-relaxed">
-                    Thank you for reaching out. We've received your message and
-                    will get back to you within 24-48 hours.
-                  </p>
+              <AnimatePresence mode="wait">
+                {isSubmitted ? (
                   <motion.div
-                    animate={{ width: ["0%", "100%"] }}
-                    transition={{ duration: 3 }}
-                    className="h-1.5 bg-primary-green rounded-full max-w-[200px] mx-auto"
-                  />
-                </motion.div>
-              ) : (
-                <div className="relative z-10">
-                  <h3 className="text-3xl font-black text-blue-900 mb-10 uppercase tracking-tighter">
-                    Send us a{" "}
-                    <span className="text-primary-green">Message</span>
-                  </h3>
-
-                  {/* Inquiry Types */}
-                  <div className="mb-12">
-                    <label className="block text-blue-900 font-bold uppercase tracking-widest text-[11px] mb-5">
-                      What is your inquiry about?
-                    </label>
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                      {inquiryTypes.map((type) => (
-                        <button
-                          key={type.id}
-                          type="button"
-                          onClick={() =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              subject: type.label,
-                            }))
-                          }
-                          className={`p-4 rounded-2xl text-center transition-all duration-300 flex flex-col items-center justify-center gap-2 border ${
-                            formData.subject === type.label
-                              ? "bg-blue-900 text-white border-blue-900 shadow-xl scale-105"
-                              : "bg-gray-50 text-gray-500 border-gray-100 hover:border-primary-green hover:text-primary-green hover:bg-white"
-                          }`}
-                        >
-                          <type.icon
-                            className={`w-5 h-5 ${
-                              formData.subject === type.label
-                                ? "text-primary-green"
-                                : ""
-                            }`}
-                          />
-                          <span className="text-[10px] font-black uppercase tracking-tight">
-                            {type.label}
-                          </span>
-                        </button>
-                      ))}
+                    key="success"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="text-center py-20 relative z-10"
+                  >
+                    <div className="w-24 h-24 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
+                      <CheckCircle className="w-12 h-12" />
                     </div>
-                  </div>
+                    <h3 className="text-4xl font-black text-blue-900 mb-4 tracking-tighter uppercase">
+                      Inquiry Received!
+                    </h3>
+                    <p className="text-gray-500 mb-10 max-w-md mx-auto text-lg leading-relaxed">
+                      Thank you for reaching out. A representative will contact
+                      you shortly using the details provided.
+                    </p>
+                  </motion.div>
+                ) : (
+                  <motion.div key="form" className="relative z-10">
+                    <h3 className="text-3xl font-black text-blue-900 mb-10 uppercase tracking-tighter">
+                      Send us a{" "}
+                      <span className="text-primary-green">Message</span>
+                    </h3>
 
-                  <form onSubmit={handleSubmit} className="space-y-8">
-                    <div className="grid md:grid-cols-2 gap-8">
-                      <div className="space-y-3">
-                        <label className="block text-blue-900 font-bold uppercase tracking-widest text-[11px]">
-                          Full Name
-                        </label>
-                        <input
-                          type="text"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleChange}
-                          required
-                          className="w-full px-6 py-5 rounded-2xl bg-gray-50 border border-gray-100 focus:bg-white focus:border-primary-green focus:ring-4 focus:ring-primary-green/10 outline-none transition-all text-gray-900 placeholder:text-gray-400 font-medium"
-                          placeholder="Your name"
-                        />
-                      </div>
-
-                      <div className="space-y-3">
-                        <label className="block text-blue-900 font-bold uppercase tracking-widest text-[11px]">
-                          Email Address
-                        </label>
-                        <input
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleChange}
-                          required
-                          className="w-full px-6 py-5 rounded-2xl bg-gray-50 border border-gray-100 focus:bg-white focus:border-primary-green focus:ring-4 focus:ring-primary-green/10 outline-none transition-all text-gray-900 placeholder:text-gray-400 font-medium"
-                          placeholder="you@example.com"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-8">
-                      <div className="space-y-3">
-                        <label className="block text-blue-900 font-bold uppercase tracking-widest text-[11px]">
-                          Phone Number
-                        </label>
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleChange}
-                          className="w-full px-6 py-5 rounded-2xl bg-gray-50 border border-gray-100 focus:bg-white focus:border-primary-green focus:ring-4 focus:ring-primary-green/10 outline-none transition-all text-gray-900 placeholder:text-gray-400 font-medium"
-                          placeholder="+265 123 456 789"
-                        />
-                      </div>
-
-                      <div className="space-y-3">
-                        <label className="block text-blue-900 font-bold uppercase tracking-widest text-[11px]">
-                          Subject
-                        </label>
-                        <input
-                          type="text"
-                          name="subject"
-                          value={formData.subject}
-                          onChange={handleChange}
-                          required
-                          className="w-full px-6 py-5 rounded-2xl bg-gray-50 border border-gray-100 focus:bg-white focus:border-primary-green focus:ring-4 focus:ring-primary-green/10 outline-none transition-all text-gray-900 placeholder:text-gray-400 font-medium"
-                          placeholder="How can we help?"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <label className="block text-blue-900 font-bold uppercase tracking-widest text-[11px]">
-                        Your Message
+                    <div className="mb-10">
+                      <label className="block text-blue-900 font-bold uppercase tracking-widest text-[10px] mb-4">
+                        What is your inquiry about?
                       </label>
-                      <textarea
-                        name="message"
-                        value={formData.message}
-                        onChange={handleChange}
-                        required
-                        rows="6"
-                        className="w-full px-6 py-5 rounded-2xl bg-gray-50 border border-gray-100 focus:bg-white focus:border-primary-green focus:ring-4 focus:ring-primary-green/10 outline-none transition-all text-gray-900 placeholder:text-gray-400 resize-none font-medium"
-                        placeholder="Tell us about your inquiry..."
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between pt-4">
-                      <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                        * Required fields
+                      <div className="flex flex-wrap gap-3">
+                        {inquiryTypes.map((type) => (
+                          <button
+                            key={type.id}
+                            type="button"
+                            onClick={() =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                subject: type.label,
+                              }))
+                            }
+                            className={`px-6 py-3 rounded-xl transition-all duration-300 flex items-center gap-3 border ${
+                              formData.subject === type.label
+                                ? "bg-blue-900 text-white border-blue-900 shadow-xl"
+                                : "bg-gray-50 text-gray-500 border-gray-100 hover:border-primary-green hover:text-primary-green hover:bg-white"
+                            }`}
+                          >
+                            <type.icon className="w-4 h-4" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">
+                              {type.label}
+                            </span>
+                          </button>
+                        ))}
                       </div>
-                      <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="bg-blue-900 text-white px-12 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-xs shadow-2xl shadow-blue-900/20 hover:bg-primary-green hover:shadow-primary-green/20 transition-all flex items-center gap-4 group/btn overflow-hidden relative"
-                      >
-                        <span className="relative z-10 flex items-center gap-3">
-                          {isSubmitting ? (
-                            <>
-                              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                              Sending...
-                            </>
-                          ) : (
-                            <>
-                              <Send className="w-5 h-5 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
-                              Send Message
-                            </>
-                          )}
-                        </span>
-                      </button>
                     </div>
-                  </form>
-                </div>
-              )}
-            </div>
 
-            {/* Map Placeholder */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="mt-8"
-            >
-              <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-2xl p-6">
-                <h4 className="text-xl font-bold text-gray-900 mb-4">
-                  Find Our Offices
-                </h4>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="h-48 bg-gradient-to-br from-green-50 to-blue-50 rounded-xl flex items-center justify-center">
-                    <div className="text-center">
-                      <MapPin className="w-12 h-12 text-primary-green mx-auto mb-3" />
-                      <p className="font-semibold text-gray-900">
-                        Blantyre Office
-                      </p>
-                      <p className="text-gray-600 text-sm">
-                        P. O. Box 12, Chileka
-                      </p>
-                    </div>
-                  </div>
-                  <div className="h-48 bg-gradient-to-br from-blue-50 to-green-50 rounded-xl flex items-center justify-center">
-                    <div className="text-center">
-                      <MapPin className="w-12 h-12 text-primary-blue mx-auto mb-3" />
-                      <p className="font-semibold text-gray-900">
-                        Lilongwe Office
-                      </p>
-                      <p className="text-gray-600 text-sm">Central Lilongwe</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="block text-blue-900/40 font-black uppercase tracking-widest text-[9px] ml-2">
+                            Full Name
+                          </label>
+                          <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary-green outline-none transition-all text-gray-900 font-bold text-sm shadow-sm"
+                            placeholder="John Doe"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="block text-blue-900/40 font-black uppercase tracking-widest text-[9px] ml-2">
+                            Email Address
+                          </label>
+                          <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary-green outline-none transition-all text-gray-900 font-bold text-sm shadow-sm"
+                            placeholder="hello@world.com"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="block text-blue-900/40 font-black uppercase tracking-widest text-[9px] ml-2">
+                            Phone (Optional)
+                          </label>
+                          <input
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary-green outline-none transition-all text-gray-900 font-bold text-sm shadow-sm"
+                            placeholder="+265..."
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="block text-blue-900/40 font-black uppercase tracking-widest text-[9px] ml-2">
+                            Custom Subject
+                          </label>
+                          <input
+                            type="text"
+                            name="subject"
+                            value={formData.subject}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary-green outline-none transition-all text-gray-900 font-bold text-sm shadow-sm"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="block text-blue-900/40 font-black uppercase tracking-widest text-[9px] ml-2">
+                          Your Message
+                        </label>
+                        <textarea
+                          name="message"
+                          value={formData.message}
+                          onChange={handleChange}
+                          required
+                          rows="5"
+                          className="w-full px-6 py-4 rounded-3xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary-green outline-none transition-all text-gray-900 font-medium text-sm shadow-sm resize-none"
+                          placeholder="How can we help your community today?"
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between pt-4">
+                        <div className="text-[10px] text-gray-400 font-black uppercase tracking-widest bg-gray-50 px-4 py-2 rounded-full">
+                          * Direct Dispatch
+                        </div>
+                        <button
+                          type="submit"
+                          disabled={isSubmitting}
+                          className="bg-blue-900 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] shadow-xl hover:bg-primary-green transition-all flex items-center gap-3 disabled:opacity-50"
+                        >
+                          {isSubmitting ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Send className="w-4 h-4" />
+                          )}
+                          {isSubmitting ? "Dispatching..." : "Send Message"}
+                        </button>
+                      </div>
+                    </form>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </motion.div>
         </div>
       </div>

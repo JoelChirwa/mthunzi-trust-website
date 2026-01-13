@@ -24,9 +24,9 @@ const AdminGuard = ({ children }) => {
         try {
           const token = await getToken();
           await fetch(
-            `${
+            `${(
               import.meta.env.VITE_API_URL || "http://localhost:5000"
-            }/api/users/sync`,
+            ).replace(/\/api$/, "")}/api/users/sync`,
             {
               method: "POST",
               headers: {

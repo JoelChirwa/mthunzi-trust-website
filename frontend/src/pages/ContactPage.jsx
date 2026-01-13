@@ -49,14 +49,14 @@ const ContactPage = () => {
             transition={{ delay: 0.5 }}
             className="max-w-4xl"
           >
-            <span className="flex items-center gap-3 text-primary-yellow font-black uppercase tracking-[0.4em] text-sm mb-6">
-              <div className="w-10 h-1 bg-primary-yellow rounded" />
+            <span className="flex items-center gap-3 text-primary-yellow font-black uppercase tracking-[0.4em] text-[10px] md:text-sm mb-6">
+              <div className="w-8 md:w-10 h-1 bg-primary-yellow rounded" />
               Connect with us
             </span>
-            <h1 className="text-6xl md:text-8xl font-black text-white leading-none mb-8 tracking-tighter uppercase grayscale-[30%] brightness-[120%]">
+            <h1 className="text-4xl md:text-8xl font-black text-white leading-none mb-8 tracking-tighter uppercase">
               Get in <span className="text-primary-green">Touch.</span>
             </h1>
-            <p className="text-xl md:text-2xl text-white/80 max-w-2xl font-light leading-relaxed">
+            <p className="text-lg md:text-2xl text-white/80 max-w-2xl font-light leading-relaxed">
               Have questions, ideas, or want to partner with us? We're here to
               listen and collaborate for a better Malawi.
             </p>
@@ -68,64 +68,66 @@ const ContactPage = () => {
       <Contact showHeader={false} />
 
       {/* Global Presence / Support */}
-      <section className="py-24 bg-blue-900 text-white relative overflow-hidden">
+      <section className="py-20 md:py-24 bg-blue-900 text-white relative overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
-            <div className="lg:w-1/2">
-              <h2 className="text-4xl md:text-6xl font-black mb-8 uppercase tracking-tighter leading-tight">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+            <div className="lg:w-1/2 text-center lg:text-left w-full">
+              <h2 className="text-3xl md:text-6xl font-black mb-10 md:mb-8 uppercase tracking-tighter leading-tight">
                 Our <span className="text-primary-yellow">Operations</span>{" "}
-                <br />
+                <br className="hidden md:block" />
                 Are Always Open
               </h2>
-              <div className="space-y-8">
+              <div className="space-y-6 md:space-y-8 flex flex-col items-center lg:items-start">
                 <div className="flex items-center gap-6">
-                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
                     <Clock className="w-6 h-6 text-primary-yellow" />
                   </div>
-                  <div>
-                    <h4 className="font-bold text-lg">Working Hours</h4>
-                    <p className="text-white/60">
-                      Monday - Friday: 8:00 AM - 5:00 PM (CAT)
+                  <div className="text-left">
+                    <h4 className="font-black uppercase tracking-widest text-[10px] text-primary-yellow mb-1">
+                      Working Hours
+                    </h4>
+                    <p className="text-white font-bold">
+                      Mon - Fri: 8 AM - 5 PM
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-6">
-                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
                     <Globe className="w-6 h-6 text-primary-green" />
                   </div>
-                  <div>
-                    <h4 className="font-bold text-lg">
-                      In-Country Focal Point
+                  <div className="text-left">
+                    <h4 className="font-black uppercase tracking-widest text-[10px] text-primary-green mb-1">
+                      Focal Point
                     </h4>
-                    <p className="text-white/60">
-                      Youth Adaptation Network - Malawi Chapter
+                    <p className="text-white font-bold">
+                      Youth Adaptation Network
                     </p>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="lg:w-1/2 relative">
-              <div className="bg-white/5 backdrop-blur-xl p-12 rounded-[3.5rem] border border-white/10">
-                <h3 className="text-3xl font-black mb-6 uppercase tracking-tighter">
+            <div className="lg:w-1/2 relative w-full">
+              <div className="bg-white/5 backdrop-blur-xl p-8 lg:p-12 rounded-3xl lg:rounded-[3.5rem] border border-white/10">
+                <h3 className="text-2xl lg:text-3xl font-black mb-6 uppercase tracking-tighter">
                   Fast Response
                 </h3>
-                <p className="text-white/60 mb-10 leading-relaxed">
+                <p className="text-white/60 mb-8 lg:mb-10 leading-relaxed text-sm lg:text-base">
                   We aim to respond to all inquiries within 24-48 hours. For
                   urgent partnership matters, please include "URGENT" in your
                   email subject line.
                 </p>
-                <div className="grid grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 text-center sm:text-left">
                   <div>
                     <p className="text-primary-yellow font-black uppercase tracking-widest text-[10px] mb-2">
                       Blantyre
                     </p>
-                    <p className="font-bold">+265 996 654 088</p>
+                    <p className="font-black text-lg">+265 996 654 088</p>
                   </div>
                   <div>
                     <p className="text-primary-green font-black uppercase tracking-widest text-[10px] mb-2">
                       Lilongwe
                     </p>
-                    <p className="font-bold">+265 881 234 567</p>
+                    <p className="font-black text-lg">+265 881 234 567</p>
                   </div>
                 </div>
               </div>

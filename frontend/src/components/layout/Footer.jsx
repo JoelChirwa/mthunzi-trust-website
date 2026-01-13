@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
@@ -16,6 +16,25 @@ import {
 import logoImg from "../../assets/images/logo.jpg";
 
 const Footer = () => {
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await fetch(
+          `${
+            import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+          }/settings`
+        );
+        const data = await response.json();
+        setSettings(data);
+      } catch (error) {
+        console.error("Error fetching settings:", error);
+      }
+    };
+    fetchSettings();
+  }, []);
+
   const quickLinks = [
     { name: "About Us", href: "/about" },
     { name: "Programs", href: "/programs" },
@@ -28,20 +47,25 @@ const Footer = () => {
   const socialLinks = [
     {
       icon: Facebook,
-      href: "#",
+      href: settings?.facebook || "#",
       label: "Facebook",
       color: "hover:bg-[#1877F2]",
     },
-    { icon: Twitter, href: "#", label: "Twitter", color: "hover:bg-[#1DA1F2]" },
+    {
+      icon: Twitter,
+      href: settings?.twitter || "#",
+      label: "Twitter",
+      color: "hover:bg-[#1DA1F2]",
+    },
     {
       icon: Instagram,
-      href: "#",
+      href: settings?.instagram || "#",
       label: "Instagram",
       color: "hover:bg-[#E4405F]",
     },
     {
       icon: Linkedin,
-      href: "#",
+      href: settings?.linkedin || "#",
       label: "LinkedIn",
       color: "hover:bg-[#0A66C2]",
     },
@@ -73,10 +97,13 @@ const Footer = () => {
               </div>
               <div>
                 <h3 className="text-2xl font-black tracking-tighter leading-none">
-                  MTHUNZI <span className="text-primary-green">TRUST</span>
+                  {settings?.organizationName?.split(" ")[0] || "MTHUNZI"}{" "}
+                  <span className="text-primary-green">
+                    {settings?.organizationName?.split(" ")[1] || "TRUST"}
+                  </span>
                 </h3>
-                <p className="text-primary-yellow font-bold uppercase tracking-[0.3em] text-[10px] mt-1">
-                  The Umbrella of Hope
+                <p className="text-primary-yellow font-bold uppercase tracking-[0.3em] text-[10px] mt-1 text-wrap lowercase">
+                  {settings?.tagline || "The Umbrella of Hope"}
                 </p>
               </div>
             </motion.div>
@@ -88,18 +115,22 @@ const Footer = () => {
             </p>
 
             <div className="flex gap-4">
-              {socialLinks.map((social) => (
-                <motion.a
-                  key={social.label}
-                  href={social.href}
-                  whileHover={{ y: -5 }}
-                  whileTap={{ scale: 0.9 }}
-                  className={`w-11 h-11 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center transition-all duration-300 ${social.color}`}
-                  aria-label={social.label}
-                >
-                  <social.icon className="w-5 h-5" />
-                </motion.a>
-              ))}
+              {socialLinks
+                .filter((s) => s.href !== "#" && s.href !== "")
+                .map((social) => (
+                  <motion.a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ y: -5 }}
+                    whileTap={{ scale: 0.9 }}
+                    className={`w-11 h-11 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center transition-all duration-300 ${social.color}`}
+                    aria-label={social.label}
+                  >
+                    <social.icon className="w-5 h-5" />
+                  </motion.a>
+                ))}
             </div>
           </div>
 
@@ -141,9 +172,8 @@ const Footer = () => {
                   <p className="text-xs font-black uppercase tracking-widest text-white/40 mb-1">
                     Office
                   </p>
-                  <p className="text-sm font-medium text-white/80 leading-relaxed">
-                    P. O. Box 12, Chileka,
-                    <br /> Blantyre, Malawi
+                  <p className="text-sm font-medium text-white/80 leading-relaxed capitalize">
+                    {settings?.address || "Blantyre, Malawi"}
                   </p>
                 </div>
               </div>
@@ -157,10 +187,10 @@ const Footer = () => {
                     Email
                   </p>
                   <a
-                    href="mailto:info@mthunzitrust.org"
+                    href={`mailto:${settings?.email || "info@mthunzi.org"}`}
                     className="text-sm font-bold hover:text-primary-green transition-colors"
                   >
-                    info@mthunzitrust.org
+                    {settings?.email || "info@mthunzi.org"}
                   </a>
                 </div>
               </div>
@@ -174,10 +204,10 @@ const Footer = () => {
                     Phone
                   </p>
                   <a
-                    href="tel:+265996654088"
+                    href={`tel:${settings?.phone}`}
                     className="text-sm font-bold hover:text-primary-green transition-colors"
                   >
-                    +265 996 654 088
+                    {settings?.phone || "+265 996 654 088"}
                   </a>
                 </div>
               </div>

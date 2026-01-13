@@ -1,4 +1,35 @@
 import User from "../models/userModel.js";
+import Blog from "../models/blogModel.js";
+import Program from "../models/programModel.js";
+import Team from "../models/teamModel.js";
+import Partner from "../models/partnerModel.js";
+import Job from "../models/jobModel.js";
+
+export const getAdminStats = async (req, res) => {
+  try {
+    const [blogs, programs, team, partners, jobs] = await Promise.all([
+      Blog.countDocuments(),
+      Program.countDocuments(),
+      Team.countDocuments(),
+      Partner.countDocuments(),
+      Job.countDocuments(),
+    ]);
+
+    res.status(200).json({
+      success: true,
+      stats: {
+        blogs,
+        programs,
+        team,
+        partners,
+        jobs,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching admin stats:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 export const getGeographicReach = async (req, res) => {
   try {

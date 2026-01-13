@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -6,6 +6,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import { Toaster } from "react-hot-toast";
 import Layout from "./components/layout/Layout";
 import Home from "./pages/Home";
 import AboutPage from "./pages/AboutPage";
@@ -30,8 +31,19 @@ import AdminGallery from "./pages/admin/AdminGallery";
 import AdminTeam from "./pages/admin/AdminTeam";
 import AdminPartners from "./pages/admin/AdminPartners";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminInquiries from "./pages/admin/AdminInquiries";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminGuard from "./components/admin/AdminGuard";
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -59,6 +71,8 @@ function AnimatedRoutes() {
 function App() {
   return (
     <Router>
+      <ScrollToTop />
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="relative">
         <Routes>
           {/* Admin Routes - Protected */}
@@ -115,6 +129,14 @@ function App() {
             element={
               <AdminGuard>
                 <AdminSettings />
+              </AdminGuard>
+            }
+          />
+          <Route
+            path="/admin/inquiries"
+            element={
+              <AdminGuard>
+                <AdminInquiries />
               </AdminGuard>
             }
           />

@@ -6,8 +6,18 @@ import { serve } from "inngest/express";
 import { functions, inngest } from "./config/inngest.js";
 import connectDB from "./config/db.js";
 
-import { syncUser } from "./controllers/userController.js";
-import { getGeographicReach } from "./controllers/analyticsController.js";
+// Routes
+import userRoutes from "./routes/userRoutes.js";
+import analyticsRoutes from "./routes/analyticsRoutes.js";
+import programRoutes from "./routes/programRoutes.js";
+import blogRoutes from "./routes/blogRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
+import teamRoutes from "./routes/teamRoutes.js";
+import partnerRoutes from "./routes/partnerRoutes.js";
+import jobRoutes from "./routes/jobRoutes.js";
+import galleryRoutes from "./routes/galleryRoutes.js";
+import settingRoutes from "./routes/settingRoutes.js";
+import inquiryRoutes from "./routes/inquiryRoutes.js";
 
 const app = express();
 
@@ -18,12 +28,22 @@ connectDB().catch((err) => console.error("Database connection failed:", err));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(clerkMiddleware());
 
 // API Endpoints
 app.use("/api/inngest", serve({ client: inngest, functions }));
-app.post("/api/users/sync", syncUser);
-app.get("/api/analytics/geographic-reach", getGeographicReach);
+app.use("/api/users", userRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/programs", programRoutes);
+app.use("/api/blogs", blogRoutes);
+app.use("/api/upload", uploadRoutes);
+app.use("/api/team", teamRoutes);
+app.use("/api/partners", partnerRoutes);
+app.use("/api/jobs", jobRoutes);
+app.use("/api/gallery", galleryRoutes);
+app.use("/api/settings", settingRoutes);
+app.use("/api/inquiries", inquiryRoutes);
 
 app.get("/", (req, res) => {
   res.json({

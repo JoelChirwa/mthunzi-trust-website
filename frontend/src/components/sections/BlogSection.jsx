@@ -1,10 +1,36 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { blogPosts } from "../../data/blogData";
-import { ArrowRight, ChevronRight, Calendar } from "lucide-react";
+import { ArrowRight, ChevronRight, Calendar, Loader2 } from "lucide-react";
 
 const BlogSection = () => {
-  const displayPosts = blogPosts.slice(0, 3);
+  const [blogs, setBlogs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
+
+  const fetchBlogs = async () => {
+    try {
+      const response = await fetch(
+        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
+          /\/api$/,
+          ""
+        )}/api/blogs`
+      );
+      const data = await response.json();
+      setBlogs(data.slice(0, 3));
+    } catch (error) {
+      console.error("Error fetching blogs:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) return null;
+  if (blogs.length === 0) return null;
+
+  const displayPosts = blogs;
 
   return (
     <section className="py-24 bg-gray-50">
@@ -31,11 +57,10 @@ const BlogSection = () => {
           </Link>
         </div>
 
-        {/* Blog Posts Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {displayPosts.map((post) => (
             <Link
-              key={post.id}
+              key={post._id}
               to={`/blog/${post.slug}`}
               className="group block h-full"
             >
@@ -54,7 +79,7 @@ const BlogSection = () => {
                 <div className="p-8 flex-grow flex flex-col">
                   <div className="flex items-center gap-3 text-[10px] text-gray-400 mb-4 font-bold uppercase tracking-widest">
                     <Calendar className="w-3.5 h-3.5 text-primary-green" />
-                    {post.date}
+                    {new Date(post.createdAt).toLocaleDateString()}
                   </div>
                   <h3 className="text-xl font-black text-blue-900 group-hover:text-primary-green transition-colors duration-300 leading-tight mb-8">
                     {post.title}

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -6,18 +6,48 @@ import {
   Leaf,
   Briefcase,
   HeartPulse,
-  ArrowRight,
+  Plus,
+  Loader2,
   Target,
   Users,
   Sprout,
-  Plus,
+  Layers,
 } from "lucide-react";
-import { programsData } from "../data/programsData";
+
+const ICON_MAP = {
+  GraduationCap,
+  Leaf,
+  Briefcase,
+  HeartPulse,
+  Layers,
+};
 
 const Programs = () => {
+  const [programs, setPrograms] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchPrograms();
   }, []);
+
+  const fetchPrograms = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
+          /\/api$/,
+          ""
+        )}/api/programs`
+      );
+      const data = await response.json();
+      setPrograms(data);
+    } catch (error) {
+      console.error("Error fetching programs:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <motion.div
@@ -69,58 +99,78 @@ const Programs = () => {
       <section className="py-24 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="space-y-16 max-w-6xl mx-auto">
-            {programsData.map((program, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className={`group relative bg-white rounded-[3rem] overflow-hidden shadow-2xl flex flex-col md:flex-row h-full border border-gray-100/50 ${
-                  i % 2 === 1 ? "md:flex-row-reverse" : ""
-                }`}
-              >
-                {/* Image Section */}
-                <div className="md:w-1/2 relative overflow-hidden h-[400px] md:h-auto">
-                  <img
-                    src={program.image}
-                    alt={program.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div
-                    className={`absolute top-8 left-8 w-20 h-20 ${program.color} rounded-3xl flex items-center justify-center shadow-2xl text-white backdrop-blur-sm`}
-                  >
-                    <program.icon className="w-10 h-10" />
-                  </div>
-                </div>
-
-                {/* Content Section */}
-                <div className="md:w-1/2 p-12 md:p-16 flex flex-col justify-center">
-                  <span className="text-primary-green font-black uppercase tracking-[0.3em] text-xs mb-4 block">
-                    {program.subtitle}
-                  </span>
-                  <h3 className="text-4xl md:text-5xl font-black text-blue-900 mb-8 leading-tight tracking-tighter">
-                    {program.title}
-                  </h3>
-                  <p className="text-gray-500 leading-relaxed mb-10 text-lg">
-                    {program.shortDesc}
-                  </p>
-                  <Link
-                    to={`/programs/${program.slug}`}
-                    className={`inline-flex items-center justify-between gap-4 px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-sm transition-all duration-300 shadow-xl group/btn overflow-hidden relative ${
-                      i % 2 === 0
-                        ? "bg-blue-900 text-white hover:bg-primary-green"
-                        : "bg-primary-green text-white hover:bg-blue-900"
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center py-20 gap-4">
+                <Loader2 className="w-12 h-12 text-primary-green animate-spin" />
+                <p className="text-blue-900 font-black uppercase tracking-widest text-xs">
+                  Loading Initiatives...
+                </p>
+              </div>
+            ) : programs.length > 0 ? (
+              programs.map((program, i) => {
+                const Icon = ICON_MAP[program.icon] || Layers;
+                return (
+                  <motion.div
+                    key={program._id || i}
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className={`group relative bg-white rounded-[3rem] overflow-hidden shadow-2xl flex flex-col md:flex-row h-full border border-gray-100/50 ${
+                      i % 2 === 1 ? "md:flex-row-reverse" : ""
                     }`}
                   >
-                    <span className="relative z-10 flex items-center gap-3">
-                      Learn More{" "}
-                      <Plus className="w-5 h-5 group-hover/btn:rotate-90 transition-transform duration-500" />
-                    </span>
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
+                    {/* Image Section */}
+                    <div className="md:w-1/2 relative overflow-hidden h-[400px] md:h-auto">
+                      <img
+                        src={program.image}
+                        alt={program.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      <div
+                        className={`absolute top-8 left-8 w-20 h-20 ${
+                          program.color || "bg-blue-600"
+                        } rounded-3xl flex items-center justify-center shadow-2xl text-white backdrop-blur-sm`}
+                      >
+                        <Icon className="w-10 h-10" />
+                      </div>
+                    </div>
+
+                    {/* Content Section */}
+                    <div className="md:w-1/2 p-12 md:p-16 flex flex-col justify-center">
+                      <span className="text-primary-green font-black uppercase tracking-[0.3em] text-[10px] mb-4 block">
+                        Direct Impact Initiative
+                      </span>
+                      <h3 className="text-4xl md:text-5xl font-black text-blue-900 mb-8 leading-tight tracking-tighter">
+                        {program.title}
+                      </h3>
+                      <p className="text-gray-500 leading-relaxed mb-10 text-lg">
+                        {program.shortDesc}
+                      </p>
+                      <Link
+                        to={`/programs/${program.slug}`}
+                        className={`inline-flex items-center justify-between gap-4 px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 shadow-xl group/btn overflow-hidden relative ${
+                          i % 2 === 0
+                            ? "bg-blue-900 text-white hover:bg-primary-green hover:shadow-primary-green/20"
+                            : "bg-primary-green text-white hover:bg-blue-900 hover:shadow-blue-900/20"
+                        }`}
+                      >
+                        <span className="relative z-10 flex items-center gap-3">
+                          Explore More{" "}
+                          <Plus className="w-5 h-5 group-hover/btn:rotate-90 transition-transform duration-500" />
+                        </span>
+                      </Link>
+                    </div>
+                  </motion.div>
+                );
+              })
+            ) : (
+              <div className="text-center py-20">
+                <h3 className="text-2xl font-black text-blue-900 uppercase">
+                  No programs launched yet.
+                </h3>
+              </div>
+            )}
           </div>
         </div>
       </section>

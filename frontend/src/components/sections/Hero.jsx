@@ -117,7 +117,7 @@ const Hero = () => {
                   visible: { opacity: 1, y: 0, scale: 1 },
                 }}
                 transition={{ duration: 0.8 }}
-                className="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-8 leading-tight drop-shadow-2xl"
+                className="text-4xl md:text-7xl lg:text-8xl font-extrabold mb-6 md:mb-8 leading-tight drop-shadow-2xl px-2"
               >
                 {slides[currentSlide].title}
               </motion.h1>
@@ -129,7 +129,7 @@ const Hero = () => {
                 hidden: { opacity: 0, y: 20 },
                 visible: { opacity: 1, y: 0 },
               }}
-              className="text-lg md:text-2xl text-white/95 mb-12 max-w-3xl mx-auto font-lato leading-relaxed drop-shadow"
+              className="text-base md:text-2xl text-white/95 mb-8 md:mb-12 max-w-3xl mx-auto font-lato leading-relaxed drop-shadow px-4"
             >
               {slides[currentSlide].description}
             </motion.p>
@@ -140,12 +140,12 @@ const Hero = () => {
                 hidden: { opacity: 0, scale: 0.9 },
                 visible: { opacity: 1, scale: 1 },
               }}
-              className="flex flex-col sm:flex-row gap-6 justify-center"
+              className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center px-6"
             >
               {slides[currentSlide].buttons.map((btn, idx) => (
                 <button
                   key={idx}
-                  className={`px-10 py-4 rounded-full font-bold text-lg transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-xl ${
+                  className={`px-8 md:px-10 py-3.5 md:py-4 rounded-full font-bold text-base md:text-lg transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-xl ${
                     btn.type === "primary"
                       ? "bg-primary-yellow text-primary-green hover:bg-yellow-400 hover:shadow-yellow-500/20"
                       : "bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-white/20"

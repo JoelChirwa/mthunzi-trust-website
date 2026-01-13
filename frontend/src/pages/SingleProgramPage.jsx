@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -8,27 +8,90 @@ import {
   Sprout,
   ShieldCheck,
   ChevronRight,
+  Loader2,
+  GraduationCap,
+  Leaf,
+  Briefcase,
+  HeartPulse,
+  Layers,
 } from "lucide-react";
-import { programsData } from "../data/programsData";
+
+const ICON_MAP = {
+  GraduationCap,
+  Leaf,
+  Briefcase,
+  HeartPulse,
+  Layers,
+};
 
 const SingleProgramPage = () => {
   const { slug } = useParams();
-  const program = programsData.find((p) => p.slug === slug);
+  const [program, setProgram] = useState(null);
+  const [otherPrograms, setOtherPrograms] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchProgram();
+    fetchOtherPrograms();
   }, [slug]);
+
+  const fetchProgram = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
+          /\/api$/,
+          ""
+        )}/api/programs/${slug}`
+      );
+      const data = await response.json();
+      if (response.ok) {
+        setProgram(data);
+      }
+    } catch (error) {
+      console.error("Error fetching program:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchOtherPrograms = async () => {
+    try {
+      const response = await fetch(
+        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
+          /\/api$/,
+          ""
+        )}/api/programs`
+      );
+      const data = await response.json();
+      setOtherPrograms(data.filter((p) => p.slug !== slug).slice(0, 3));
+    } catch (error) {
+      console.error("Error fetching other programs:", error);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center pt-32 gap-4">
+        <Loader2 className="w-12 h-12 text-primary-green animate-spin" />
+        <p className="text-blue-900 font-black uppercase tracking-widest text-xs">
+          Loading Program Details...
+        </p>
+      </div>
+    );
+  }
 
   if (!program) {
     return (
       <div className="min-h-screen flex items-center justify-center pt-32">
         <div className="text-center">
-          <h1 className="text-4xl font-black text-blue-900 mb-6">
-            Program Not Found
+          <h1 className="text-4xl font-black text-blue-900 mb-6 uppercase tracking-tighter">
+            Initiative Not Found
           </h1>
           <Link
             to="/programs"
-            className="text-primary-green font-bold flex items-center gap-2 justify-center"
+            className="text-primary-green font-bold flex items-center gap-2 justify-center uppercase tracking-widest text-sm"
           >
             <ArrowLeft className="w-5 h-5" /> Back to Programs
           </Link>
@@ -37,7 +100,7 @@ const SingleProgramPage = () => {
     );
   }
 
-  const Icon = program.icon;
+  const Icon = ICON_MAP[program.icon] || Layers;
 
   return (
     <motion.div
@@ -71,18 +134,20 @@ const SingleProgramPage = () => {
           >
             <Link
               to="/programs"
-              className="inline-flex items-center gap-2 text-white/70 hover:text-primary-yellow mb-8 transition-colors font-bold uppercase tracking-widest text-sm"
+              className="inline-flex items-center gap-2 text-white/70 hover:text-primary-yellow mb-8 transition-colors font-bold uppercase tracking-widest text-xs"
             >
               <ArrowLeft className="w-4 h-4" /> Back to Programs
             </Link>
             <div className="flex items-center gap-4 mb-6">
               <div
-                className={`p-3 rounded-xl ${program.color} text-white shadow-xl`}
+                className={`p-3 rounded-xl ${
+                  program.color || "bg-blue-600"
+                } text-white shadow-xl`}
               >
                 <Icon className="w-6 h-6" />
               </div>
-              <span className="text-primary-yellow font-black uppercase tracking-[0.3em] text-xs">
-                {program.subtitle}
+              <span className="text-primary-yellow font-black uppercase tracking-[0.3em] text-[10px]">
+                Sustainable Development Goal Alignment
               </span>
             </div>
             <h1 className="text-5xl md:text-7xl font-black text-white leading-tight mb-0 tracking-tighter uppercase grayscale-[30%] brightness-[110%]">
@@ -134,10 +199,10 @@ const SingleProgramPage = () => {
                       Your contribution directly funds scholarships, training,
                       and community resources in Malawi.
                     </p>
-                    <button className="w-full bg-primary-yellow text-blue-900 py-5 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-white transition-all shadow-xl">
+                    <button className="w-full bg-primary-yellow text-blue-900 py-5 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-white transition-all shadow-xl">
                       Donate Now
                     </button>
-                    <button className="w-full mt-4 bg-white/10 text-white py-5 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-white/20 transition-all border border-white/10">
+                    <button className="w-full mt-4 bg-white/10 text-white py-5 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-white/20 transition-all border border-white/10">
                       Partner with us
                     </button>
                   </div>
@@ -152,22 +217,24 @@ const SingleProgramPage = () => {
                     Other Programs
                   </h4>
                   <div className="space-y-6">
-                    {programsData
-                      .filter((p) => p.slug !== slug)
-                      .map((other) => (
+                    {otherPrograms.map((other) => {
+                      const OtherIcon = ICON_MAP[other.icon] || Layers;
+                      return (
                         <Link
-                          key={other.id}
+                          key={other._id}
                           to={`/programs/${other.slug}`}
                           className="group block"
                         >
                           <div className="flex items-center gap-4">
                             <div
-                              className={`w-12 h-12 rounded-xl ${other.color} flex items-center justify-center text-white shadow-lg flex-shrink-0`}
+                              className={`w-12 h-12 rounded-xl ${
+                                other.color || "bg-blue-600"
+                              } flex items-center justify-center text-white shadow-lg flex-shrink-0`}
                             >
-                              <other.icon className="w-6 h-6" />
+                              <OtherIcon className="w-6 h-6" />
                             </div>
                             <div>
-                              <h5 className="font-black text-blue-900 group-hover:text-primary-green transition-colors leading-tight">
+                              <h5 className="font-black text-blue-900 group-hover:text-primary-green transition-colors leading-tight text-sm">
                                 {other.title}
                               </h5>
                               <span className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">
@@ -177,7 +244,8 @@ const SingleProgramPage = () => {
                             <ChevronRight className="w-5 h-5 ml-auto text-gray-300 group-hover:text-primary-green transition-all group-hover:translate-x-1" />
                           </div>
                         </Link>
-                      ))}
+                      );
+                    })}
                   </div>
                 </div>
               </div>

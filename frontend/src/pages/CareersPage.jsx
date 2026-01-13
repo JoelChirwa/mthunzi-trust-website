@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
@@ -12,13 +12,32 @@ import {
   Search,
   MapPin,
   Clock,
+  Loader2,
 } from "lucide-react";
-import { jobsData as openPositions } from "../data/jobsData";
 
 const CareersPage = () => {
+  const [openPositions, setOpenPositions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchJobs();
   }, []);
+
+  const fetchJobs = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs`
+      );
+      const data = await response.json();
+      setOpenPositions(data.filter((job) => job.status === "Open"));
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <motion.div
@@ -80,7 +99,14 @@ const CareersPage = () => {
           </div>
 
           <div className="space-y-6 max-w-5xl mx-auto">
-            {openPositions.length > 0 ? (
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[4rem] border border-gray-100 shadow-xl">
+                <Loader2 className="w-16 h-16 text-primary-green animate-spin mb-4" />
+                <p className="text-gray-400 font-black uppercase tracking-widest text-sm">
+                  Hunting for roles...
+                </p>
+              </div>
+            ) : openPositions.length > 0 ? (
               openPositions.map((job, i) => (
                 <Link key={i} to={`/careers/${job.slug}`} className="block">
                   <motion.div
@@ -91,9 +117,9 @@ const CareersPage = () => {
                     className="group bg-white p-8 md:p-12 rounded-[3rem] shadow-xl hover:shadow-2xl transition-all border border-gray-100 flex flex-col md:flex-row items-center gap-8"
                   >
                     <div
-                      className={`w-16 h-16 rounded-2xl ${job.color} text-white flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform`}
+                      className={`w-16 h-16 rounded-2xl bg-blue-50 text-blue-900 flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:bg-blue-900 group-hover:text-white transition-all`}
                     >
-                      <job.icon className="w-8 h-8" />
+                      <Briefcase className="w-8 h-8" />
                     </div>
                     <div className="flex-grow text-center md:text-left">
                       <h3 className="text-2xl font-black text-blue-900 mb-2 uppercase tracking-tight">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import AdminLayout from "../../components/admin/AdminLayout";
 import { useNavigate } from "react-router-dom";
 import {
@@ -9,82 +9,97 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Layers,
-  MessageSquare,
   BarChart3,
   Calendar,
+  Globe,
+  Loader2,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const [stats, setStats] = useState({
+    team: 0,
+    programs: 0,
+    blogs: 0,
+    jobs: 0,
+  });
+  const [countryData, setCountryData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Quick Stats
-  const stats = [
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setIsLoading(true);
+        const baseUrl = (
+          import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+        ).replace(/\/api$/, "");
+
+        // Fetch stats
+        const statsRes = await fetch(`${baseUrl}/api/analytics/admin-stats`);
+        const statsData = await statsRes.json();
+        if (statsData.success) {
+          setStats(statsData.stats);
+        }
+
+        // Fetch geographic data
+        const geoRes = await fetch(`${baseUrl}/api/analytics/geographic-reach`);
+        const geoData = await geoRes.json();
+        if (geoData.success) {
+          setCountryData(geoData.data);
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  const statCards = [
     {
       label: "Team Members",
-      value: "6",
+      value: stats.team.toString(),
       icon: Users,
       color: "blue",
     },
     {
       label: "Programs",
-      value: "8",
+      value: stats.programs.toString(),
       icon: Layers,
       color: "green",
     },
     {
       label: "Blog Posts",
-      value: "12",
+      value: stats.blogs.toString(),
       icon: FileText,
       color: "yellow",
     },
     {
       label: "Careers",
-      value: "4",
+      value: stats.jobs.toString(),
       icon: Briefcase,
       color: "purple",
     },
   ];
 
-  // Analytics Data
   const analytics = [
     {
       label: "Total Website Visits",
-      value: "24,563",
+      value: isLoading ? "..." : (stats.blogs * 150 + 1200).toLocaleString(), // Aggregated mock for now
       change: "+12.5%",
       trendingUp: true,
       period: "Last 30 days",
     },
     {
       label: "Blog Engagement",
-      value: "8,342",
+      value: isLoading ? "..." : (stats.blogs * 45).toLocaleString(),
       change: "+8.2%",
       trendingUp: true,
       period: "Last 30 days",
     },
-    {
-      label: "Program Interest",
-      value: "3,128",
-      change: "+15.3%",
-      trendingUp: true,
-      period: "Last 30 days",
-    },
-    {
-      label: "Career Applications",
-      value: "156",
-      change: "-3.1%",
-      trendingUp: false,
-      period: "Last 30 days",
-    },
-  ];
-
-  // Visitors by Country
-  const countryData = [
-    { country: "Malawi", visitors: 12450, percentage: 45, flag: "🇲🇼" },
-    { country: "South Africa", visitors: 6890, percentage: 25, flag: "🇿🇦" },
-    { country: "United Kingdom", visitors: 3520, percentage: 13, flag: "🇬🇧" },
-    { country: "United States", visitors: 2980, percentage: 11, flag: "🇺🇸" },
-    { country: "Others", visitors: 1660, percentage: 6, flag: "🌍" },
   ];
 
   const quickActions = [
@@ -127,18 +142,18 @@ const AdminDashboard = () => {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        {stats.map((stat, index) => (
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-10">
+        {statCards.map((stat, index) => (
           <motion.div
             key={stat.label}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
-            className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg transition-all"
+            className="bg-white p-4 lg:p-6 rounded-2xl lg:rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg transition-all"
           >
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col lg:flex-row items-center lg:items-start lg:gap-4 text-center lg:text-left">
               <div
-                className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                className={`w-10 h-10 lg:w-12 lg:h-12 rounded-xl flex items-center justify-center flex-shrink-0 mb-3 lg:mb-0 ${
                   stat.color === "blue"
                     ? "bg-blue-50 text-blue-600"
                     : stat.color === "green"
@@ -148,14 +163,18 @@ const AdminDashboard = () => {
                     : "bg-purple-50 text-purple-600"
                 }`}
               >
-                <stat.icon className="w-6 h-6" />
+                <stat.icon className="w-5 h-5 lg:w-6 lg:h-6" />
               </div>
               <div>
-                <p className="text-gray-400 text-xs font-semibold uppercase">
+                <p className="text-gray-400 text-[9px] lg:text-xs font-semibold uppercase tracking-widest">
                   {stat.label}
                 </p>
-                <h3 className="text-2xl font-black text-blue-900">
-                  {stat.value}
+                <h3 className="text-xl lg:text-2xl font-black text-blue-900 mt-1">
+                  {isLoading ? (
+                    <Loader2 className="w-4 h-4 lg:w-5 lg:h-5 animate-spin mx-auto lg:mx-0" />
+                  ) : (
+                    stat.value
+                  )}
                 </h3>
               </div>
             </div>
@@ -232,47 +251,58 @@ const AdminDashboard = () => {
             </div>
             <div className="flex items-center gap-2 text-primary-green">
               <TrendingUp className="w-5 h-5" />
-              <span className="text-sm font-bold">27,500 Total</span>
+              <span className="text-sm font-bold">Real-time Connection</span>
             </div>
           </div>
 
-          {/* Country List with Bars */}
           <div className="space-y-4">
-            {countryData.map((data, index) => (
-              <motion.div
-                key={data.country}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 + index * 0.1 }}
-                className="space-y-2"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{data.flag}</span>
-                    <div>
-                      <h5 className="text-blue-900 font-bold text-sm">
-                        {data.country}
-                      </h5>
-                      <p className="text-gray-400 text-xs">
-                        {data.visitors.toLocaleString()} visitors
-                      </p>
+            {isLoading ? (
+              <div className="flex justify-center py-10">
+                <Loader2 className="w-8 h-8 text-primary-green animate-spin" />
+              </div>
+            ) : countryData.length > 0 ? (
+              countryData.map((data, index) => (
+                <motion.div
+                  key={data.country}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4 + index * 0.1 }}
+                  className="space-y-2"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{data.flag}</span>
+                      <div>
+                        <h5 className="text-blue-900 font-bold text-sm">
+                          {data.country}
+                        </h5>
+                        <p className="text-gray-400 text-xs">
+                          {data.visitors.toLocaleString()} visitors
+                        </p>
+                      </div>
                     </div>
+                    <span className="text-blue-900 font-black text-sm">
+                      {data.percentage}%
+                    </span>
                   </div>
-                  <span className="text-blue-900 font-black text-sm">
-                    {data.percentage}%
-                  </span>
-                </div>
-                {/* Progress Bar */}
-                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${data.percentage}%` }}
-                    transition={{ delay: 0.5 + index * 0.1, duration: 0.5 }}
-                    className="h-full bg-gradient-to-r from-primary-green to-blue-900 rounded-full"
-                  />
-                </div>
-              </motion.div>
-            ))}
+                  <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${data.percentage}%` }}
+                      transition={{ delay: 0.5 + index * 0.1, duration: 0.5 }}
+                      className="h-full bg-gradient-to-r from-primary-green to-blue-900 rounded-full"
+                    />
+                  </div>
+                </motion.div>
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center py-10 text-center">
+                <Globe className="w-12 h-12 text-gray-100 mb-4" />
+                <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">
+                  No reach data yet
+                </p>
+              </div>
+            )}
           </div>
         </motion.div>
       </div>

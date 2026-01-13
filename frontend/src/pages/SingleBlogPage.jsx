@@ -1,38 +1,89 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Calendar,
   Clock,
   ArrowLeft,
-  User,
   Share2,
-  ChevronRight,
   Facebook,
   Twitter,
   Linkedin,
+  Loader2,
+  FileText,
 } from "lucide-react";
-import { blogPosts } from "../data/blogData";
 
 const SingleBlogPage = () => {
   const { slug } = useParams();
-  const post = blogPosts.find((p) => p.slug === slug);
+  const [post, setPost] = useState(null);
+  const [relatedPosts, setRelatedPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Scroll to top on mount
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    fetchPost();
+  }, [slug]);
+
+  const fetchPost = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
+          /\/api$/,
+          ""
+        )}/api/blogs/${slug}`
+      );
+      const data = await response.json();
+      if (response.ok) {
+        setPost(data);
+        fetchRelatedPosts(data._id);
+      }
+    } catch (error) {
+      console.error("Error fetching post:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchRelatedPosts = async (currentId) => {
+    try {
+      const response = await fetch(
+        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
+          /\/api$/,
+          ""
+        )}/api/blogs`
+      );
+      const data = await response.json();
+      setRelatedPosts(data.filter((p) => p._id !== currentId).slice(0, 3));
+    } catch (error) {
+      console.error("Error fetching related posts:", error);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center pt-32 gap-4">
+        <Loader2 className="w-12 h-12 text-primary-green animate-spin" />
+        <p className="text-blue-900 font-black uppercase tracking-widest text-xs">
+          Gathering Story Details...
+        </p>
+      </div>
+    );
+  }
 
   if (!post) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 pt-20">
         <div className="text-center">
-          <h1 className="text-4xl font-black text-blue-900 mb-4">
-            Post Not Found
+          <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center shadow-xl mx-auto mb-6">
+            <FileText className="w-10 h-10 text-gray-200" />
+          </div>
+          <h1 className="text-4xl font-black text-blue-900 mb-4 uppercase tracking-tighter">
+            Story Not Found
           </h1>
           <Link
             to="/blog"
-            className="text-primary-green font-bold flex items-center justify-center gap-2"
+            className="text-primary-green font-black uppercase tracking-widest text-sm flex items-center justify-center gap-2"
           >
             <ArrowLeft className="w-5 h-5" /> Back to Blog
           </Link>
@@ -40,8 +91,6 @@ const SingleBlogPage = () => {
       </div>
     );
   }
-
-  const relatedPosts = blogPosts.filter((p) => p.id !== post.id).slice(0, 3);
 
   return (
     <div className="bg-white min-h-screen">
@@ -88,7 +137,9 @@ const SingleBlogPage = () => {
                 <p className="text-white/60 text-xs font-bold uppercase tracking-widest">
                   Published on
                 </p>
-                <p className="text-white font-black">{post.date}</p>
+                <p className="text-white font-black">
+                  {new Date(post.createdAt).toLocaleDateString()}
+                </p>
               </div>
             </div>
           </motion.div>
@@ -140,7 +191,7 @@ const SingleBlogPage = () => {
                   <div className="space-y-8">
                     {relatedPosts.map((related) => (
                       <Link
-                        key={related.id}
+                        key={related._id}
                         to={`/blog/${related.slug}`}
                         className="group block"
                       >

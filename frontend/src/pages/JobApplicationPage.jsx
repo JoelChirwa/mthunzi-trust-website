@@ -18,16 +18,40 @@ import {
   Calendar,
   MapPin,
   Heart,
+  Loader2,
 } from "lucide-react";
-import { jobsData } from "../data/jobsData";
+import { toast } from "react-hot-toast";
 
 const JobApplicationPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const job = jobsData.find((j) => j.slug === slug);
+  const [job, setJob] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [certificates, setCertificates] = useState([]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    fetchJobDetails();
+  }, [slug]);
+
+  const fetchJobDetails = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `${
+          import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+        }/jobs/slug/${slug}`
+      );
+      const data = await response.json();
+      setJob(data);
+    } catch (error) {
+      console.error("Error fetching job details:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleCertificateUpload = (e) => {
     const files = Array.from(e.target.files);
@@ -38,9 +62,30 @@ const JobApplicationPage = () => {
     setCertificates((prev) => prev.filter((_, i) => i !== index));
   };
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    const loadingToast = toast.loading("Submitting your application...");
+
+    // Simulate API call
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+      toast.success("Application dispatched!", { id: loadingToast });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 2000);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+        <Loader2 className="w-16 h-16 text-primary-green animate-spin mb-4" />
+        <p className="text-gray-400 font-black uppercase tracking-widest text-sm">
+          Preparing form...
+        </p>
+      </div>
+    );
+  }
 
   if (!job) {
     return (
@@ -59,17 +104,6 @@ const JobApplicationPage = () => {
       </div>
     );
   }
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 2000);
-  };
 
   return (
     <motion.div

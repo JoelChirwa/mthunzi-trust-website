@@ -1,87 +1,100 @@
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Layers, Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 const FocusAreas = () => {
-  const areas = [
-    {
-      number: "01",
-      title: "Quality Education",
-      description:
-        "Our education programmes are aimed at promoting 100 percent access of children to primary and secondary education",
-    },
-    {
-      number: "02",
-      title: "Adolescent Sexual & Reproductive Health Right",
-      description:
-        "This programme was built to provide appropriate education and Supporting right-based Advocacy activities",
-    },
-    {
-      number: "03",
-      title: "Entrepreneurial & Employable Skills",
-      description:
-        "This programme is aimed at providing step-up opportunities for young people to build up working experience and entrepreneurial skills",
-    },
-    {
-      number: "04",
-      title: "Climate Justice & Environment Conservation",
-      description:
-        "Tree planting, forest restoration, waste management, and engaging youth and local communities in climate advocacy.",
-    },
-    {
-      number: "05",
-      title: "Agriculture",
-      description:
-        "Focused on improving the farmer’s economic situation through sustainable agri-business and market system development.",
-    },
-    {
-      number: "06",
-      title: "Water & Sanitation",
-      description:
-        "Improving community health by providing access to clean water and promoting sustainable sanitation practices.",
-    },
-  ];
+  const [areas, setAreas] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchPrograms();
+  }, []);
+
+  const fetchPrograms = async () => {
+    try {
+      const response = await fetch(
+        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
+          /\/api$/,
+          ""
+        )}/api/programs`
+      );
+      const data = await response.json();
+      // Set only first 6 for home page
+      setAreas(data.slice(0, 6));
+    } catch (error) {
+      console.error("Error fetching programs:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <section
-      className="py-24 bg-[#155799] relative"
+      className="py-20 md:py-32 bg-[#155799] relative"
       style={{ clipPath: "polygon(0 5vw, 100% 0, 100% 100%, 0 100%)" }}
     >
-      <div className="container mx-auto px-4">
-        <div className="mb-16 flex flex-col md:flex-row md:items-start md:gap-16">
-          <div className="md:w-1/3 mb-10 md:mb-0">
+      <div className="container mx-auto px-6">
+        <div className="mb-16 flex flex-col lg:flex-row lg:items-start lg:gap-24">
+          <div className="lg:w-1/3 mb-12 lg:mb-0">
             <h2
-              className="text-3xl md:text-4xl font-extrabold mb-6 text-yellow-400 drop-shadow-lg"
+              className="text-4xl md:text-5xl font-black mb-6 text-yellow-400 uppercase tracking-tighter leading-none"
               style={{ textShadow: "0 2px 8px rgba(0,0,0,0.18)" }}
             >
-              Our Programmes
+              Our <br className="hidden lg:block" /> Programmes
             </h2>
-            <p className="text-white font-medium">
-              We are organising our activities in 6 main programme areas that
+            <p className="text-white/90 font-medium text-lg leading-relaxed">
+              We are organising our activities in{" "}
+              {areas.length > 0 ? areas.length : "6"} main programme areas that
               are strongly interconnected.
             </p>
           </div>
-          <div className="md:w-2/3 grid md:grid-cols-2 gap-10">
-            {areas.map((area, idx) => (
-              <div key={area.number} className="relative">
-                <span className="absolute left-0 top-0 text-[64px] md:text-[80px] font-bold text-white/10 select-none z-0">
-                  {area.number}
-                </span>
-                <div className="relative z-10">
-                  <h3
-                    className="text-2xl md:text-3xl font-extrabold text-lime-300 mb-2 drop-shadow-lg"
-                    style={{ textShadow: "0 2px 8px rgba(0,0,0,0.18)" }}
-                  >
-                    {area.title}
-                  </h3>
-                  <p className="text-white text-sm md:text-base font-normal leading-relaxed whitespace-pre-line">
-                    {area.description}
-                  </p>
+
+          <div className="lg:w-2/3 grid sm:grid-cols-2 gap-10 md:gap-16">
+            <AnimatePresence mode="wait">
+              {isLoading ? (
+                <div className="sm:col-span-2 flex justify-center py-20">
+                  <Loader2 className="w-10 h-10 text-yellow-400 animate-spin" />
                 </div>
-              </div>
-            ))}
+              ) : areas.length > 0 ? (
+                areas.map((area, idx) => (
+                  <motion.div
+                    key={area._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                    className="relative group"
+                  >
+                    <span className="absolute -left-4 -top-6 text-[80px] md:text-[100px] font-black text-white/5 select-none z-0 group-hover:text-primary-green/10 transition-colors">
+                      {(idx + 1).toString().padStart(2, "0")}
+                    </span>
+                    <div className="relative z-10">
+                      <h3 className="text-2xl font-black text-lime-300 mb-4 uppercase tracking-tight">
+                        {area.title}
+                      </h3>
+                      <p className="text-white/80 text-base font-medium leading-relaxed">
+                        {area.shortDesc}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))
+              ) : (
+                <p className="text-white/60 sm:col-span-2 text-center py-10">
+                  No programs currently available.
+                </p>
+              )}
+            </AnimatePresence>
           </div>
         </div>
-        <div className="flex justify-end mt-8">
-          <button className="bg-primary-green text-white font-semibold px-8 py-3 rounded shadow hover:bg-lime-500 transition-all text-base flex items-center gap-2">
-            Our Programmes
-            <span className="inline-block">→</span>
+
+        <div className="flex justify-center md:justify-end mt-12">
+          <button
+            onClick={() => navigate("/programs")}
+            className="w-full md:w-auto bg-primary-green text-white font-black text-[10px] uppercase tracking-[0.2em] px-12 py-5 rounded-2xl shadow-2xl shadow-black/20 hover:bg-lime-500 transition-all flex items-center justify-center gap-3"
+          >
+            All Programmes
+            <span className="inline-block text-lg">→</span>
           </button>
         </div>
       </div>
