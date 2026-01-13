@@ -1,156 +1,150 @@
-import React from "react";
-import AdminContentList from "./AdminContentList";
-import { Users, Mail, Phone, Linkedin, BadgeCheck } from "lucide-react";
+import React, { useState } from "react";
+import AdminLayout from "../../components/admin/AdminLayout";
+import { Edit3, Trash2, Plus, UserPlus } from "lucide-react";
+import { motion } from "framer-motion";
 
 const AdminTeam = () => {
-  const teamMembers = [
+  const [teamMembers, setTeamMembers] = useState([
     {
       id: 1,
       name: "Joel Chirwa",
       role: "Executive Director",
-      department: "Leadership",
-      email: "joel@mthunzi.org",
-      phone: "+265 996 654 088",
-      linkedin: "https://linkedin.com/in/joelchirwa",
-      status: "Active",
+      photo: null,
     },
     {
       id: 2,
       name: "Sarah Phiri",
       role: "Head of Programs",
-      department: "Operations",
-      email: "sarah@mthunzi.org",
-      linkedin: "https://linkedin.com/in/sarahphiri",
-      status: "Active",
+      photo: null,
     },
     {
       id: 3,
       name: "Kennedy Banda",
       role: "Medical Officer",
-      department: "Health",
-      email: "kennedy@mthunzi.org",
-      linkedin: "https://linkedin.com/in/kennedybanda",
-      status: "Away",
+      photo: null,
     },
     {
       id: 4,
       name: "Grace Malenga",
       role: "Environmental Specialist",
-      department: "Sustainability",
-      email: "grace@mthunzi.org",
-      linkedin: "https://linkedin.com/in/gracemalenga",
-      status: "Active",
+      photo: null,
     },
-  ];
+    {
+      id: 5,
+      name: "John Tembo",
+      role: "Community Coordinator",
+      photo: null,
+    },
+    {
+      id: 6,
+      name: "Mary Kamoto",
+      role: "Finance Manager",
+      photo: null,
+    },
+  ]);
 
-  const columns = [
-    {
-      key: "name",
-      label: "Professional Profile",
-      render: (name, item) => (
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-blue-900 border-4 border-white shadow-xl flex items-center justify-center text-white font-black text-xs uppercase">
-            {name
-              .split(" ")
-              .map((n) => n[0])
-              .join("")}
-          </div>
-          <div className="flex flex-col">
-            <span className="text-blue-950 font-black text-sm uppercase tracking-tight flex items-center gap-2">
-              {name}
-              {item.status === "Active" && (
-                <BadgeCheck className="w-4 h-4 text-primary-green" />
-              )}
-            </span>
-            <span className="text-[10px] font-black uppercase tracking-widest text-primary-yellow mt-1">
-              {item.role}
-            </span>
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: "department",
-      label: "Department",
-      render: (dept) => (
-        <span className="px-3 py-1 bg-gray-50 border border-gray-100 rounded-full text-[10px] font-black uppercase tracking-widest text-gray-500">
-          {dept}
-        </span>
-      ),
-    },
-    {
-      key: "contact",
-      label: "Direct Communication",
-      render: (_, item) => (
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 text-gray-400 group cursor-pointer hover:text-blue-900 transition-colors">
-            <Mail className="w-3.5 h-3.5" />
-            <span className="text-xs font-bold leading-none">{item.email}</span>
-          </div>
-          <div className="flex items-center gap-4">
-            {item.phone && (
-              <div className="flex items-center gap-2 text-gray-400 group cursor-pointer hover:text-blue-900 transition-colors">
-                <Phone className="w-3.5 h-3.5" />
-                <span className="text-xs font-bold leading-none">
-                  {item.phone}
-                </span>
-              </div>
-            )}
-            {item.linkedin && (
-              <a
-                href={item.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-gray-400 hover:text-[#0A66C2] transition-colors"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Linkedin className="w-3.5 h-3.5" />
-                <span className="text-[10px] font-black uppercase tracking-widest">
-                  Profile
-                </span>
-              </a>
-            )}
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: "status",
-      label: "Availability",
-      render: (status) => (
-        <div className="flex items-center gap-2">
-          <div
-            className={`w-2 h-2 rounded-full ${
-              status === "Active"
-                ? "bg-green-500 animate-pulse"
-                : "bg-yellow-400"
-            }`}
-          />
-          <span
-            className={`text-[10px] font-black uppercase tracking-widest ${
-              status === "Active" ? "text-green-600" : "text-yellow-600"
-            }`}
-          >
-            {status}
-          </span>
-        </div>
-      ),
-    },
-  ];
+  const handleEdit = (member) => {
+    console.log("Edit team member:", member);
+    // TODO: Open edit modal/form
+  };
 
-  const handleEdit = (item) => console.log("Edit person:", item);
-  const handleDelete = (item) => console.log("Archive person:", item);
-  const handleAdd = () => console.log("Onboard team member");
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to remove this team member?")) {
+      setTeamMembers(teamMembers.filter((member) => member.id !== id));
+      console.log("Deleted team member:", id);
+    }
+  };
+
+  const handleAddNew = () => {
+    console.log("Add new team member");
+    // TODO: Open add new modal/form
+  };
+
+  const getInitials = (name) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+  };
 
   return (
-    <AdminContentList
-      title="Organizational Directory"
-      items={teamMembers}
-      columns={columns}
-      onEdit={handleEdit}
-      onDelete={handleDelete}
-      onAdd={handleAdd}
-    />
+    <AdminLayout title="Our Team">
+      {/* Header with Add Button */}
+      <div className="flex justify-between items-center mb-10">
+        <div>
+          <h2 className="text-2xl font-black text-blue-900 uppercase tracking-tighter">
+            Team Members
+          </h2>
+          <p className="text-gray-400 text-sm font-medium mt-1">
+            Manage your organization's team members
+          </p>
+        </div>
+        <button
+          onClick={handleAddNew}
+          className="h-14 px-8 bg-primary-green text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary-green/20 flex items-center gap-3 hover:translate-y-[-2px] transition-all"
+        >
+          <UserPlus className="w-4 h-4" /> Add Team Member
+        </button>
+      </div>
+
+      {/* Team List - Simplified */}
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="divide-y divide-gray-100">
+          {teamMembers.map((member, index) => (
+            <motion.div
+              key={member.id}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className="flex items-center justify-between p-6 hover:bg-gray-50/50 transition-all"
+            >
+              {/* Left: Photo/Initials + Info */}
+              <div className="flex items-center gap-4 flex-1">
+                {/* Photo or Initials */}
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-900 to-primary-green flex items-center justify-center text-white font-black text-lg shadow-sm flex-shrink-0">
+                  {member.photo ? (
+                    <img
+                      src={member.photo}
+                      alt={member.name}
+                      className="w-full h-full object-cover rounded-xl"
+                    />
+                  ) : (
+                    getInitials(member.name)
+                  )}
+                </div>
+
+                {/* Name & Role */}
+                <div className="flex flex-col">
+                  <h3 className="text-blue-900 font-black text-base">
+                    {member.name}
+                  </h3>
+                  <p className="text-primary-yellow text-xs font-semibold">
+                    {member.role}
+                  </p>
+                </div>
+              </div>
+
+              {/* Right: Action Buttons */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleEdit(member)}
+                  className="py-2.5 px-4 bg-blue-50 text-blue-900 rounded-xl flex items-center gap-2 text-xs font-bold hover:bg-blue-900 hover:text-white transition-all"
+                >
+                  <Edit3 className="w-3.5 h-3.5" /> Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(member.id)}
+                  className="py-2.5 px-4 bg-red-50 text-red-500 rounded-xl flex items-center gap-2 text-xs font-bold hover:bg-red-500 hover:text-white transition-all"
+                >
+                  <Trash2 className="w-3.5 h-3.5" /> Delete
+                </button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </AdminLayout>
   );
 };
 

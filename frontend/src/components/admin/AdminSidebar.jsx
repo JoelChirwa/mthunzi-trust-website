@@ -8,13 +8,13 @@ import {
   Briefcase,
   Image as ImageIcon,
   Users,
-  Handshake,
   Settings,
-  BarChart3,
   ChevronRight,
   LogOut,
   Layers,
   Globe,
+  BarChart3,
+  Handshake,
 } from "lucide-react";
 import logoImg from "../../assets/images/logo.jpg";
 
@@ -30,13 +30,13 @@ const AdminSidebar = () => {
 
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/admin" },
+    { name: "Analytics", icon: BarChart3, path: "/admin/analytics" },
     { name: "Blogs", icon: FileText, path: "/admin/blogs" },
     { name: "Programs", icon: Layers, path: "/admin/programs" },
     { name: "Careers", icon: Briefcase, path: "/admin/jobs" },
     { name: "Gallery", icon: ImageIcon, path: "/admin/gallery" },
     { name: "Our Team", icon: Users, path: "/admin/team" },
     { name: "Partners", icon: Handshake, path: "/admin/partners" },
-    { name: "Analytics", icon: BarChart3, path: "/admin/analytics" },
     { name: "Settings", icon: Settings, path: "/admin/settings" },
   ];
 
@@ -63,33 +63,7 @@ const AdminSidebar = () => {
         </div>
       </div>
 
-      {/* Profile Summary */}
-      <div className="p-6 m-4 bg-white/5 rounded-3xl border border-white/5">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-primary-green flex items-center justify-center text-white font-black text-xl overflow-hidden">
-            {user?.imageUrl ? (
-              <img
-                src={user.imageUrl}
-                alt={user.fullName}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              user?.firstName?.charAt(0) || "A"
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-white font-bold text-sm truncate">
-              {user?.fullName || "Admin"}
-            </p>
-            <p className="text-white/40 text-[10px] uppercase font-bold tracking-wider truncate">
-              {user?.primaryEmailAddress?.emailAddress}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 p-4 px-6 space-y-2">
+      <div className="flex-1 p-4 px-6 space-y-2 mt-4 overflow-y-auto">
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
@@ -120,7 +94,7 @@ const AdminSidebar = () => {
             </Link>
           );
         })}
-      </nav>
+      </div>
 
       {/* Footer Actions */}
       <div className="p-6 border-t border-white/5 space-y-4">

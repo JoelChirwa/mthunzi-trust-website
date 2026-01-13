@@ -1,125 +1,144 @@
 import React from "react";
 import AdminLayout from "../../components/admin/AdminLayout";
+import { useNavigate } from "react-router-dom";
 import {
   Users,
   FileText,
   Briefcase,
-  Eye,
+  TrendingUp,
   ArrowUpRight,
   ArrowDownRight,
-  TrendingUp,
-  Image as ImageIcon,
-  Clock,
-  ExternalLink,
-  Plus,
+  Layers,
+  MessageSquare,
+  BarChart3,
+  Calendar,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+
+  // Quick Stats
   const stats = [
     {
-      label: "Total Views",
-      value: "24.5k",
-      change: "+12.5%",
-      trendingUp: true,
-      icon: Eye,
+      label: "Team Members",
+      value: "6",
+      icon: Users,
       color: "blue",
     },
     {
-      label: "Active Blogs",
-      value: "48",
-      change: "+2",
-      trendingUp: true,
-      icon: FileText,
+      label: "Programs",
+      value: "8",
+      icon: Layers,
       color: "green",
     },
     {
-      label: "Job Applications",
-      value: "156",
-      change: "+24",
-      trendingUp: true,
-      icon: Briefcase,
+      label: "Blog Posts",
+      value: "12",
+      icon: FileText,
       color: "yellow",
     },
     {
-      label: "New Members",
-      value: "1,204",
-      change: "-5%",
-      trendingUp: false,
-      icon: Users,
+      label: "Careers",
+      value: "4",
+      icon: Briefcase,
       color: "purple",
     },
   ];
 
-  const recentActivity = [
+  // Analytics Data
+  const analytics = [
     {
-      id: 1,
-      type: "Blog",
-      action: "New post published",
-      title: "Mthunzi Trust Expands Community Outreach",
-      user: "Admin",
-      time: "2 hours ago",
+      label: "Total Website Visits",
+      value: "24,563",
+      change: "+12.5%",
+      trendingUp: true,
+      period: "Last 30 days",
     },
     {
-      id: 2,
-      type: "Career",
-      action: "New application received",
-      title: "Medical Officer position",
-      user: "Website",
-      time: "5 hours ago",
+      label: "Blog Engagement",
+      value: "8,342",
+      change: "+8.2%",
+      trendingUp: true,
+      period: "Last 30 days",
     },
     {
-      id: 3,
-      type: "Gallery",
-      action: "Media updated",
-      title: "Youth Workshop 2024 Gallery",
-      user: "Joel C.",
-      time: "1 day ago",
+      label: "Program Interest",
+      value: "3,128",
+      change: "+15.3%",
+      trendingUp: true,
+      period: "Last 30 days",
     },
     {
-      id: 4,
-      type: "Program",
-      action: "Content updated",
-      title: "Holistic Health Initiative",
-      user: "Admin",
-      time: "2 days ago",
+      label: "Career Applications",
+      value: "156",
+      change: "-3.1%",
+      trendingUp: false,
+      period: "Last 30 days",
     },
   ];
 
-  const QuickAction = ({ icon: Icon, title, desc, color }) => (
-    <div className="p-8 bg-white border border-gray-100 rounded-[2.5rem] shadow-sm hover:shadow-xl hover:shadow-gray-200/50 transition-all group cursor-pointer relative overflow-hidden">
-      <div
-        className={`w-16 h-16 rounded-2xl bg-${color}-50 flex items-center justify-center text-${color}-600 mb-6 group-hover:scale-110 transition-transform`}
-      >
-        <Icon className="w-8 h-8" />
-      </div>
-      <h4 className="text-blue-900 font-black text-lg uppercase tracking-tight mb-2">
-        {title}
-      </h4>
-      <p className="text-gray-400 text-sm font-medium leading-relaxed">
-        {desc}
-      </p>
-      <div className="absolute top-8 right-8 w-10 h-10 border border-gray-100 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-        <Plus className="w-5 h-5 text-blue-900" />
-      </div>
-    </div>
-  );
+  // Visitors by Country
+  const countryData = [
+    { country: "Malawi", visitors: 12450, percentage: 45, flag: "🇲🇼" },
+    { country: "South Africa", visitors: 6890, percentage: 25, flag: "🇿🇦" },
+    { country: "United Kingdom", visitors: 3520, percentage: 13, flag: "🇬🇧" },
+    { country: "United States", visitors: 2980, percentage: 11, flag: "🇺🇸" },
+    { country: "Others", visitors: 1660, percentage: 6, flag: "🌍" },
+  ];
+
+  const quickActions = [
+    {
+      icon: FileText,
+      title: "Blogs",
+      path: "/admin/blogs",
+      color: "green",
+    },
+    {
+      icon: Layers,
+      title: "Programs",
+      path: "/admin/programs",
+      color: "blue",
+    },
+    {
+      icon: Users,
+      title: "Team",
+      path: "/admin/team",
+      color: "purple",
+    },
+    {
+      icon: Briefcase,
+      title: "Careers",
+      path: "/admin/jobs",
+      color: "yellow",
+    },
+  ];
 
   return (
-    <AdminLayout title="Overview">
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+    <AdminLayout title="Dashboard">
+      {/* Welcome Section */}
+      <div className="mb-10">
+        <h2 className="text-2xl font-black text-blue-900 uppercase tracking-tighter">
+          Welcome Back
+        </h2>
+        <p className="text-gray-400 text-sm font-medium mt-1">
+          Here's what's happening with your organization
+        </p>
+      </div>
+
+      {/* Quick Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         {stats.map((stat, index) => (
           <motion.div
             key={stat.label}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm relative overflow-hidden group"
+            transition={{ delay: index * 0.05 }}
+            className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg transition-all"
           >
-            <div className="flex justify-between items-start mb-6">
+            <div className="flex items-center gap-4">
               <div
-                className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
+                className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
                   stat.color === "blue"
                     ? "bg-blue-50 text-blue-600"
                     : stat.color === "green"
@@ -129,152 +148,173 @@ const AdminDashboard = () => {
                     : "bg-purple-50 text-purple-600"
                 }`}
               >
-                <stat.icon className="w-7 h-7" />
+                <stat.icon className="w-6 h-6" />
               </div>
-              <div
-                className={`flex items-center gap-1 font-black text-xs uppercase tracking-widest ${
-                  stat.trendingUp ? "text-green-500" : "text-red-500"
-                }`}
-              >
-                {stat.trendingUp ? (
-                  <ArrowUpRight className="w-3 h-3" />
-                ) : (
-                  <ArrowDownRight className="w-3 h-3" />
-                )}
-                {stat.change}
+              <div>
+                <p className="text-gray-400 text-xs font-semibold uppercase">
+                  {stat.label}
+                </p>
+                <h3 className="text-2xl font-black text-blue-900">
+                  {stat.value}
+                </h3>
               </div>
             </div>
-            <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">
-              {stat.label}
-            </p>
-            <h3 className="text-4xl font-black text-blue-900 tracking-tighter">
-              {stat.value}
-            </h3>
-
-            {/* Background Accent */}
-            <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-gray-50 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700" />
           </motion.div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        {/* Main Chart Area Placeholder */}
-        <div className="lg:col-span-2 space-y-10">
-          <div className="bg-white p-10 rounded-[3.5rem] border border-gray-100 shadow-sm">
-            <div className="flex justify-between items-center mb-10">
-              <div>
-                <h3 className="text-xl font-black text-blue-900 uppercase tracking-tighter">
-                  Engagement Trajectory
-                </h3>
-                <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] mt-1">
-                  Real-time performance metrics
-                </p>
-              </div>
-              <div className="flex gap-2">
-                {["7D", "1M", "1Y"].map((t) => (
-                  <button
-                    key={t}
-                    className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                      t === "1M"
-                        ? "bg-blue-900 text-white"
-                        : "bg-gray-50 text-gray-400 hover:bg-gray-100"
-                    }`}
-                  >
-                    {t}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="h-80 bg-gray-50 rounded-[2.5rem] border-2 border-dashed border-gray-100 flex items-center justify-center">
-              <div className="text-center">
-                <TrendingUp className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-                <p className="text-gray-300 font-black uppercase tracking-widest text-[10px]">
-                  Visualization Module Loading...
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div className="flex items-center justify-between mb-8 px-4">
-              <h3 className="text-xl font-black text-blue-900 uppercase tracking-tighter">
-                Global Actions
-              </h3>
-              <button className="text-[10px] font-black text-primary-green uppercase tracking-widest border-b-2 border-primary-green/20 hover:border-primary-green transition-all pb-1">
-                Customize Layout
-              </button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <QuickAction
-                icon={FileText}
-                title="New Post"
-                desc="Draft a new impact story"
-                color="green"
-              />
-              <QuickAction
-                icon={Briefcase}
-                title="Add Job"
-                desc="Post a new career opening"
-                color="blue"
-              />
-              <QuickAction
-                icon={ImageIcon}
-                title="Gallery"
-                desc="Upload visual media assets"
-                color="purple"
-              />
-            </div>
-          </div>
+      {/* Analytics Section */}
+      <div className="mb-10">
+        <div className="flex items-center gap-3 mb-6">
+          <BarChart3 className="w-6 h-6 text-blue-900" />
+          <h3 className="text-xl font-black text-blue-900 uppercase tracking-tighter">
+            Analytics Overview
+          </h3>
         </div>
 
-        {/* Sidebar - Recent Activity */}
-        <div className="space-y-10">
-          <div className="bg-white p-10 rounded-[3.5rem] border border-gray-100 shadow-sm h-full flex flex-col">
-            <h3 className="text-xl font-black text-blue-900 uppercase tracking-tighter mb-8 decoration-primary-yellow decoration-4 underline-offset-8">
-              Activity Logistics
-            </h3>
-
-            <div className="space-y-8 flex-1">
-              {recentActivity.map((activity) => (
-                <div
-                  key={activity.id}
-                  className="relative pl-10 border-l border-gray-50 pb-8 last:pb-0"
-                >
-                  <div
-                    className={`absolute -left-[1.25rem] top-0 w-10 h-10 rounded-2xl bg-white border border-gray-100 shadow-sm flex items-center justify-center`}
-                  >
-                    <Clock className="w-5 h-5 text-blue-900" />
-                  </div>
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="px-3 py-1 bg-gray-50 rounded-full text-[8px] font-black uppercase tracking-[0.2em] text-gray-500">
-                      {activity.type}
-                    </span>
-                    <span className="text-[10px] text-gray-300 font-bold">
-                      {activity.time}
-                    </span>
-                  </div>
-                  <h5 className="text-blue-900 font-black text-sm uppercase tracking-tight mb-1">
-                    {activity.action}
-                  </h5>
-                  <p className="text-gray-400 text-xs font-medium italic mb-3">
-                    "{activity.title}"
+        {/* Analytics Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {analytics.map((item, index) => (
+            <motion.div
+              key={item.label}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <p className="text-gray-400 text-xs font-semibold uppercase mb-1">
+                    {item.label}
                   </p>
-                  <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded-full bg-primary-green/20 text-primary-green flex items-center justify-center text-[8px] font-black">
-                      {activity.user.charAt(0)}
-                    </div>
-                    <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
-                      {activity.user}
-                    </span>
-                  </div>
+                  <h4 className="text-3xl font-black text-blue-900">
+                    {item.value}
+                  </h4>
                 </div>
-              ))}
-            </div>
+                <div
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold ${
+                    item.trendingUp
+                      ? "bg-green-50 text-green-600"
+                      : "bg-red-50 text-red-500"
+                  }`}
+                >
+                  {item.trendingUp ? (
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  ) : (
+                    <ArrowDownRight className="w-3.5 h-3.5" />
+                  )}
+                  {item.change}
+                </div>
+              </div>
+              <div className="flex items-center gap-2 text-gray-400 text-xs">
+                <Calendar className="w-3.5 h-3.5" />
+                <span>{item.period}</span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
 
-            <button className="w-full mt-10 py-5 bg-blue-50 text-blue-900 rounded-[2rem] font-black uppercase tracking-widest text-[10px] hover:bg-blue-100 transition-all flex items-center justify-center gap-3">
-              Full Log Repository <ExternalLink className="w-3 h-3" />
-            </button>
+        {/* Visitors by Country */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h4 className="text-lg font-black text-blue-900 uppercase tracking-tight">
+                Visitors by Country
+              </h4>
+              <p className="text-gray-400 text-xs mt-1">
+                Geographic distribution of website visitors
+              </p>
+            </div>
+            <div className="flex items-center gap-2 text-primary-green">
+              <TrendingUp className="w-5 h-5" />
+              <span className="text-sm font-bold">27,500 Total</span>
+            </div>
           </div>
+
+          {/* Country List with Bars */}
+          <div className="space-y-4">
+            {countryData.map((data, index) => (
+              <motion.div
+                key={data.country}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 + index * 0.1 }}
+                className="space-y-2"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{data.flag}</span>
+                    <div>
+                      <h5 className="text-blue-900 font-bold text-sm">
+                        {data.country}
+                      </h5>
+                      <p className="text-gray-400 text-xs">
+                        {data.visitors.toLocaleString()} visitors
+                      </p>
+                    </div>
+                  </div>
+                  <span className="text-blue-900 font-black text-sm">
+                    {data.percentage}%
+                  </span>
+                </div>
+                {/* Progress Bar */}
+                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${data.percentage}%` }}
+                    transition={{ delay: 0.5 + index * 0.1, duration: 0.5 }}
+                    className="h-full bg-gradient-to-r from-primary-green to-blue-900 rounded-full"
+                  />
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Quick Actions */}
+      <div>
+        <div className="flex items-center gap-3 mb-6">
+          <Layers className="w-6 h-6 text-blue-900" />
+          <h3 className="text-xl font-black text-blue-900 uppercase tracking-tighter">
+            Quick Actions
+          </h3>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {quickActions.map((action, index) => (
+            <motion.div
+              key={action.title}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.05 }}
+              whileHover={{ scale: 1.05 }}
+              onClick={() => navigate(action.path)}
+              className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg transition-all cursor-pointer"
+            >
+              <div
+                className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${
+                  action.color === "green"
+                    ? "bg-primary-green/10 text-primary-green"
+                    : action.color === "blue"
+                    ? "bg-blue-50 text-blue-600"
+                    : action.color === "yellow"
+                    ? "bg-primary-yellow/10 text-primary-yellow"
+                    : "bg-purple-50 text-purple-600"
+                }`}
+              >
+                <action.icon className="w-6 h-6" />
+              </div>
+              <h4 className="text-blue-900 font-black text-sm">
+                {action.title}
+              </h4>
+            </motion.div>
+          ))}
         </div>
       </div>
     </AdminLayout>

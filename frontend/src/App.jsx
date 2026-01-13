@@ -22,11 +22,13 @@ import JobApplicationPage from "./pages/JobApplicationPage";
 import GalleryPage from "./pages/GalleryPage";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminBlogs from "./pages/admin/AdminBlogs";
 import AdminPrograms from "./pages/admin/AdminPrograms";
 import AdminJobs from "./pages/admin/AdminJobs";
 import AdminGallery from "./pages/admin/AdminGallery";
 import AdminTeam from "./pages/admin/AdminTeam";
+import AdminPartners from "./pages/admin/AdminPartners";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminGuard from "./components/admin/AdminGuard";
@@ -120,7 +122,7 @@ function App() {
             path="/admin/analytics"
             element={
               <AdminGuard>
-                <AdminDashboard />
+                <AdminAnalytics />
               </AdminGuard>
             }
           />
@@ -128,7 +130,7 @@ function App() {
             path="/admin/partners"
             element={
               <AdminGuard>
-                <AdminDashboard />
+                <AdminPartners />
               </AdminGuard>
             }
           />

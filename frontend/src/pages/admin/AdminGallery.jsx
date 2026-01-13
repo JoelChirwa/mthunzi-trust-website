@@ -13,6 +13,7 @@ import {
   UploadCloud,
   Layers,
   CheckCircle2,
+  Calendar,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -26,7 +27,7 @@ const AdminGallery = () => {
       url: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400",
       title: "Youth Workshop",
       date: "Jan 12, 2024",
-      size: "2.4MB",
+      size: "2.4 MB",
     },
     {
       id: 2,
@@ -34,7 +35,7 @@ const AdminGallery = () => {
       url: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400",
       title: "Tree Planting",
       date: "Jan 10, 2024",
-      size: "1.8MB",
+      size: "1.8 MB",
     },
     {
       id: 3,
@@ -42,7 +43,7 @@ const AdminGallery = () => {
       url: "https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=400",
       title: "Impact Story",
       date: "Jan 05, 2024",
-      size: "14.5MB",
+      size: "14.5 MB",
     },
     {
       id: 4,
@@ -50,7 +51,7 @@ const AdminGallery = () => {
       url: "https://images.unsplash.com/photo-1524062794001-dc26bca829b7?w=400",
       title: "Farm Visit",
       date: "Dec 28, 2023",
-      size: "3.1MB",
+      size: "3.1 MB",
     },
     {
       id: 5,
@@ -58,7 +59,7 @@ const AdminGallery = () => {
       url: "https://images.unsplash.com/photo-1529390079861-159b978dd76c?w=400",
       title: "School Outreach",
       date: "Dec 20, 2023",
-      size: "22.0MB",
+      size: "22.0 MB",
     },
     {
       id: 6,
@@ -66,7 +67,7 @@ const AdminGallery = () => {
       url: "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?w=400",
       title: "Team Meeting",
       date: "Dec 15, 2023",
-      size: "1.2MB",
+      size: "1.2 MB",
     },
   ];
 
@@ -77,69 +78,56 @@ const AdminGallery = () => {
           (m) => m.type.toLowerCase() === activeTab.slice(0, -1).toLowerCase()
         );
 
+  const handleEdit = (item) => console.log("Edit:", item);
+  const handleDelete = (id) => console.log("Delete:", id);
+  const handleAdd = () => console.log("Add New Media");
+
   return (
     <AdminLayout title="Digital Assets">
-      {/* Upload Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-16">
-        <div className="lg:col-span-2">
-          <div className="bg-white p-10 rounded-[3.5rem] border-2 border-dashed border-gray-100 flex flex-col items-center justify-center text-center group hover:border-primary-green hover:bg-primary-green/5 transition-all cursor-pointer min-h-[300px]">
-            <div className="w-20 h-20 bg-primary-green/10 text-primary-green rounded-[2rem] flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <UploadCloud className="w-10 h-10" />
-            </div>
-            <h3 className="text-xl font-black text-blue-900 uppercase tracking-tighter mb-2">
-              Drop New Media Assets
-            </h3>
-            <p className="text-gray-400 text-sm font-medium max-w-sm">
-              Drag and drop photos or videos here. We'll automatically optimize
-              them for the web gallery.
-            </p>
-            <div className="mt-8 flex gap-4">
-              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary-green">
-                <CheckCircle2 className="w-4 h-4" /> Auto-Compression
-              </div>
-              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary-green">
-                <CheckCircle2 className="w-4 h-4" /> SEO Metadata
-              </div>
-            </div>
-          </div>
+      {/* Header Section */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-10">
+        <div>
+          <h2 className="text-2xl font-black text-blue-900 uppercase tracking-tighter">
+            Media Gallery
+          </h2>
+          <p className="text-gray-400 text-sm font-medium mt-1">
+            Manage photos and videos for your organization
+          </p>
         </div>
-        <div className="bg-blue-900 p-10 rounded-[3.5rem] shadow-2xl relative overflow-hidden">
-          <div className="relative z-10 flex flex-col h-full justify-between">
-            <div>
-              <h3 className="text-white text-2xl font-black uppercase tracking-tighter mb-4 leading-none">
-                Curation Analytics
-              </h3>
-              <p className="text-white/60 text-sm font-medium leading-relaxed">
-                Your media storage is current active and healthy across our CDN.
-              </p>
+        <div className="flex items-center gap-4 w-full lg:w-auto">
+          {/* Storage Mini-Card */}
+          <div className="hidden sm:flex items-center gap-3 px-6 py-3 bg-blue-50 border border-blue-100 rounded-2xl">
+            <div className="flex flex-col">
+              <span className="text-[8px] font-black text-blue-900/40 uppercase tracking-widest">
+                Storage Used
+              </span>
+              <span className="text-xs font-black text-blue-900">
+                1.2 GB / 5 GB
+              </span>
             </div>
-            <div className="space-y-4">
-              <div className="flex justify-between items-end">
-                <p className="text-white/40 text-[10px] font-black uppercase tracking-widest">
-                  Storage Used
-                </p>
-                <p className="text-white font-black text-lg">1.2 GB / 5 GB</p>
-              </div>
-              <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                <div className="w-[24%] h-full bg-primary-green" />
-              </div>
+            <div className="w-12 h-1 bg-blue-200 rounded-full overflow-hidden">
+              <div className="w-[24%] h-full bg-blue-900" />
             </div>
           </div>
-          {/* Accent icons */}
-          <Layers className="absolute -bottom-10 -right-10 w-40 h-40 text-white/5 rotate-12" />
+          <button
+            onClick={handleAdd}
+            className="flex-1 lg:flex-none h-14 px-8 bg-primary-green text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary-green/20 flex items-center justify-center gap-3 hover:translate-y-[-2px] transition-all"
+          >
+            <Plus className="w-4 h-4" /> Add Asset
+          </button>
         </div>
       </div>
 
-      {/* Media Filter Tabs */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-10">
-        <div className="flex gap-2 p-1.5 bg-white rounded-3xl border border-gray-100">
+      {/* Filter and Search Bar */}
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+        <div className="flex gap-2 p-1.5 bg-gray-50 rounded-2xl border border-gray-100">
           {["All", "Pictures", "Videos"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
+              className={`px-6 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
                 activeTab === tab
-                  ? "bg-blue-900 text-white shadow-lg"
+                  ? "bg-blue-900 text-white shadow-md shadow-blue-900/20"
                   : "text-gray-400 hover:text-blue-900"
               }`}
             >
@@ -147,76 +135,91 @@ const AdminGallery = () => {
             </button>
           ))}
         </div>
-        <div className="relative group min-w-[300px]">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-primary-green" />
+        <div className="relative group w-full md:w-80">
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 transition-colors group-focus-within:text-blue-900" />
           <input
             type="text"
-            placeholder="Search media library..."
-            className="w-full pl-14 pr-6 py-4 bg-white border border-gray-100 rounded-[2rem] outline-none text-sm font-medium"
+            placeholder="Search assets..."
+            className="w-full pl-12 pr-6 py-3.5 bg-white border border-gray-100 rounded-2xl outline-none text-sm font-medium focus:border-blue-900 transition-all shadow-sm focus:shadow-md"
           />
         </div>
       </div>
 
-      {/* Media Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        <AnimatePresence>
-          {filtered.map((item) => (
-            <motion.div
-              layout
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              key={item.id}
-              className="group relative"
-            >
-              <div className="aspect-[4/5] bg-gray-100 rounded-[2.5rem] overflow-hidden relative shadow-sm border border-gray-100">
-                <img
-                  src={item.url}
-                  alt={item.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-
-                {/* Media Type Overlay */}
-                <div className="absolute top-6 right-6 w-10 h-10 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white border border-white/20">
-                  {item.type === "video" ? (
-                    <Video className="w-5 h-5" />
-                  ) : (
-                    <ImageIcon className="w-5 h-5" />
-                  )}
-                </div>
-
-                {/* Operations Overlay */}
-                <div className="absolute inset-0 bg-blue-950/60 opacity-0 group-hover:opacity-100 transition-all duration-500 p-8 flex flex-col justify-between backdrop-blur-sm">
-                  <div className="flex justify-between items-start">
-                    <div className="bg-primary-yellow/20 px-3 py-1 rounded-full text-primary-yellow font-black text-[8px] uppercase tracking-widest border border-primary-yellow/10">
-                      {item.size}
+      {/* Media List Format */}
+      <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden mb-12">
+        <div className="divide-y divide-gray-100">
+          <AnimatePresence mode="popLayout">
+            {filtered.map((item, index) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ delay: index * 0.05 }}
+                className="flex items-center justify-between p-6 hover:bg-gray-50/50 transition-all group"
+              >
+                {/* Left: Thumbnail and Title */}
+                <div className="flex items-center gap-6 flex-1">
+                  {/* Square Mini Thumbnail */}
+                  <div className="w-16 h-16 rounded-2xl overflow-hidden relative shadow-sm border border-gray-100 flex-shrink-0">
+                    <img
+                      src={item.url}
+                      alt={item.title}
+                      className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                    />
+                    {/* Tiny type indicator icon */}
+                    <div className="absolute inset-0 bg-blue-900/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      {item.type === "video" ? (
+                        <Video className="w-4 h-4 text-white" />
+                      ) : (
+                        <ImageIcon className="w-4 h-4 text-white" />
+                      )}
                     </div>
-                    <button className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-blue-900 hover:bg-primary-green hover:text-white transition-all">
-                      <MoreHorizontal className="w-5 h-5" />
-                    </button>
                   </div>
 
-                  <div>
-                    <h5 className="text-white font-black uppercase tracking-tight text-sm mb-1">
+                  <div className="flex flex-col">
+                    <h3 className="text-blue-900 font-black text-base leading-tight">
                       {item.title}
-                    </h5>
-                    <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">
-                      {item.date}
-                    </p>
-                    <div className="grid grid-cols-2 gap-3 mt-6">
-                      <button className="py-3 bg-white text-blue-900 rounded-xl flex items-center justify-center gap-2 text-[8px] font-black uppercase tracking-widest hover:bg-primary-green hover:text-white transition-all">
-                        <Edit3 className="w-3 h-3" /> Edit
-                      </button>
-                      <button className="py-3 bg-red-500/10 text-red-500 rounded-xl flex items-center justify-center gap-2 text-[8px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all border border-red-500/20">
-                        <Trash2 className="w-3 h-3" /> Delete
-                      </button>
+                    </h3>
+                    <div className="flex items-center gap-4 mt-1.5">
+                      <span
+                        className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${
+                          item.type === "video"
+                            ? "bg-purple-50 text-purple-600"
+                            : "bg-blue-50 text-blue-600"
+                        }`}
+                      >
+                        {item.type}
+                      </span>
+                      <span className="text-gray-400 text-[10px] font-medium border-l border-gray-100 pl-4 flex items-center gap-1.5">
+                        <Calendar className="w-3 h-3" /> {item.date}
+                      </span>
+                      <span className="text-gray-400 text-[10px] font-medium border-l border-gray-100 pl-4">
+                        {item.size}
+                      </span>
                     </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+
+                {/* Right: Action Buttons */}
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => handleEdit(item)}
+                    className="h-10 px-5 bg-blue-50 text-blue-900 rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:bg-blue-900 hover:text-white transition-all"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" /> Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="h-10 px-5 bg-red-50 text-red-500 rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" /> Delete
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
       </div>
     </AdminLayout>
   );

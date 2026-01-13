@@ -1,33 +1,37 @@
 import { Inngest } from "inngest";
-import { serve } from "inngest/express";
+import connectDB from "./db.js";
+import User from "../models/userModel.js";
 
-// Create a client to send and receive events
-export const inngest = new Inngest({
-  id: "mthunzi-trust",
-});
+export const inngest = new Inngest({ id: "mthunzi-trust" });
 
-// Example function: Sync Clerk User to MongoDB
-export const syncUser = inngest.createFunction(
+const syncUser = inngest.createFunction(
   { id: "sync-user" },
   { event: "clerk/user.created" },
-  async ({ event, step }) => {
+  async ({ event }) => {
+    await connectDB();
     const { id, email_addresses, first_name, last_name, image_url } =
       event.data;
-    const email = email_addresses[0].email_address;
-    const name = `${first_name} ${last_name}`;
 
-    return { message: "User sync triggered", userId: id };
+    const newUser = {
+      clerkId: id,
+      email: email_addresses[0].email_address,
+      name: `${first_name || ""} ${last_name || ""}`.trim() || "User",
+      imageUrl: image_url,
+    };
+
+    await User.findOneAndUpdate({ clerkId: id }, newUser, { upsert: true });
   }
 );
 
-// Function: Delete user from MongoDB when deleted in Clerk
-export const deleteUser = inngest.createFunction(
-  { id: "delete-user" },
+const deleteUserFromDB = inngest.createFunction(
+  { id: "delete-user-from-db" },
   { event: "clerk/user.deleted" },
-  async ({ event, step }) => {
+  async ({ event }) => {
+    await connectDB();
     const { id } = event.data;
-    return { message: "User deletion triggered", userId: id };
+
+    await User.deleteOne({ clerkId: id });
   }
 );
 
-export const functions = [syncUser, deleteUser];
+export const functions = [syncUser, deleteUserFromDB];

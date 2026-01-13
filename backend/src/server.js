@@ -6,6 +6,9 @@ import { serve } from "inngest/express";
 import { functions, inngest } from "./config/inngest.js";
 import connectDB from "./config/db.js";
 
+import { syncUser } from "./controllers/userController.js";
+import { getGeographicReach } from "./controllers/analyticsController.js";
+
 const app = express();
 
 // Database connection (non-blocking for Vercel)
@@ -19,6 +22,8 @@ app.use(clerkMiddleware());
 
 // API Endpoints
 app.use("/api/inngest", serve({ client: inngest, functions }));
+app.post("/api/users/sync", syncUser);
+app.get("/api/analytics/geographic-reach", getGeographicReach);
 
 app.get("/", (req, res) => {
   res.json({

@@ -2,8 +2,11 @@ import React from "react";
 import AdminSidebar from "./AdminSidebar";
 import { Bell, Search, Settings as SettingsIcon, User } from "lucide-react";
 import { motion } from "framer-motion";
+import { useUser } from "@clerk/clerk-react";
 
 const AdminLayout = ({ children, title }) => {
+  const { user } = useUser();
+
   return (
     <div className="flex bg-gray-50 min-h-screen">
       <AdminSidebar />
@@ -16,7 +19,7 @@ const AdminLayout = ({ children, title }) => {
               {title || "Dashboard"}
             </h1>
             <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mt-1">
-              Welcome back, Joel
+              Welcome back, {user?.firstName || "Admin"}
             </p>
           </div>
 
@@ -42,14 +45,23 @@ const AdminLayout = ({ children, title }) => {
               <div className="flex items-center gap-4 pl-2 cursor-pointer group">
                 <div className="text-right hidden sm:block">
                   <p className="text-sm font-black text-blue-900 group-hover:text-primary-green transition-colors uppercase leading-none">
-                    Admin Profile
+                    {user?.fullName || "Joel Chirwa"}
                   </p>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-primary-green mt-1">
-                    Online
+                  <p className="text-[9px] font-bold text-gray-400 mt-1 truncate max-w-[150px]">
+                    {user?.primaryEmailAddress?.emailAddress ||
+                      "chirwajj@gmail.com"}
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-2xl bg-blue-900 flex items-center justify-center text-white border-4 border-white shadow-xl">
-                  <User className="w-6 h-6" />
+                <div className="w-12 h-12 rounded-2xl bg-blue-900 flex items-center justify-center text-white border-4 border-white shadow-xl overflow-hidden group-hover:scale-105 transition-transform">
+                  {user?.imageUrl ? (
+                    <img
+                      src={user.imageUrl}
+                      alt={user.fullName}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <User className="w-6 h-6" />
+                  )}
                 </div>
               </div>
             </div>

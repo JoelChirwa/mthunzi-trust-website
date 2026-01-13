@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema(
       unique: true,
       required: true,
     },
+    country: {
+      type: String,
+      default: "Malawi",
+    },
   },
   { timestamps: true }
 );
