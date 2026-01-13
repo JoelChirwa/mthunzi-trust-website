@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import {
   LayoutDashboard,
   FileText,
@@ -20,11 +21,11 @@ import logoImg from "../../assets/images/logo.jpg";
 const AdminSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { signOut } = useAuth();
+  const { user } = useUser();
 
   const handleSignOut = () => {
-    localStorage.removeItem("adminAuth");
-    localStorage.removeItem("adminUser");
-    navigate("/admin/login");
+    signOut(() => navigate("/admin/login"));
   };
 
   const menuItems = [
@@ -65,12 +66,24 @@ const AdminSidebar = () => {
       {/* Profile Summary */}
       <div className="p-6 m-4 bg-white/5 rounded-3xl border border-white/5">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-primary-green flex items-center justify-center text-white font-black text-xl">
-            JC
+          <div className="w-12 h-12 rounded-2xl bg-primary-green flex items-center justify-center text-white font-black text-xl overflow-hidden">
+            {user?.imageUrl ? (
+              <img
+                src={user.imageUrl}
+                alt={user.fullName}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              user?.firstName?.charAt(0) || "A"
+            )}
           </div>
-          <div>
-            <p className="text-white font-bold text-sm">Joel Chirwa</p>
-            <p className="text-white/40 text-xs">Super Admin</p>
+          <div className="flex-1 min-w-0">
+            <p className="text-white font-bold text-sm truncate">
+              {user?.fullName || "Admin"}
+            </p>
+            <p className="text-white/40 text-[10px] uppercase font-bold tracking-wider truncate">
+              {user?.primaryEmailAddress?.emailAddress}
+            </p>
           </div>
         </div>
       </div>

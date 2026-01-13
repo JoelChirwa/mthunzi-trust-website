@@ -1,45 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  ShieldCheck,
-  Lock,
-  Mail,
-  ArrowRight,
-  AlertCircle,
-  Eye,
-  EyeOff,
-  ChevronLeft,
-} from "lucide-react";
+import { ShieldCheck, ChevronLeft } from "lucide-react";
+import { SignIn, useUser } from "@clerk/clerk-react";
 
 const AdminLogin = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { isLoaded, isSignedIn } = useUser();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
+  // If already logged in, redirect to admin dashboard
+  React.useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      navigate("/admin");
+    }
+  }, [isLoaded, isSignedIn, navigate]);
 
-    // Simulate authentication
-    setTimeout(() => {
-      if (email === "admin@mthunzi.org" && password === "admin123") {
-        localStorage.setItem("adminAuth", "true");
-        localStorage.setItem(
-          "adminUser",
-          JSON.stringify({ name: "Joel Chirwa", role: "Super Admin" })
-        );
-        navigate("/admin");
-      } else {
-        setError("Operational credentials invalid. Access denied.");
-        setIsLoading(false);
-      }
-    }, 1500);
-  };
+  if (!isLoaded) return null; // or a loading spinner
 
   return (
     <div className="min-h-screen bg-blue-950 flex flex-col justify-center items-center p-6 relative overflow-hidden font-poppins">
@@ -56,7 +32,7 @@ const AdminLogin = () => {
         className="w-full max-w-md relative z-10"
       >
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -76,79 +52,30 @@ const AdminLogin = () => {
           </div>
         </div>
 
-        {/* Login Card */}
-        <div className="bg-white/5 backdrop-blur-2xl rounded-[3rem] p-10 border border-white/10 shadow-2xl">
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-white/60 ml-4">
-                Administrative Email
-              </label>
-              <div className="relative group">
-                <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-primary-green transition-colors" />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@mthunzi.org"
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 py-4 text-white placeholder:text-white/20 outline-none focus:border-primary-green focus:bg-white/10 transition-all font-bold text-sm"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-white/60 ml-4">
-                Security Password
-              </label>
-              <div className="relative group">
-                <Lock className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-primary-green transition-colors" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl pl-14 pr-14 py-4 text-white placeholder:text-white/20 outline-none focus:border-primary-green focus:bg-white/10 transition-all font-bold text-sm"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-6 top-1/2 -translate-y-1/2 text-white/30 hover:text-white transition-colors"
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 flex items-center gap-3 text-red-500 text-xs font-bold"
-              >
-                <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                {error}
-              </motion.div>
-            )}
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full h-16 bg-primary-green text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-primary-green/20 flex items-center justify-center gap-3 hover:translate-y-[-2px] active:translate-y-[0px] transition-all disabled:opacity-50 disabled:translate-y-0"
-            >
-              {isLoading ? (
-                <div className="w-6 h-6 border-4 border-white/20 border-t-white rounded-full animate-spin" />
-              ) : (
-                <>
-                  Secure Login <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
-          </form>
+        {/* Clerk Sign In Component */}
+        <div className="flex justify-center">
+          <SignIn
+            appearance={{
+              elements: {
+                rootBox: "w-full shadow-2xl",
+                card: "bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl",
+                headerTitle: "text-white font-black uppercase tracking-tight",
+                headerSubtitle: "text-white/40 font-bold",
+                socialButtonsBlockButton:
+                  "bg-white/5 border-white/10 text-white hover:bg-white/10 transition-all",
+                formButtonPrimary:
+                  "bg-primary-green hover:bg-primary-green/80 text-white font-black uppercase tracking-[0.2em] text-[10px] h-12 rounded-xl transition-all",
+                formFieldLabel:
+                  "text-[10px] font-black uppercase tracking-widest text-white/60",
+                formFieldInput:
+                  "bg-white/5 border-white/10 text-white rounded-xl h-12",
+                footerAction: "hidden",
+                identityPreviewText: "text-white",
+                identityPreviewEditButtonIcon: "text-primary-green",
+              },
+            }}
+            forceRedirectUrl="/admin"
+          />
         </div>
 
         {/* Footer Links */}
@@ -159,13 +86,6 @@ const AdminLogin = () => {
           >
             <ChevronLeft className="w-4 h-4" /> Return to Public Domain
           </button>
-
-          <div className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/5">
-            <ShieldCheck className="w-3 h-3 text-primary-green" />
-            <span className="text-[8px] font-bold text-white/40 uppercase tracking-widest text-center leading-none">
-              Secured by Mthunzi Cybersecurity Infrastructure
-            </span>
-          </div>
         </div>
       </motion.div>
     </div>
