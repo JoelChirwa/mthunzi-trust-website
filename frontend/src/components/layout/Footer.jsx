@@ -14,6 +14,7 @@ import {
   Send,
 } from "lucide-react";
 import logoImg from "../../assets/images/logo.jpg";
+import { getApiUrl } from "../../utils/api";
 
 const Footer = () => {
   const [settings, setSettings] = useState(null);
@@ -21,11 +22,8 @@ const Footer = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await fetch(
-          `${
-            import.meta.env.VITE_API_URL || "http://localhost:5000/api"
-          }/settings`
-        );
+        const response = await fetch(getApiUrl("/settings"));
+
         const data = await response.json();
         setSettings(data);
       } catch (error) {

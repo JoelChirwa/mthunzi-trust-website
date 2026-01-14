@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
+import { getApiUrl } from "../../utils/api";
 
 const AdminSettings = () => {
   const [formData, setFormData] = useState({
@@ -39,11 +40,8 @@ const AdminSettings = () => {
   const fetchSettings = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_URL || "http://localhost:5000/api"
-        }/settings`
-      );
+      const response = await fetch(getApiUrl("/settings"));
+
       const data = await response.json();
       setFormData(data);
     } catch (error) {
@@ -63,9 +61,8 @@ const AdminSettings = () => {
     try {
       setIsSaving(true);
       const response = await fetch(
-        `${
-          import.meta.env.VITE_API_URL || "http://localhost:5000/api"
-        }/settings`,
+        getApiUrl("/settings"),
+
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

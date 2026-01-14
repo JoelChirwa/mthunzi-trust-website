@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
+import { getApiUrl } from "../../utils/api";
 
 const MemberModal = ({ isOpen, onClose, onSave, member }) => {
   const [formData, setFormData] = useState({
@@ -49,10 +50,8 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
       data.append("image", file);
 
       const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/upload`,
+        getApiUrl("/upload"),
+
         {
           method: "POST",
           body: data,
@@ -244,12 +243,8 @@ const AdminTeam = () => {
   const fetchTeam = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/team`
-      );
+      const response = await fetch(getApiUrl("/team"));
+
       const data = await response.json();
       setTeamMembers(data);
     } catch (error) {
@@ -284,9 +279,8 @@ const AdminTeam = () => {
                 const loadingToast = toast.loading("Removing member...");
                 try {
                   const response = await fetch(
-                    `${(
-                      import.meta.env.VITE_API_URL || "http://localhost:5000"
-                    ).replace(/\/api$/, "")}/api/team/${id}`,
+                    getApiUrl(`/team/${id}`),
+
                     {
                       method: "DELETE",
                       headers: { "Content-Type": "application/json" },
@@ -334,8 +328,8 @@ const AdminTeam = () => {
         import.meta.env.VITE_API_URL || "http://localhost:5000"
       ).replace(/\/api$/, "");
       const url = currentMember
-        ? `${baseUrl}/api/team/${currentMember._id}`
-        : `${baseUrl}/api/team`;
+        ? getApiUrl(`/team/${currentMember._id}`)
+        : getApiUrl("/team");
 
       const method = currentMember ? "PUT" : "POST";
 

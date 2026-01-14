@@ -18,6 +18,7 @@ import {
   Mail,
   Loader2,
 } from "lucide-react";
+import { getApiUrl } from "../utils/api";
 
 const AboutPage = () => {
   const [teamMembers, setTeamMembers] = useState([]);
@@ -31,12 +32,8 @@ const AboutPage = () => {
   const fetchTeamMembers = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/team`
-      );
+      const response = await fetch(getApiUrl("/team"));
+
       const data = await response.json();
       setTeamMembers(data);
     } catch (error) {

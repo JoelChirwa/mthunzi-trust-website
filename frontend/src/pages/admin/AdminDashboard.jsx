@@ -14,6 +14,8 @@ import {
   Globe,
   Loader2,
 } from "lucide-react";
+import { getApiUrl } from "../../utils/api";
+
 import { motion } from "framer-motion";
 
 const AdminDashboard = () => {
@@ -31,19 +33,16 @@ const AdminDashboard = () => {
     const fetchDashboardData = async () => {
       try {
         setIsLoading(true);
-        const baseUrl = (
-          import.meta.env.VITE_API_URL || "http://localhost:5000/api"
-        ).replace(/\/api$/, "");
-
         // Fetch stats
-        const statsRes = await fetch(`${baseUrl}/api/analytics/admin-stats`);
+        const statsRes = await fetch(getApiUrl("/analytics/admin-stats"));
         const statsData = await statsRes.json();
         if (statsData.success) {
           setStats(statsData.stats);
         }
 
         // Fetch geographic data
-        const geoRes = await fetch(`${baseUrl}/api/analytics/geographic-reach`);
+        const geoRes = await fetch(getApiUrl("/analytics/geographic-reach"));
+
         const geoData = await geoRes.json();
         if (geoData.success) {
           setCountryData(geoData.data);

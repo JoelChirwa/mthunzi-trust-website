@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
+import { getApiUrl } from "../../utils/api";
 
 const BlogModal = ({ isOpen, onClose, onSave, blog }) => {
   const [formData, setFormData] = useState({
@@ -52,10 +53,8 @@ const BlogModal = ({ isOpen, onClose, onSave, blog }) => {
       data.append("image", file);
 
       const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/upload`,
+        getApiUrl("/upload"),
+
         {
           method: "POST",
           body: data,
@@ -268,12 +267,8 @@ const AdminBlogs = () => {
   const fetchBlogs = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/blogs`
-      );
+      const response = await fetch(getApiUrl("/blogs"));
+
       const data = await response.json();
       setBlogs(data);
     } catch (error) {
@@ -307,9 +302,8 @@ const AdminBlogs = () => {
                 const loadingToast = toast.loading("Deleting post...");
                 try {
                   const response = await fetch(
-                    `${(
-                      import.meta.env.VITE_API_URL || "http://localhost:5000"
-                    ).replace(/\/api$/, "")}/api/blogs/${id}`,
+                    getApiUrl(`/blogs/${id}`),
+
                     {
                       method: "DELETE",
                       headers: { "Content-Type": "application/json" },
@@ -359,8 +353,8 @@ const AdminBlogs = () => {
         import.meta.env.VITE_API_URL || "http://localhost:5000"
       ).replace(/\/api$/, "");
       const url = currentBlog
-        ? `${baseUrl}/api/blogs/${currentBlog._id}`
-        : `${baseUrl}/api/blogs`;
+        ? getApiUrl(`/blogs/${currentBlog._id}`)
+        : getApiUrl("/blogs");
 
       const method = currentBlog ? "PUT" : "POST";
 

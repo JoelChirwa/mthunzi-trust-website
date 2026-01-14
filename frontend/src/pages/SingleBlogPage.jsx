@@ -12,6 +12,7 @@ import {
   Loader2,
   FileText,
 } from "lucide-react";
+import { getApiUrl } from "../utils/api";
 
 const SingleBlogPage = () => {
   const { slug } = useParams();
@@ -27,12 +28,8 @@ const SingleBlogPage = () => {
   const fetchPost = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/blogs/${slug}`
-      );
+      const response = await fetch(getApiUrl(`/blogs/${slug}`));
+
       const data = await response.json();
       if (response.ok) {
         setPost(data);
@@ -47,12 +44,8 @@ const SingleBlogPage = () => {
 
   const fetchRelatedPosts = async (currentId) => {
     try {
-      const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/blogs`
-      );
+      const response = await fetch(getApiUrl("/blogs"));
+
       const data = await response.json();
       setRelatedPosts(data.filter((p) => p._id !== currentId).slice(0, 3));
     } catch (error) {

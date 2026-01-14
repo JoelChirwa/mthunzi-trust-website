@@ -9,6 +9,7 @@ import {
   Loader2,
   FileText,
 } from "lucide-react";
+import { getApiUrl } from "../utils/api";
 
 const BlogPage = () => {
   const [blogs, setBlogs] = useState([]);
@@ -22,12 +23,8 @@ const BlogPage = () => {
   const fetchBlogs = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/blogs`
-      );
+      const response = await fetch(getApiUrl("/blogs"));
+
       const data = await response.json();
       setBlogs(data);
     } catch (error) {

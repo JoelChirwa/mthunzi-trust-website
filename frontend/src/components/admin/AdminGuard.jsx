@@ -3,6 +3,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useUser, useAuth } from "@clerk/clerk-react";
 import { AUTHORIZED_ADMINS } from "../../config/admins";
 import AccessDenied from "../../pages/admin/AccessDenied";
+import { getApiUrl } from "../../utils/api";
 
 const AdminGuard = ({ children }) => {
   const { isLoaded, isSignedIn, user } = useUser();
@@ -24,9 +25,8 @@ const AdminGuard = ({ children }) => {
         try {
           const token = await getToken();
           await fetch(
-            `${(
-              import.meta.env.VITE_API_URL || "http://localhost:5000"
-            ).replace(/\/api$/, "")}/api/users/sync`,
+            getApiUrl("/users/sync"),
+
             {
               method: "POST",
               headers: {

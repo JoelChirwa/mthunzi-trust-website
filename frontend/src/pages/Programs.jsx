@@ -13,6 +13,7 @@ import {
   Sprout,
   Layers,
 } from "lucide-react";
+import { getApiUrl } from "../utils/api";
 
 const ICON_MAP = {
   GraduationCap,
@@ -34,12 +35,8 @@ const Programs = () => {
   const fetchPrograms = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/programs`
-      );
+      const response = await fetch(getApiUrl("/programs"));
+
       const data = await response.json();
       setPrograms(data);
     } catch (error) {

@@ -15,6 +15,7 @@ import {
   HeartPulse,
   Layers,
 } from "lucide-react";
+import { getApiUrl } from "../utils/api";
 
 const ICON_MAP = {
   GraduationCap,
@@ -39,12 +40,8 @@ const SingleProgramPage = () => {
   const fetchProgram = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/programs/${slug}`
-      );
+      const response = await fetch(getApiUrl(`/programs/${slug}`));
+
       const data = await response.json();
       if (response.ok) {
         setProgram(data);
@@ -58,12 +55,8 @@ const SingleProgramPage = () => {
 
   const fetchOtherPrograms = async () => {
     try {
-      const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/programs`
-      );
+      const response = await fetch(getApiUrl("/programs"));
+
       const data = await response.json();
       setOtherPrograms(data.filter((p) => p.slug !== slug).slice(0, 3));
     } catch (error) {
