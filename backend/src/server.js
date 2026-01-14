@@ -5,6 +5,7 @@ import { env } from "./config/env.js";
 import { serve } from "inngest/express";
 import { functions, inngest } from "./config/inngest.js";
 import connectDB from "./config/db.js";
+import { ensureDbConnection } from "./middleware/dbMiddleware.js";
 
 // Routes
 import userRoutes from "./routes/userRoutes.js";
@@ -21,8 +22,17 @@ import inquiryRoutes from "./routes/inquiryRoutes.js";
 
 const app = express();
 
-// Database connection (non-blocking for Vercel)
-connectDB().catch((err) => console.error("Database connection failed:", err));
+// Database connection - ensures connection before handling requests
+if (env.NODE_ENV === "production") {
+  // In production (Vercel), we let the connection establish on first request
+  // The connection caching in db.js will handle subsequent requests
+  console.log(
+    "🔄 Running in production mode - DB will connect on first request"
+  );
+} else {
+  // In development, connect immediately
+  connectDB().catch((err) => console.error("Database connection failed:", err));
+}
 
 // Middlewares
 app.use(cors());
@@ -30,6 +40,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(clerkMiddleware());
+
+// Ensure database connection for all API routes
+app.use("/api", ensureDbConnection);
 
 // API Endpoints
 app.use("/api/inngest", serve({ client: inngest, functions }));
