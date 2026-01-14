@@ -52,7 +52,7 @@ const GalleryPage = () => {
       className="bg-white min-h-screen pb-24"
     >
       {/* Cinematic Header */}
-      <section className="relative min-h-[65vh] flex items-center pb-20 overflow-hidden">
+      <section className="relative min-h-[55vh] md:min-h-[65vh] flex items-start overflow-hidden">
         <div className="absolute inset-0 bg-blue-900">
           <img
             src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1600&auto=format&fit=crop&q=80"
@@ -62,7 +62,7 @@ const GalleryPage = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-blue-900 via-transparent to-white" />
         </div>
 
-        <div className="container mx-auto px-4 relative z-10 text-center">
+        <div className="container mx-auto px-4 relative z-10 text-center pt-32 md:pt-48">
           <motion.div
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}

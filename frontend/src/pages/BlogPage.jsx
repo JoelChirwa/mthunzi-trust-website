@@ -43,7 +43,7 @@ const BlogPage = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Cinematic Hero Section */}
-      <section className="relative h-[60vh] flex items-center overflow-hidden bg-blue-900">
+      <section className="relative min-h-[50vh] md:min-h-[60vh] flex items-start overflow-hidden bg-blue-900">
         <motion.div
           initial={{ scale: 1.1, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -68,7 +68,7 @@ const BlogPage = () => {
           }}
         />
 
-        <div className="container mx-auto px-4 z-30 relative pt-32">
+        <div className="container mx-auto px-4 z-30 relative pt-32 md:pt-48">
           <div className="max-w-4xl">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -88,7 +88,6 @@ const BlogPage = () => {
             </motion.div>
           </div>
         </div>
-
         {/* Bottom Fade to Content */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-50 to-transparent z-30" />
       </section>
@@ -126,7 +125,7 @@ const BlogPage = () => {
                   </div>
                   <Link
                     to={`/blog/${featuredPost.slug}`}
-                    className="block group relative h-[400px] md:h-[500px] rounded-3xl md:rounded-[40px] overflow-hidden shadow-2xl"
+                    className="block group relative h-[300px] sm:h-[400px] md:h-[500px] rounded-3xl md:rounded-[40px] overflow-hidden shadow-2xl"
                   >
                     <img
                       src={featuredPost.images && featuredPost.images[0]}

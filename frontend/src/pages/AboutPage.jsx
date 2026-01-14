@@ -105,7 +105,7 @@ const AboutPage = () => {
       className="bg-white"
     >
       {/* Cinematic Hero */}
-      <section className="relative h-[80vh] flex items-center overflow-hidden bg-blue-900">
+      <section className="relative min-h-[70vh] md:min-h-[80vh] flex items-start overflow-hidden bg-blue-900">
         <motion.div
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
@@ -121,7 +121,7 @@ const AboutPage = () => {
           <div className="absolute inset-0 bg-black/40 z-10" />
         </motion.div>
 
-        <div className="container mx-auto px-4 relative z-20 pt-32">
+        <div className="container mx-auto px-4 relative z-20 pt-32 md:pt-48">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}

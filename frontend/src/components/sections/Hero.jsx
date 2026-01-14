@@ -55,17 +55,16 @@ const Hero = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 2, ease: "easeInOut" }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
             className="absolute inset-0"
           >
-            <motion.div
-              initial={{ scale: 1.15 }}
+            <motion.img
+              initial={{ scale: 1.1 }}
               animate={{ scale: 1 }}
-              transition={{ duration: 30, ease: "linear" }}
-              className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage: `url(${slides[currentSlide].bgImage})`,
-              }}
+              transition={{ duration: 20, ease: "linear" }}
+              src={slides[currentSlide].bgImage}
+              alt={slides[currentSlide].tagline}
+              className="w-full h-full object-cover object-center"
             />
           </motion.div>
         </AnimatePresence>

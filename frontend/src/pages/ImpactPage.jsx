@@ -88,7 +88,7 @@ const ImpactPage = () => {
       exit={{ opacity: 0 }}
     >
       {/* Cinematic Hero Section */}
-      <section className="relative h-[50vh] flex items-center overflow-hidden bg-blue-900 border-b-4 border-primary-yellow">
+      <section className="relative min-h-[40vh] md:min-h-[50vh] flex items-start overflow-hidden bg-blue-900 border-b-4 border-primary-yellow">
         <motion.div
           initial={{ scale: 1.1, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -113,7 +113,7 @@ const ImpactPage = () => {
           }}
         />
 
-        <div className="container mx-auto px-4 z-30 relative pt-32">
+        <div className="container mx-auto px-4 z-30 relative pt-32 md:pt-48">
           <div className="max-w-4xl">
             <motion.div
               initial={{ opacity: 0, x: -30 }}

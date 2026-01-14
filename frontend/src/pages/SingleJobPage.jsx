@@ -90,7 +90,7 @@ const SingleJobPage = () => {
       className="bg-gray-50 min-h-screen"
     >
       {/* Cinematic Hero */}
-      <section className="relative h-[75vh] flex items-center overflow-hidden bg-blue-900">
+      <section className="relative min-h-[65vh] md:min-h-[75vh] flex items-start overflow-hidden bg-blue-900">
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=1600&auto=format&fit=crop&q=80"
@@ -100,7 +100,7 @@ const SingleJobPage = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-blue-900 via-blue-900/60 to-transparent" />
         </div>
 
-        <div className="container mx-auto px-4 relative z-10 pt-32">
+        <div className="container mx-auto px-4 relative z-10 pt-32 md:pt-48 pb-20">
           <Link
             to="/careers"
             className="inline-flex items-center gap-2 text-white/60 hover:text-primary-green transition-colors mb-8 font-bold uppercase tracking-widest text-xs"
