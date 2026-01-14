@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { getApiUrl } from "../../utils/api";
 
 const PartnersSection = () => {
   const [partners, setPartners] = React.useState([]);
@@ -21,12 +22,7 @@ const PartnersSection = () => {
   const fetchPartners = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/partners`
-      );
+      const response = await fetch(getApiUrl("/partners"));
       const data = await response.json();
       setPartners(data);
     } catch (error) {

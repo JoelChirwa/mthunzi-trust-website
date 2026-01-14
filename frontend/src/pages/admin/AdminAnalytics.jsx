@@ -12,6 +12,7 @@ import {
   Calendar,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { getApiUrl } from "../../utils/api";
 
 const AdminAnalytics = () => {
   const [countryData, setCountryData] = useState([]);
@@ -20,12 +21,7 @@ const AdminAnalytics = () => {
   useEffect(() => {
     const fetchGeographicReach = async () => {
       try {
-        const response = await fetch(
-          `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-            /\/api$/,
-            ""
-          )}/api/analytics/geographic-reach`
-        );
+        const response = await fetch(getApiUrl("/analytics/geographic-reach"));
         const data = await response.json();
         if (data.success) {
           setCountryData(data.data);

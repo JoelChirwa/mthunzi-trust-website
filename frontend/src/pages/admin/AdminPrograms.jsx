@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
+import { getApiUrl } from "../../utils/api";
 
 const ProgramModal = ({ isOpen, onClose, onSave, program }) => {
   const [formData, setFormData] = useState({
@@ -48,16 +49,10 @@ const ProgramModal = ({ isOpen, onClose, onSave, program }) => {
       const data = new FormData();
       data.append("image", file);
 
-      const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/upload`,
-        {
-          method: "POST",
-          body: data,
-        }
-      );
+      const response = await fetch(getApiUrl("/upload"), {
+        method: "POST",
+        body: data,
+      });
 
       const result = await response.json();
       if (result.success) {
@@ -222,12 +217,7 @@ const AdminPrograms = () => {
   const fetchPrograms = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/programs`
-      );
+      const response = await fetch(getApiUrl("/programs"));
       const data = await response.json();
       setPrograms(data);
     } catch (error) {
@@ -261,15 +251,10 @@ const AdminPrograms = () => {
                 toast.dismiss(t.id);
                 const loadingToast = toast.loading("Removing program...");
                 try {
-                  const response = await fetch(
-                    `${(
-                      import.meta.env.VITE_API_URL || "http://localhost:5000"
-                    ).replace(/\/api$/, "")}/api/programs/${id}`,
-                    {
-                      method: "DELETE",
-                      headers: { "Content-Type": "application/json" },
-                    }
-                  );
+                  const response = await fetch(getApiUrl(`/programs/${id}`), {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" },
+                  });
                   if (response.ok) {
                     setPrograms((prev) => prev.filter((p) => p._id !== id));
                     toast.success("Program removed successfully", {
@@ -310,12 +295,9 @@ const AdminPrograms = () => {
       currentProgram ? "Updating initiative..." : "Launching initiative..."
     );
     try {
-      const baseUrl = (
-        import.meta.env.VITE_API_URL || "http://localhost:5000"
-      ).replace(/\/api$/, "");
       const url = currentProgram
-        ? `${baseUrl}/api/programs/${currentProgram._id}`
-        : `${baseUrl}/api/programs`;
+        ? getApiUrl(`/programs/${currentProgram._id}`)
+        : getApiUrl("/programs");
 
       const method = currentProgram ? "PUT" : "POST";
 

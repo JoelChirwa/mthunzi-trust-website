@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Layers, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { getApiUrl } from "../../utils/api";
 
 const FocusAreas = () => {
   const [areas, setAreas] = useState([]);
@@ -14,12 +15,7 @@ const FocusAreas = () => {
 
   const fetchPrograms = async () => {
     try {
-      const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/programs`
-      );
+      const response = await fetch(getApiUrl("/programs"));
       const data = await response.json();
       // Set only first 6 for home page
       setAreas(data.slice(0, 6));

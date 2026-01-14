@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
+import { getApiUrl } from "../../utils/api";
 
 const AdminGallery = () => {
   const [activeTab, setActiveTab] = useState("All");
@@ -37,9 +38,7 @@ const AdminGallery = () => {
   const fetchMedia = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/gallery`
-      );
+      const response = await fetch(getApiUrl("/gallery"));
       const data = await response.json();
       setMediaItems(data);
     } catch (error) {
@@ -71,16 +70,10 @@ const AdminGallery = () => {
     data.append("image", file);
 
     try {
-      const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/upload`,
-        {
-          method: "POST",
-          body: data,
-        }
-      );
+      const response = await fetch(getApiUrl("/upload"), {
+        method: "POST",
+        body: data,
+      });
       const result = await response.json();
 
       if (result.url) {
@@ -102,16 +95,11 @@ const AdminGallery = () => {
     e.preventDefault();
     const loadingToast = toast.loading("Saving your asset...");
     try {
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_URL || "http://localhost:5000/api"
-        }/gallery`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch(getApiUrl("/gallery"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
       if (response.ok) {
         setIsModalOpen(false);
@@ -145,13 +133,9 @@ const AdminGallery = () => {
                 toast.dismiss(t.id);
                 const loadingToast = toast.loading("Destroying asset...");
                 try {
-                  const response = await fetch(
-                    `${
-                      import.meta.env.VITE_API_URL ||
-                      "http://localhost:5000/api"
-                    }/gallery/${id}`,
-                    { method: "DELETE" }
-                  );
+                  const response = await fetch(getApiUrl(`/gallery/${id}`), {
+                    method: "DELETE",
+                  });
                   if (response.ok) {
                     fetchMedia();
                     toast.success("Asset incinerated!", { id: loadingToast });

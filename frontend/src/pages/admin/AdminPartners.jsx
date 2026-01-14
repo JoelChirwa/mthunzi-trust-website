@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
+import { getApiUrl } from "../../utils/api";
 
 const PartnerModal = ({ isOpen, onClose, onSave, partner }) => {
   const [formData, setFormData] = useState({
@@ -43,16 +44,10 @@ const PartnerModal = ({ isOpen, onClose, onSave, partner }) => {
       const data = new FormData();
       data.append("image", file);
 
-      const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/upload`,
-        {
-          method: "POST",
-          body: data,
-        }
-      );
+      const response = await fetch(getApiUrl("/upload"), {
+        method: "POST",
+        body: data,
+      });
 
       const result = await response.json();
       if (result.success) {
@@ -199,12 +194,7 @@ const AdminPartners = () => {
   const fetchPartners = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/partners`
-      );
+      const response = await fetch(getApiUrl("/partners"));
       const data = await response.json();
       setPartners(data);
     } catch (error) {
@@ -237,15 +227,10 @@ const AdminPartners = () => {
                 toast.dismiss(t.id);
                 const loadingToast = toast.loading("Removing partner...");
                 try {
-                  const response = await fetch(
-                    `${(
-                      import.meta.env.VITE_API_URL || "http://localhost:5000"
-                    ).replace(/\/api$/, "")}/api/partners/${id}`,
-                    {
-                      method: "DELETE",
-                      headers: { "Content-Type": "application/json" },
-                    }
-                  );
+                  const response = await fetch(getApiUrl(`/partners/${id}`), {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" },
+                  });
                   if (response.ok) {
                     fetchPartners();
                     toast.success("Partner removed", { id: loadingToast });
@@ -284,12 +269,9 @@ const AdminPartners = () => {
       currentPartner ? "Updating partner..." : "Adding partner..."
     );
     try {
-      const baseUrl = (
-        import.meta.env.VITE_API_URL || "http://localhost:5000"
-      ).replace(/\/api$/, "");
       const url = currentPartner
-        ? `${baseUrl}/api/partners/${currentPartner._id}`
-        : `${baseUrl}/api/partners`;
+        ? getApiUrl(`/partners/${currentPartner._id}`)
+        : getApiUrl("/partners");
 
       const method = currentPartner ? "PUT" : "POST";
 

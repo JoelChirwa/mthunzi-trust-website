@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, ChevronRight, Calendar, Loader2 } from "lucide-react";
+import { getApiUrl } from "../../utils/api";
 
 const BlogSection = () => {
   const [blogs, setBlogs] = useState([]);
@@ -12,12 +13,7 @@ const BlogSection = () => {
 
   const fetchBlogs = async () => {
     try {
-      const response = await fetch(
-        `${(import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
-          /\/api$/,
-          ""
-        )}/api/blogs`
-      );
+      const response = await fetch(getApiUrl("/blogs"));
       const data = await response.json();
       setBlogs(data.slice(0, 3));
     } catch (error) {
