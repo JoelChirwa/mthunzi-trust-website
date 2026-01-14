@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import heroImage1 from "../../assets/images/hero.jpg";
 import heroImage2 from "../../assets/images/hero2.jpeg";
 
@@ -12,6 +13,7 @@ import heroImage2 from "../../assets/images/hero2.jpeg";
  */
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const navigate = useNavigate();
 
   const slides = [
     {
@@ -21,7 +23,7 @@ const Hero = () => {
       description:
         "We are a youth-led non-profit driving sustainable development, education, environmental protection, and community empowerment in Malawi. Join us in making a difference!",
       bgImage: heroImage1,
-      buttons: [{ text: "Learn More", type: "primary" }],
+      buttons: [{ text: "Learn More", type: "primary", path: "/about" }],
     },
     {
       id: 2,
@@ -29,7 +31,13 @@ const Hero = () => {
       title: "",
       description: "In-Country Focal Point for Youth Adaptation Network",
       bgImage: heroImage2,
-      buttons: [{ text: "Learn More", type: "primary" }],
+      buttons: [
+        {
+          text: "Learn More",
+          type: "primary",
+          path: "/achievements/in-country-focal-point-for-the-african-youth-adaptation-network",
+        },
+      ],
     },
   ];
 
@@ -144,6 +152,7 @@ const Hero = () => {
               {slides[currentSlide].buttons.map((btn, idx) => (
                 <button
                   key={idx}
+                  onClick={() => btn.path && navigate(btn.path)}
                   className={`px-8 md:px-10 py-3.5 md:py-4 rounded-full font-bold text-base md:text-lg transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-xl ${
                     btn.type === "primary"
                       ? "bg-primary-yellow text-primary-green hover:bg-yellow-400 hover:shadow-yellow-500/20"

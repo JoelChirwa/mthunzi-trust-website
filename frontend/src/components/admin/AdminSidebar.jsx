@@ -16,6 +16,7 @@ import {
   BarChart3,
   Handshake,
   Mail,
+  Award,
 } from "lucide-react";
 import logoImg from "../../assets/images/logo.jpg";
 
@@ -38,6 +39,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
     { name: "Gallery", icon: ImageIcon, path: "/admin/gallery" },
     { name: "Our Team", icon: Users, path: "/admin/team" },
     { name: "Partners", icon: Handshake, path: "/admin/partners" },
+    { name: "Achievements", icon: Award, path: "/admin/achievements" },
     { name: "Settings", icon: Settings, path: "/admin/settings" },
     { name: "Inquiries", icon: Mail, path: "/admin/inquiries" },
   ];

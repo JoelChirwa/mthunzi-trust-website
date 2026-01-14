@@ -43,7 +43,8 @@ const Header = () => {
     ].includes(location.pathname) ||
     location.pathname.startsWith("/blog/") ||
     location.pathname.startsWith("/programs/") ||
-    location.pathname.startsWith("/careers/");
+    location.pathname.startsWith("/careers/") ||
+    location.pathname.startsWith("/achievements/");
 
   return (
     <motion.header

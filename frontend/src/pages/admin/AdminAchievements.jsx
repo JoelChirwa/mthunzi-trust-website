@@ -1,0 +1,621 @@
+import React, { useState, useEffect } from "react";
+import AdminLayout from "../../components/admin/AdminLayout";
+import {
+  Award,
+  Edit3,
+  Trash2,
+  Plus,
+  Loader2,
+  X,
+  Save,
+  Image as ImageIcon,
+  CheckCircle2,
+  TrendingUp,
+  Calendar,
+  Tag,
+  Type,
+  Layout,
+  FileText,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "react-hot-toast";
+import { getApiUrl } from "../../utils/api";
+
+const AchievementModal = ({ isOpen, onClose, onSave, achievement }) => {
+  const [formData, setFormData] = useState({
+    title: "",
+    year: new Date().getFullYear(),
+    description: "",
+    content: "",
+    category: "General",
+    featured: false,
+    order: 0,
+    images: [],
+  });
+  const [isUploading, setIsUploading] = useState(false);
+
+  useEffect(() => {
+    if (achievement) {
+      setFormData(achievement);
+    } else {
+      setFormData({
+        title: "",
+        year: new Date().getFullYear(),
+        description: "",
+        content: "",
+        category: "General",
+        featured: false,
+        order: 0,
+        images: [],
+      });
+    }
+  }, [achievement, isOpen]);
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      const data = new FormData();
+      data.append("image", file);
+
+      const response = await fetch(getApiUrl("/upload"), {
+        method: "POST",
+        body: data,
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setFormData((prev) => ({
+          ...prev,
+          images: [...(prev.images || []), result.url],
+        }));
+      }
+    } catch (error) {
+      console.error("Upload failed:", error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <AnimatePresence>
+      <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-blue-900/40 backdrop-blur-sm">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          className="bg-white w-full max-w-4xl rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
+        >
+          {/* Modal Header */}
+          <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <div>
+              <h3 className="text-xl font-black text-blue-900 uppercase tracking-tighter">
+                {achievement ? "Edit Achievement" : "Add New Achievement"}
+              </h3>
+              <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mt-1">
+                {achievement
+                  ? "Update achievement details"
+                  : "Document a new milestone"}
+              </p>
+            </div>
+            <button
+              onClick={onClose}
+              className="w-12 h-12 flex items-center justify-center bg-white rounded-2xl text-gray-400 hover:text-red-500 hover:shadow-lg transition-all border border-gray-100"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Modal Body - Scrollable */}
+          <div className="p-8 overflow-y-auto space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1 flex items-center gap-2">
+                  <Type className="w-3 h-3 text-primary-green" />
+                  Achievement Title
+                </label>
+                <div className="relative group">
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) =>
+                      setFormData({ ...formData, title: e.target.value })
+                    }
+                    placeholder="e.g., UN Climate Youth Award"
+                    className="w-full px-6 py-4 bg-gray-100/30 border-2 border-gray-100 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 placeholder:text-gray-300 transition-all shadow-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1 flex items-center gap-2">
+                  <Calendar className="w-3 h-3 text-primary-green" />
+                  Year
+                </label>
+                <input
+                  type="number"
+                  value={formData.year}
+                  onChange={(e) =>
+                    setFormData({ ...formData, year: parseInt(e.target.value) })
+                  }
+                  min="2020"
+                  max="2100"
+                  className="w-full px-6 py-4 bg-gray-100/30 border-2 border-gray-100 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 transition-all shadow-sm"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1 flex items-center gap-2">
+                  <Tag className="w-3 h-3 text-primary-green" />
+                  Category
+                </label>
+                <div className="relative">
+                  <select
+                    value={formData.category}
+                    onChange={(e) =>
+                      setFormData({ ...formData, category: e.target.value })
+                    }
+                    className="w-full px-6 py-4 bg-gray-100/30 border-2 border-gray-100 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 transition-all appearance-none cursor-pointer shadow-sm"
+                  >
+                    <option>General</option>
+                    <option>Environment</option>
+                    <option>Education</option>
+                    <option>Health</option>
+                    <option>Community</option>
+                    <option>Award</option>
+                    <option>Recognition</option>
+                  </select>
+                  <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <Layout className="w-4 h-4 text-gray-300" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1 flex items-center gap-2">
+                  <TrendingUp className="w-3 h-3 text-primary-green" />
+                  Display Position
+                </label>
+                <input
+                  type="number"
+                  value={formData.order === 999 ? 0 : formData.order}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      order:
+                        parseInt(e.target.value) === 0
+                          ? 999
+                          : parseInt(e.target.value),
+                    })
+                  }
+                  placeholder="0"
+                  className="w-full px-6 py-4 bg-gray-100/30 border-2 border-gray-100 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 transition-all shadow-sm"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center gap-6 p-6 bg-blue-50/50 rounded-3xl border border-blue-100/50">
+              <div
+                onClick={() =>
+                  setFormData({ ...formData, featured: !formData.featured })
+                }
+                className={`w-14 h-7 rounded-full transition-all relative cursor-pointer shadow-inner ${
+                  formData.featured ? "bg-primary-green" : "bg-gray-200"
+                }`}
+              >
+                <div
+                  className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all shadow-md ${
+                    formData.featured ? "left-8" : "left-1"
+                  }`}
+                />
+              </div>
+              <div>
+                <span className="text-[11px] font-black uppercase tracking-widest text-blue-900 block">
+                  Featured Achievement
+                </span>
+                <span className="text-[9px] font-bold text-blue-900/40 uppercase tracking-widest">
+                  Highlighted achievements appear prominently on About page
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
+                Short Description
+              </label>
+              <textarea
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+                placeholder="Brief summary for the achievement card (1-2 lines)"
+                rows={3}
+                className="w-full px-6 py-4 bg-gray-100/30 border-2 border-gray-100 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-medium text-blue-900 placeholder:text-gray-300 transition-all shadow-sm resize-none"
+              />
+            </div>
+
+            <div className="space-y-4">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
+                Achievement Images
+              </label>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <AnimatePresence>
+                  {formData.images?.map((img, idx) => (
+                    <motion.div
+                      key={img}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      className="relative aspect-video rounded-2xl overflow-hidden border border-gray-100 group shadow-sm"
+                    >
+                      <img
+                        src={img}
+                        alt="Gallery"
+                        className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFormData({
+                            ...formData,
+                            images: formData.images.filter((_, i) => i !== idx),
+                          })
+                        }
+                        className="absolute top-2 right-2 w-8 h-8 bg-red-500 text-white rounded-xl shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                      {idx === 0 && (
+                        <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-blue-900 text-white text-[8px] font-black uppercase rounded-md shadow-lg">
+                          Main
+                        </div>
+                      )}
+                    </motion.div>
+                  ))}
+                  <motion.label
+                    layout
+                    className="relative aspect-video rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-white hover:border-primary-green transition-all"
+                  >
+                    <input
+                      type="file"
+                      className="hidden"
+                      onChange={handleImageUpload}
+                      accept="image/*"
+                      disabled={isUploading}
+                    />
+                    {isUploading ? (
+                      <Loader2 className="w-5 h-5 text-primary-green animate-spin" />
+                    ) : (
+                      <>
+                        <Plus className="w-5 h-5 text-gray-400" />
+                        <span className="text-[8px] font-black uppercase tracking-widest text-gray-400">
+                          Add Photo
+                        </span>
+                      </>
+                    )}
+                  </motion.label>
+                </AnimatePresence>
+              </div>
+              <p className="text-[10px] text-gray-400 font-medium leading-relaxed">
+                First image will be used as the featured thumbnail.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between ml-1">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 flex items-center gap-2">
+                  <FileText className="w-3 h-3 text-primary-green" />
+                  Full Details
+                </label>
+                <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">
+                  Markdown & HTML Supported
+                </span>
+              </div>
+              <div className="relative group rounded-[2rem] overflow-hidden border-2 border-gray-100 focus-within:border-primary-green transition-all shadow-sm">
+                <div className="absolute top-0 left-0 right-0 h-10 bg-gray-50 border-b border-gray-100 flex items-center px-6 gap-4">
+                  <div className="flex gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-red-300" />
+                    <div className="w-2 h-2 rounded-full bg-orange-300" />
+                    <div className="w-2 h-2 rounded-full bg-green-300" />
+                  </div>
+                  <div className="h-4 w-px bg-gray-200 ml-2" />
+                  <span className="text-[8px] font-black text-gray-300 uppercase tracking-widest">
+                    Mthunzi Editor v2.0
+                  </span>
+                </div>
+                <textarea
+                  value={formData.content}
+                  onChange={(e) =>
+                    setFormData({ ...formData, content: e.target.value })
+                  }
+                  placeholder="Write the full achievement story here..."
+                  rows={12}
+                  className="w-full px-8 pt-14 pb-8 bg-white outline-none text-base font-medium text-blue-950 placeholder:text-gray-200 leading-relaxed resize-none"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Modal Footer */}
+          <div className="p-8 border-t border-gray-100 bg-gray-50/50 flex justify-end gap-4">
+            <button
+              onClick={onClose}
+              className="px-8 py-4 bg-white text-gray-400 hover:text-blue-900 font-black text-[10px] uppercase tracking-widest rounded-2xl border border-gray-100 hover:shadow-lg transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => onSave(formData)}
+              disabled={isUploading || !formData.title || !formData.description}
+              className={`px-8 py-4 bg-blue-900 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl shadow-blue-900/20 flex items-center gap-3 hover:translate-y-[-2px] transition-all ${
+                isUploading || !formData.title || !formData.description
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
+              }`}
+            >
+              <Save className="w-4 h-4" /> Save Achievement
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    </AnimatePresence>
+  );
+};
+
+const AdminAchievements = () => {
+  const [achievements, setAchievements] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentAchievement, setCurrentAchievement] = useState(null);
+
+  useEffect(() => {
+    fetchAchievements();
+  }, []);
+
+  const fetchAchievements = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(getApiUrl("/achievements"));
+      const data = await response.json();
+      setAchievements(data);
+    } catch (error) {
+      console.error("Error fetching achievements:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEdit = (achievement) => {
+    setCurrentAchievement(achievement);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = (id) => {
+    toast(
+      (t) => (
+        <div className="flex flex-col gap-4 p-4 min-w-[300px]">
+          <div>
+            <p className="text-sm font-black text-blue-900 uppercase tracking-tight">
+              Confirm Deletion
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              Are you sure you want to permanently delete this achievement?
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={async () => {
+                toast.dismiss(t.id);
+                const loadingToast = toast.loading("Deleting achievement...");
+                try {
+                  const response = await fetch(
+                    getApiUrl(`/achievements/${id}`),
+                    {
+                      method: "DELETE",
+                      headers: { "Content-Type": "application/json" },
+                    }
+                  );
+                  if (response.ok) {
+                    setAchievements((prev) =>
+                      prev.filter((achievement) => achievement._id !== id)
+                    );
+                    toast.success("Achievement deleted", { id: loadingToast });
+                  } else {
+                    toast.error("Failed to delete achievement", {
+                      id: loadingToast,
+                    });
+                  }
+                } catch (error) {
+                  console.error("Error deleting achievement:", error);
+                  toast.error("An error occurred during deletion", {
+                    id: loadingToast,
+                  });
+                }
+              }}
+              className="flex-1 px-4 py-2.5 bg-red-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-red-500/20 hover:bg-red-600 transition-all font-bold"
+            >
+              Delete
+            </button>
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-200 transition-all font-bold"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ),
+      { duration: 5000, position: "top-center" }
+    );
+  };
+
+  const handleAddNew = () => {
+    setCurrentAchievement(null);
+    setIsModalOpen(true);
+  };
+
+  const handleSave = async (formData) => {
+    const loadingToast = toast.loading(
+      currentAchievement ? "Updating Achievement..." : "Adding Achievement..."
+    );
+    try {
+      const url = currentAchievement
+        ? getApiUrl(`/achievements/${currentAchievement._id}`)
+        : getApiUrl("/achievements");
+
+      const method = currentAchievement ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        fetchAchievements();
+        setIsModalOpen(false);
+        toast.success(
+          currentAchievement ? "Achievement updated!" : "Achievement added!",
+          {
+            id: loadingToast,
+          }
+        );
+      } else {
+        toast.error("Failed to save achievement", { id: loadingToast });
+      }
+    } catch (error) {
+      console.error("Error saving achievement:", error);
+      toast.error("A critical error occurred", { id: loadingToast });
+    }
+  };
+
+  return (
+    <AdminLayout title="Achievements Management">
+      <AchievementModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSave}
+        achievement={currentAchievement}
+      />
+
+      {/* Header with Add Button */}
+      <div className="flex justify-between items-center mb-10">
+        <div>
+          <h2 className="text-2xl font-black text-blue-900 uppercase tracking-tighter">
+            Achievements
+          </h2>
+          <p className="text-gray-400 text-sm font-medium mt-1">
+            Manage your organization's achievements and milestones
+          </p>
+        </div>
+        <button
+          onClick={handleAddNew}
+          className="h-14 px-8 bg-primary-green text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary-green/20 flex items-center gap-3 hover:translate-y-[-2px] transition-all"
+        >
+          <Plus className="w-4 h-4" /> Add Achievement
+        </button>
+      </div>
+
+      {/* Achievements List */}
+      <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden mb-10">
+        <div className="divide-y divide-gray-100">
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+              <Loader2 className="w-10 h-10 text-primary-green animate-spin" />
+              <p className="text-gray-400 text-sm font-medium uppercase tracking-widest">
+                Loading Achievements...
+              </p>
+            </div>
+          ) : achievements.length > 0 ? (
+            achievements.map((achievement, index) => (
+              <motion.div
+                key={achievement._id || index}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05 }}
+                className="flex items-center justify-between p-6 hover:bg-gray-50/50 transition-all"
+              >
+                {/* Left: Thumbnail + Info */}
+                <div className="flex items-center gap-4 flex-1">
+                  {/* Thumbnail */}
+                  <div className="w-24 h-16 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-100">
+                    {achievement.images && achievement.images.length > 0 ? (
+                      <img
+                        src={achievement.images[0]}
+                        alt={achievement.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-900 to-primary-green text-white">
+                        <Award className="w-6 h-6" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Title & Stats */}
+                  <div className="flex flex-col flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-1">
+                      <h3 className="text-blue-900 font-black text-base truncate">
+                        {achievement.title}
+                      </h3>
+                      {achievement.featured && (
+                        <span className="px-2 py-0.5 bg-primary-yellow/20 text-blue-900 text-[8px] font-black uppercase rounded-md flex items-center gap-1">
+                          <CheckCircle2 className="w-2.5 h-2.5" /> Featured
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                      <span className="text-primary-green">
+                        {achievement.year}
+                      </span>
+                      <span>{achievement.category}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: Action Buttons */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleEdit(achievement)}
+                    className="py-2.5 px-4 bg-blue-50 text-blue-900 rounded-xl flex items-center gap-2 text-xs font-bold hover:bg-blue-900 hover:text-white transition-all shadow-sm"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" /> Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(achievement._id)}
+                    className="py-2.5 px-4 bg-red-50 text-red-500 rounded-xl flex items-center gap-2 text-xs font-bold hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" /> Delete
+                  </button>
+                </div>
+              </motion.div>
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="w-20 h-20 bg-gray-50 rounded-[2rem] flex items-center justify-center mb-6">
+                <Award className="w-10 h-10 text-gray-200" />
+              </div>
+              <p className="text-gray-400 text-sm font-bold uppercase tracking-widest">
+                No achievements added yet
+              </p>
+              <button
+                onClick={handleAddNew}
+                className="mt-6 px-8 py-3 bg-primary-green text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-primary-green/20 transition-all hover:scale-105"
+              >
+                Add First Achievement
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export default AdminAchievements;

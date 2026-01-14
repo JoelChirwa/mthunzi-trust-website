@@ -14,6 +14,7 @@ import AboutPage from "./pages/AboutPage";
 import ImpactPage from "./pages/ImpactPage";
 import BlogPage from "./pages/BlogPage";
 import SingleBlogPage from "./pages/SingleBlogPage";
+import SingleAchievementPage from "./pages/SingleAchievementPage";
 import ContactPage from "./pages/ContactPage";
 import Programs from "./pages/Programs";
 import SingleProgramPage from "./pages/SingleProgramPage";
@@ -30,6 +31,7 @@ import AdminJobs from "./pages/admin/AdminJobs";
 import AdminGallery from "./pages/admin/AdminGallery";
 import AdminTeam from "./pages/admin/AdminTeam";
 import AdminPartners from "./pages/admin/AdminPartners";
+import AdminAchievements from "./pages/admin/AdminAchievements";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminInquiries from "./pages/admin/AdminInquiries";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -65,6 +67,7 @@ function AnimatedRoutes() {
         <Route path="/careers/:slug/apply" element={<JobApplicationPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog/:slug" element={<SingleBlogPage />} />
+        <Route path="/achievements/:slug" element={<SingleAchievementPage />} />
         <Route path="/contact" element={<ContactPage />} />
       </Routes>
     </AnimatePresence>
@@ -155,6 +158,14 @@ function AppContent() {
           element={
             <AdminGuard>
               <AdminPartners />
+            </AdminGuard>
+          }
+        />
+        <Route
+          path="/admin/achievements"
+          element={
+            <AdminGuard>
+              <AdminAchievements />
             </AdminGuard>
           }
         />

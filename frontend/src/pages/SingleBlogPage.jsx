@@ -12,6 +12,7 @@ import {
   Loader2,
   FileText,
 } from "lucide-react";
+import { toast } from "react-hot-toast";
 import { getApiUrl } from "../utils/api";
 
 const SingleBlogPage = () => {
@@ -51,6 +52,41 @@ const SingleBlogPage = () => {
     } catch (error) {
       console.error("Error fetching related posts:", error);
     }
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success("Article link copied!", {
+      icon: "🔗",
+      style: {
+        borderRadius: "15px",
+        background: "#1e3a8a",
+        color: "#fff",
+        fontWeight: "bold",
+      },
+    });
+  };
+
+  const handleSocialShare = (platform) => {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(post.title);
+    let shareUrl = "";
+
+    switch (platform) {
+      case "facebook":
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+        break;
+      case "twitter":
+        shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+        break;
+      case "linkedin":
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+        break;
+      default:
+        return;
+    }
+
+    window.open(shareUrl, "_blank", "width=600,height=400");
   };
 
   if (isLoading) {
@@ -103,7 +139,7 @@ const SingleBlogPage = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-blue-900 via-blue-900/60 to-transparent z-10" />
         </motion.div>
 
-        <div className="container mx-auto px-4 relative z-20 pt-32 md:pt-48 pb-20">
+        <div className="container mx-auto px-4 relative z-20 pt-24 md:pt-32 pb-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -185,17 +221,25 @@ const SingleBlogPage = () => {
                     Share Story:
                   </span>
                   <div className="flex gap-3">
-                    {[Facebook, Twitter, Linkedin].map((Icon, i) => (
+                    {[
+                      { icon: Facebook, name: "facebook" },
+                      { icon: Twitter, name: "twitter" },
+                      { icon: Linkedin, name: "linkedin" },
+                    ].map((platform, i) => (
                       <button
                         key={i}
+                        onClick={() => handleSocialShare(platform.name)}
                         className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-blue-900 hover:bg-primary-green hover:text-white transition-all"
                       >
-                        <Icon className="w-5 h-5" />
+                        <platform.icon className="w-5 h-5" />
                       </button>
                     ))}
                   </div>
                 </div>
-                <button className="flex items-center gap-2 text-primary-green font-black uppercase tracking-widest text-sm hover:translate-x-1 transition-transform">
+                <button
+                  onClick={handleCopyLink}
+                  className="flex items-center gap-2 text-primary-green font-black uppercase tracking-widest text-sm hover:translate-x-1 transition-transform"
+                >
                   <Share2 className="w-5 h-5" /> Copy Article Link
                 </button>
               </div>

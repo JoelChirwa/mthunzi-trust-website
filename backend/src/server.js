@@ -19,6 +19,7 @@ import jobRoutes from "./routes/jobRoutes.js";
 import galleryRoutes from "./routes/galleryRoutes.js";
 import settingRoutes from "./routes/settingRoutes.js";
 import inquiryRoutes from "./routes/inquiryRoutes.js";
+import achievementRoutes from "./routes/achievementRoutes.js";
 
 const app = express();
 
@@ -57,6 +58,7 @@ app.use("/api/jobs", jobRoutes);
 app.use("/api/gallery", galleryRoutes);
 app.use("/api/settings", settingRoutes);
 app.use("/api/inquiries", inquiryRoutes);
+app.use("/api/achievements", achievementRoutes);
 
 app.get("/", (req, res) => {
   res.json({

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Target,
@@ -17,16 +18,20 @@ import {
   Linkedin,
   Mail,
   Loader2,
+  ArrowRight,
 } from "lucide-react";
 import { getApiUrl } from "../utils/api";
 
 const AboutPage = () => {
   const [teamMembers, setTeamMembers] = useState([]);
+  const [achievements, setAchievements] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [achievementsLoading, setAchievementsLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchTeamMembers();
+    fetchAchievements();
   }, []);
 
   const fetchTeamMembers = async () => {
@@ -40,6 +45,19 @@ const AboutPage = () => {
       console.error("Error fetching team members:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchAchievements = async () => {
+    try {
+      setAchievementsLoading(true);
+      const response = await fetch(getApiUrl("/achievements"));
+      const data = await response.json();
+      setAchievements(data);
+    } catch (error) {
+      console.error("Error fetching achievements:", error);
+    } finally {
+      setAchievementsLoading(false);
     }
   };
 
@@ -121,7 +139,7 @@ const AboutPage = () => {
           <div className="absolute inset-0 bg-black/40 z-10" />
         </motion.div>
 
-        <div className="container mx-auto px-4 relative z-20 pt-32 md:pt-48">
+        <div className="container mx-auto px-4 relative z-20 pt-24 md:pt-32 pb-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -132,7 +150,7 @@ const AboutPage = () => {
               The umbrella <br />
               <span className="text-primary-green">of Hope.</span>
             </h1>
-            <p className="text-lg md:text-2xl text-white/80 max-w-2xl font-light leading-relaxed">
+            <p className="text-lg md:text-2xl text-white max-w-2xl font-light leading-relaxed mb-12">
               Registered Youth-led Non-profit Organization dedicated to holistic
               and sustainable development in Malawi.
             </p>
@@ -320,6 +338,106 @@ const AboutPage = () => {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Achievements Section */}
+      <section className="py-20 md:py-32 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20">
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <div className="w-12 h-1 bg-primary-yellow rounded" />
+              <span className="text-primary-yellow font-black uppercase tracking-[0.3em] text-xs md:text-sm">
+                Our Milestones
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-6xl font-black text-blue-900 mb-6 uppercase tracking-tighter">
+              Achievements &{" "}
+              <span className="text-primary-yellow">Recognition</span>
+            </h2>
+            <p className="text-gray-500 text-base md:text-lg font-medium">
+              Celebrating the impact we've made together in building a better
+              future for Malawi
+            </p>
+          </div>
+
+          {achievementsLoading ? (
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+              <Loader2 className="w-12 h-12 text-primary-yellow animate-spin" />
+              <p className="text-gray-400 font-black uppercase tracking-widest text-xs">
+                Loading achievements...
+              </p>
+            </div>
+          ) : achievements.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {achievements.slice(0, 6).map((achievement, i) => (
+                <motion.div
+                  key={achievement._id || i}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="group bg-white border border-gray-100 rounded-[2rem] overflow-hidden shadow-lg shadow-blue-900/5 hover:shadow-2xl hover:shadow-primary-yellow/20 transition-all duration-500"
+                >
+                  {/* Image */}
+                  {achievement.images && achievement.images.length > 0 && (
+                    <div className="relative h-56 overflow-hidden bg-gradient-to-br from-blue-900 to-primary-green">
+                      <img
+                        src={achievement.images[0]}
+                        alt={achievement.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-transparent to-transparent" />
+                    </div>
+                  )}
+
+                  {/* Content */}
+                  <div className="p-8">
+                    {/* Category */}
+                    <span className="inline-block px-3 py-1 bg-primary-green/10 text-primary-green text-[9px] font-black uppercase tracking-widest rounded-lg mb-4">
+                      {achievement.category}
+                    </span>
+
+                    {/* Title */}
+                    <h3 className="text-xl font-black text-blue-900 mb-4 leading-tight group-hover:text-primary-yellow transition-colors">
+                      {achievement.title}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="text-gray-600 text-sm leading-relaxed mb-6 line-clamp-3">
+                      {achievement.description}
+                    </p>
+
+                    {/* Learn More Button */}
+                    <Link
+                      to={`/achievements/${achievement.slug}`}
+                      className="inline-flex items-center gap-2 text-blue-900 font-black text-xs uppercase tracking-widest hover:text-primary-yellow transition-colors group"
+                    >
+                      Learn More
+                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </div>
+
+                  {/* Featured Badge */}
+                  {achievement.featured && (
+                    <div className="absolute top-6 left-6 px-3 py-1.5 bg-blue-900 text-white text-[8px] font-black uppercase rounded-xl shadow-xl flex items-center gap-2">
+                      <Award className="w-3 h-3" />
+                      Featured
+                    </div>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <div className="w-20 h-20 bg-gray-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
+                <Award className="w-10 h-10 text-gray-200" />
+              </div>
+              <p className="text-gray-400 text-sm font-bold uppercase tracking-widest">
+                More achievements coming soon
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
