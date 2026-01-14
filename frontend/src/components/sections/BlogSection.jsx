@@ -64,7 +64,7 @@ const BlogSection = () => {
                 {/* Image */}
                 <div className="relative h-64 overflow-hidden">
                   <img
-                    src={post.image}
+                    src={post.images && post.images[0]}
                     alt={post.title}
                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                   />

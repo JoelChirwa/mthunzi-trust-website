@@ -10,6 +10,11 @@ import {
   Save,
   Image as ImageIcon,
   CheckCircle2,
+  TrendingUp,
+  Clock,
+  Tag,
+  Type,
+  Layout,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
@@ -19,11 +24,12 @@ const BlogModal = ({ isOpen, onClose, onSave, blog }) => {
   const [formData, setFormData] = useState({
     title: "",
     content: "",
-    image: "",
     category: "General",
     readTime: "3 min read",
     featured: false,
     author: "Mthunzi Trust",
+    order: 0,
+    images: [],
   });
   const [isUploading, setIsUploading] = useState(false);
 
@@ -34,11 +40,12 @@ const BlogModal = ({ isOpen, onClose, onSave, blog }) => {
       setFormData({
         title: "",
         content: "",
-        image: "",
         category: "General",
         readTime: "3 min read",
         featured: false,
         author: "Mthunzi Trust",
+        order: 0,
+        images: [],
       });
     }
   }, [blog, isOpen]);
@@ -63,7 +70,10 @@ const BlogModal = ({ isOpen, onClose, onSave, blog }) => {
 
       const result = await response.json();
       if (result.success) {
-        setFormData({ ...formData, image: result.url });
+        setFormData((prev) => ({
+          ...prev,
+          images: [...(prev.images || []), result.url],
+        }));
       }
     } catch (error) {
       console.error("Upload failed:", error);
@@ -76,7 +86,7 @@ const BlogModal = ({ isOpen, onClose, onSave, blog }) => {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-blue-900/40 backdrop-blur-sm">
+      <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-blue-900/40 backdrop-blur-sm">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -106,45 +116,75 @@ const BlogModal = ({ isOpen, onClose, onSave, blog }) => {
           {/* Modal Body - Scrollable */}
           <div className="p-8 overflow-y-auto space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40 ml-1">
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1 flex items-center gap-2">
+                  <Type className="w-3 h-3 text-primary-green" />
                   Article Title
                 </label>
+                <div className="relative group">
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) =>
+                      setFormData({ ...formData, title: e.target.value })
+                    }
+                    placeholder="e.g., Impact Report 2024"
+                    className="w-full px-6 py-4 bg-gray-100/30 border-2 border-gray-100 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 placeholder:text-gray-300 transition-all shadow-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1 flex items-center gap-2">
+                  <TrendingUp className="w-3 h-3 text-primary-green" />
+                  Display Position
+                </label>
                 <input
-                  type="text"
-                  value={formData.title}
+                  type="number"
+                  value={formData.order === 999 ? 0 : formData.order}
                   onChange={(e) =>
-                    setFormData({ ...formData, title: e.target.value })
+                    setFormData({
+                      ...formData,
+                      order:
+                        parseInt(e.target.value) === 0
+                          ? 999
+                          : parseInt(e.target.value),
+                    })
                   }
-                  placeholder="e.g., Impact Report 2024"
-                  className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-medium transition-all"
+                  placeholder="0"
+                  className="w-full px-6 py-4 bg-gray-100/30 border-2 border-gray-100 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 transition-all shadow-sm"
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40 ml-1">
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1 flex items-center gap-2">
+                  <Tag className="w-3 h-3 text-primary-green" />
                   Category
                 </label>
-                <select
-                  value={formData.category}
-                  onChange={(e) =>
-                    setFormData({ ...formData, category: e.target.value })
-                  }
-                  className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 transition-all appearance-none cursor-pointer"
-                >
-                  <option>General</option>
-                  <option>Environment</option>
-                  <option>Education</option>
-                  <option>Health</option>
-                  <option>Community</option>
-                </select>
+                <div className="relative">
+                  <select
+                    value={formData.category}
+                    onChange={(e) =>
+                      setFormData({ ...formData, category: e.target.value })
+                    }
+                    className="w-full px-6 py-4 bg-gray-100/30 border-2 border-gray-100 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 transition-all appearance-none cursor-pointer shadow-sm"
+                  >
+                    <option>General</option>
+                    <option>Environment</option>
+                    <option>Education</option>
+                    <option>Health</option>
+                    <option>Community</option>
+                  </select>
+                  <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <Layout className="w-4 h-4 text-gray-300" />
+                  </div>
+                </div>
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40 ml-1">
-                  Read Time (e.g., 5 min read)
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1 flex items-center gap-2">
+                  <Clock className="w-3 h-3 text-primary-green" />
+                  Read Time
                 </label>
                 <input
                   type="text"
@@ -152,81 +192,137 @@ const BlogModal = ({ isOpen, onClose, onSave, blog }) => {
                   onChange={(e) =>
                     setFormData({ ...formData, readTime: e.target.value })
                   }
-                  className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-medium transition-all"
+                  placeholder="e.g., 5 min read"
+                  className="w-full px-6 py-4 bg-gray-100/30 border-2 border-gray-100 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 placeholder:text-gray-300 transition-all shadow-sm"
                 />
-              </div>
-              <div className="flex items-end pb-4">
-                <label className="flex items-center gap-3 cursor-pointer group">
-                  <div
-                    onClick={() =>
-                      setFormData({ ...formData, featured: !formData.featured })
-                    }
-                    className={`w-12 h-6 rounded-full transition-all relative ${
-                      formData.featured ? "bg-primary-green" : "bg-gray-200"
-                    }`}
-                  >
-                    <div
-                      className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
-                        formData.featured ? "left-7" : "left-1"
-                      }`}
-                    />
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-blue-900">
-                    Feature on Homepage
-                  </span>
-                </label>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40 ml-1">
-                Featured Image
+            <div className="flex items-center gap-6 p-6 bg-blue-50/50 rounded-3xl border border-blue-100/50">
+              <div
+                onClick={() =>
+                  setFormData({ ...formData, featured: !formData.featured })
+                }
+                className={`w-14 h-7 rounded-full transition-all relative cursor-pointer shadow-inner ${
+                  formData.featured ? "bg-primary-green" : "bg-gray-200"
+                }`}
+              >
+                <div
+                  className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all shadow-md ${
+                    formData.featured ? "left-8" : "left-1"
+                  }`}
+                />
+              </div>
+              <div>
+                <span className="text-[11px] font-black uppercase tracking-widest text-blue-900 block">
+                  Promoted Content
+                </span>
+                <span className="text-[9px] font-bold text-blue-900/40 uppercase tracking-widest">
+                  Featured articles appear on the homepage carousel
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
+                Article Images (Minimum 1 Required)
               </label>
-              <div className="flex items-center gap-6">
-                <div className="w-40 h-24 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
-                  {isUploading ? (
-                    <Loader2 className="w-6 h-6 text-primary-green animate-spin" />
-                  ) : formData.image ? (
-                    <img
-                      src={formData.image}
-                      alt="Preview"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <ImageIcon className="w-6 h-6 text-gray-300" />
-                  )}
-                </div>
-                <div className="flex-1">
-                  <label className="inline-block px-6 py-3 bg-blue-50 text-blue-900 text-[10px] font-black uppercase tracking-widest rounded-xl border border-blue-100 cursor-pointer hover:bg-blue-900 hover:text-white transition-all">
-                    {formData.image ? "Change Image" : "Upload Banner"}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <AnimatePresence>
+                  {formData.images?.map((img, idx) => (
+                    <motion.div
+                      key={img}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      className="relative aspect-video rounded-2xl overflow-hidden border border-gray-100 group shadow-sm"
+                    >
+                      <img
+                        src={img}
+                        alt="Gallery"
+                        className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFormData({
+                            ...formData,
+                            images: formData.images.filter((_, i) => i !== idx),
+                          })
+                        }
+                        className="absolute top-2 right-2 w-8 h-8 bg-red-500 text-white rounded-xl shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                      {idx === 0 && (
+                        <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-blue-900 text-white text-[8px] font-black uppercase rounded-md shadow-lg">
+                          Main
+                        </div>
+                      )}
+                    </motion.div>
+                  ))}
+                  <motion.label
+                    layout
+                    className="relative aspect-video rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-white hover:border-primary-green transition-all"
+                  >
                     <input
                       type="file"
                       className="hidden"
                       onChange={handleImageUpload}
                       accept="image/*"
+                      disabled={isUploading}
                     />
-                  </label>
-                  <p className="text-[10px] text-gray-400 font-medium mt-2 leading-relaxed">
-                    Recommended: 16:9 Aspect Ratio. <br />
-                    Supported: JPG, PNG, WEBP
-                  </p>
-                </div>
+                    {isUploading ? (
+                      <Loader2 className="w-5 h-5 text-primary-green animate-spin" />
+                    ) : (
+                      <>
+                        <Plus className="w-5 h-5 text-gray-400" />
+                        <span className="text-[8px] font-black uppercase tracking-widest text-gray-400">
+                          Add Photo
+                        </span>
+                      </>
+                    )}
+                  </motion.label>
+                </AnimatePresence>
               </div>
+              <p className="text-[10px] text-gray-400 font-medium leading-relaxed">
+                First image will be used as the featured thumbnail. <br />
+                Supported: JPG, PNG, WEBP.
+              </p>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40 ml-1">
-                Content (HTML Supported)
-              </label>
-              <textarea
-                value={formData.content}
-                onChange={(e) =>
-                  setFormData({ ...formData, content: e.target.value })
-                }
-                placeholder="Write your story here..."
-                rows={12}
-                className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-medium transition-all"
-              />
+            <div className="space-y-3">
+              <div className="flex items-center justify-between ml-1">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 flex items-center gap-2">
+                  <FileText className="w-3 h-3 text-primary-green" />
+                  Article Content
+                </label>
+                <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">
+                  Markdown & HTML Supported
+                </span>
+              </div>
+              <div className="relative group rounded-[2rem] overflow-hidden border-2 border-gray-100 focus-within:border-primary-green transition-all shadow-sm">
+                <div className="absolute top-0 left-0 right-0 h-10 bg-gray-50 border-b border-gray-100 flex items-center px-6 gap-4">
+                  <div className="flex gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-red-300" />
+                    <div className="w-2 h-2 rounded-full bg-orange-300" />
+                    <div className="w-2 h-2 rounded-full bg-green-300" />
+                  </div>
+                  <div className="h-4 w-px bg-gray-200 ml-2" />
+                  <span className="text-[8px] font-black text-gray-300 uppercase tracking-widest">
+                    Mthunzi Editor v2.0
+                  </span>
+                </div>
+                <textarea
+                  value={formData.content}
+                  onChange={(e) =>
+                    setFormData({ ...formData, content: e.target.value })
+                  }
+                  placeholder="Write your story here..."
+                  rows={12}
+                  className="w-full px-8 pt-14 pb-8 bg-white outline-none text-base font-medium text-blue-950 placeholder:text-gray-200 leading-relaxed resize-none"
+                />
+              </div>
             </div>
           </div>
 
@@ -240,9 +336,11 @@ const BlogModal = ({ isOpen, onClose, onSave, blog }) => {
             </button>
             <button
               onClick={() => onSave(formData)}
-              disabled={isUploading}
+              disabled={isUploading || !formData.images?.length}
               className={`px-8 py-4 bg-blue-900 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl shadow-blue-900/20 flex items-center gap-3 hover:translate-y-[-2px] transition-all ${
-                isUploading ? "opacity-50 cursor-not-allowed" : ""
+                isUploading || !formData.images?.length
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
               }`}
             >
               <Save className="w-4 h-4" /> Publish Post
@@ -431,9 +529,9 @@ const AdminBlogs = () => {
                 <div className="flex items-center gap-4 flex-1">
                   {/* Thumbnail */}
                   <div className="w-24 h-16 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-100">
-                    {blog.image ? (
+                    {blog.images && blog.images.length > 0 ? (
                       <img
-                        src={blog.image}
+                        src={blog.images[0]}
                         alt={blog.title}
                         className="w-full h-full object-cover"
                       />

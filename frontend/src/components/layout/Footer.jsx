@@ -14,24 +14,10 @@ import {
   Send,
 } from "lucide-react";
 import logoImg from "../../assets/images/logo.jpg";
-import { getApiUrl } from "../../utils/api";
+import { useSettings } from "../../context/SettingsContext";
 
 const Footer = () => {
-  const [settings, setSettings] = useState(null);
-
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const response = await fetch(getApiUrl("/settings"));
-
-        const data = await response.json();
-        setSettings(data);
-      } catch (error) {
-        console.error("Error fetching settings:", error);
-      }
-    };
-    fetchSettings();
-  }, []);
+  const { settings } = useSettings();
 
   const quickLinks = [
     { name: "About Us", href: "/about" },
@@ -252,7 +238,8 @@ const Footer = () => {
               rel="noopener noreferrer"
               className="text-white/30 hover:text-white text-xs font-bold uppercase tracking-widest transition-colors cursor-pointer"
             >
-              © {new Date().getFullYear()} Mthunzi Trust. All rights reserved.
+              © {new Date().getFullYear()}{" "}
+              {settings?.footerText || "Mthunzi Trust. All rights reserved."}
             </Link>
             <div className="flex gap-6">
               <Link

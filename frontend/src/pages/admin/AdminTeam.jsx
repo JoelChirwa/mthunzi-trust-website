@@ -23,6 +23,7 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
     image: "",
     linkedin: "",
     email: "",
+    order: 0,
   });
   const [isUploading, setIsUploading] = useState(false);
 
@@ -36,6 +37,7 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
         image: "",
         linkedin: "",
         email: "",
+        order: 0,
       });
     }
   }, [member, isOpen]);
@@ -73,7 +75,7 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-blue-900/40 backdrop-blur-sm">
+      <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-blue-900/40 backdrop-blur-sm">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -102,7 +104,7 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
           <div className="p-8 overflow-y-auto space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40 ml-1">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
                   Full Name
                 </label>
                 <input
@@ -112,12 +114,33 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
                     setFormData({ ...formData, name: e.target.value })
                   }
                   placeholder="e.g., Symon Satiele"
-                  className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-medium transition-all"
+                  className="w-full px-6 py-4 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 placeholder:text-gray-300 transition-all"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40 ml-1">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
+                  Display Position (1, 2, ... 0 for default)
+                </label>
+                <input
+                  type="number"
+                  value={formData.order === 999 ? 0 : formData.order}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      order:
+                        parseInt(e.target.value) === 0
+                          ? 999
+                          : parseInt(e.target.value),
+                    })
+                  }
+                  placeholder="0"
+                  className="w-full px-6 py-4 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 placeholder:text-gray-300 transition-all"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
                   Job Position
                 </label>
                 <input
@@ -127,13 +150,13 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
                     setFormData({ ...formData, role: e.target.value })
                   }
                   placeholder="e.g., Program Director"
-                  className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-medium transition-all"
+                  className="w-full px-6 py-4 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 placeholder:text-gray-300 transition-all"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40 ml-1">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
                 Profile Photo
               </label>
               <div className="flex items-center gap-6 p-6 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
@@ -169,11 +192,11 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40 ml-1">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
                   LinkedIn Profile (URL)
                 </label>
                 <div className="relative">
-                  <Linkedin className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-900/40" />
+                  <Linkedin className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-900/60" />
                   <input
                     type="text"
                     value={formData.linkedin}
@@ -181,17 +204,17 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
                       setFormData({ ...formData, linkedin: e.target.value })
                     }
                     placeholder="https://linkedin.com/in/..."
-                    className="w-full pl-14 pr-6 py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-medium transition-all"
+                    className="w-full pl-14 pr-6 py-4 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 placeholder:text-gray-300 transition-all"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40 ml-1">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
                   Official Email
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-900/40" />
+                  <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-900/60" />
                   <input
                     type="email"
                     value={formData.email}
@@ -199,7 +222,7 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
                       setFormData({ ...formData, email: e.target.value })
                     }
                     placeholder="info@mthunzi.org"
-                    className="w-full pl-14 pr-6 py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-medium transition-all"
+                    className="w-full pl-14 pr-6 py-4 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 placeholder:text-gray-300 transition-all"
                   />
                 </div>
               </div>

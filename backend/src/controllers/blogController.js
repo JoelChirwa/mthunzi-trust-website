@@ -4,7 +4,7 @@ import Blog from "../models/blogModel.js";
 // @route   GET /api/blogs
 export const getBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find({}).sort({ createdAt: -1 });
+    const blogs = await Blog.find({}).sort({ order: 1, createdAt: -1 });
     res.status(200).json(blogs);
   } catch (error) {
     res
@@ -34,17 +34,26 @@ export const getBlogBySlug = async (req, res) => {
 // @route   POST /api/blogs
 export const createBlog = async (req, res) => {
   try {
-    const { title, content, image, readTime, featured, category, author } =
-      req.body;
-
-    const blog = await Blog.create({
+    const {
       title,
       content,
-      image,
+      images,
       readTime,
       featured,
       category,
       author,
+      order,
+    } = req.body;
+
+    const blog = await Blog.create({
+      title,
+      content,
+      images: images || [],
+      readTime,
+      featured,
+      category,
+      author,
+      order: order !== undefined ? order : 999,
     });
 
     res.status(201).json(blog);
@@ -64,12 +73,13 @@ export const updateBlog = async (req, res) => {
     if (blog) {
       blog.title = req.body.title || blog.title;
       blog.content = req.body.content || blog.content;
-      blog.image = req.body.image || blog.image;
+      blog.images = req.body.images || blog.images;
       blog.readTime = req.body.readTime || blog.readTime;
       blog.featured =
         req.body.featured !== undefined ? req.body.featured : blog.featured;
       blog.category = req.body.category || blog.category;
       blog.author = req.body.author || blog.author;
+      blog.order = req.body.order !== undefined ? req.body.order : blog.order;
 
       if (req.body.slug) {
         blog.slug = req.body.slug;

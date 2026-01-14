@@ -360,7 +360,7 @@ const AdminJobs = () => {
       {/* Add/Edit Modal */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -394,7 +394,7 @@ const AdminJobs = () => {
               <form onSubmit={handleSubmit} className="p-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-blue-900/40 uppercase tracking-widest ml-1">
+                    <label className="text-[10px] font-black text-blue-900/70 uppercase tracking-widest ml-1">
                       Job Title
                     </label>
                     <input
@@ -404,12 +404,12 @@ const AdminJobs = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, title: e.target.value })
                       }
-                      className="w-full px-5 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-primary-green outline-none transition-all text-sm font-bold"
+                      className="w-full px-5 py-3.5 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none transition-all text-sm font-bold text-blue-900 placeholder:text-gray-300"
                       placeholder="e.g. Program Coordinator"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-blue-900/40 uppercase tracking-widest ml-1">
+                    <label className="text-[10px] font-black text-blue-900/70 uppercase tracking-widest ml-1">
                       Department
                     </label>
                     <input
@@ -419,12 +419,12 @@ const AdminJobs = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, department: e.target.value })
                       }
-                      className="w-full px-5 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-primary-green outline-none transition-all text-sm font-bold"
+                      className="w-full px-5 py-3.5 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none transition-all text-sm font-bold text-blue-900 placeholder:text-gray-300"
                       placeholder="e.g. Climate Action"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-blue-900/40 uppercase tracking-widest ml-1">
+                    <label className="text-[10px] font-black text-blue-900/70 uppercase tracking-widest ml-1">
                       Location
                     </label>
                     <input
@@ -434,11 +434,11 @@ const AdminJobs = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, location: e.target.value })
                       }
-                      className="w-full px-5 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-primary-green outline-none transition-all text-sm font-bold"
+                      className="w-full px-5 py-3.5 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none transition-all text-sm font-bold text-blue-900 placeholder:text-gray-300"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-blue-900/40 uppercase tracking-widest ml-1">
+                    <label className="text-[10px] font-black text-blue-900/70 uppercase tracking-widest ml-1">
                       Job Type
                     </label>
                     <select
@@ -446,7 +446,7 @@ const AdminJobs = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, type: e.target.value })
                       }
-                      className="w-full px-5 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-primary-green outline-none transition-all text-sm font-bold"
+                      className="w-full px-5 py-3.5 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none transition-all text-sm font-bold text-blue-900"
                     >
                       <option>Full-Time</option>
                       <option>Part-Time</option>
@@ -456,7 +456,7 @@ const AdminJobs = () => {
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-blue-900/40 uppercase tracking-widest ml-1">
+                    <label className="text-[10px] font-black text-blue-900/70 uppercase tracking-widest ml-1">
                       Application Deadline
                     </label>
                     <input
@@ -466,14 +466,14 @@ const AdminJobs = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, deadline: e.target.value })
                       }
-                      className="w-full px-5 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-primary-green outline-none transition-all text-sm font-bold"
+                      className="w-full px-5 py-3.5 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none transition-all text-sm font-bold text-blue-900"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-6 mb-8">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-blue-900/40 uppercase tracking-widest ml-1">
+                    <label className="text-[10px] font-black text-blue-900/70 uppercase tracking-widest ml-1">
                       Job Description
                     </label>
                     <textarea
@@ -486,12 +486,12 @@ const AdminJobs = () => {
                           description: e.target.value,
                         })
                       }
-                      className="w-full px-5 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-primary-green outline-none transition-all text-sm font-medium leading-relaxed"
+                      className="w-full px-5 py-3.5 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none transition-all text-sm font-bold text-blue-900 placeholder:text-gray-300 leading-relaxed"
                       placeholder="Enter detailed job description..."
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-blue-900/40 uppercase tracking-widest ml-1">
+                    <label className="text-[10px] font-black text-blue-900/70 uppercase tracking-widest ml-1">
                       Requirements (one per line)
                     </label>
                     <textarea
@@ -504,7 +504,7 @@ const AdminJobs = () => {
                           requirements: e.target.value,
                         })
                       }
-                      className="w-full px-5 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-primary-green outline-none transition-all text-sm font-medium leading-relaxed"
+                      className="w-full px-5 py-3.5 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none transition-all text-sm font-bold text-blue-900 placeholder:text-gray-300 leading-relaxed"
                       placeholder="e.g. Master's in Social Sciences&#10;5+ years experience"
                     />
                   </div>

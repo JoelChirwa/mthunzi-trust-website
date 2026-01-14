@@ -157,7 +157,7 @@ const AdminInquiries = () => {
       {/* Inquiry Detail Modal */}
       <AnimatePresence>
         {selectedInquiry && (
-          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 lg:p-12">
+          <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 lg:p-12">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -206,7 +206,7 @@ const AdminInquiries = () => {
                         <User className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">
+                        <p className="text-[9px] font-black text-blue-900/70 uppercase tracking-widest">
                           Sender Name
                         </p>
                         <p className="font-bold text-blue-900 truncate">
@@ -219,7 +219,7 @@ const AdminInquiries = () => {
                         <Mail className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">
+                        <p className="text-[9px] font-black text-blue-900/70 uppercase tracking-widest">
                           Email Address
                         </p>
                         <p className="font-bold text-blue-900 break-all text-sm lg:text-base">
@@ -234,7 +234,7 @@ const AdminInquiries = () => {
                         <Phone className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">
+                        <p className="text-[9px] font-black text-blue-900/70 uppercase tracking-widest">
                           Phone Number
                         </p>
                         <p className="font-bold text-blue-900">
@@ -247,7 +247,7 @@ const AdminInquiries = () => {
                         <Tag className="w-4 h-4" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">
+                        <p className="text-[9px] font-black text-blue-900/70 uppercase tracking-widest">
                           Inquiry Category
                         </p>
                         <p className="font-bold text-blue-900">
@@ -263,7 +263,7 @@ const AdminInquiries = () => {
                   <div className="absolute top-6 lg:top-8 right-6 lg:right-8 text-gray-200">
                     <MessageSquare className="w-8 h-8 lg:w-12 lg:h-12" />
                   </div>
-                  <p className="text-[9px] font-black text-blue-900/30 uppercase tracking-[0.4em] mb-4 lg:mb-6">
+                  <p className="text-[9px] font-black text-blue-900/60 uppercase tracking-[0.4em] mb-4 lg:mb-6">
                     Original Message
                   </p>
                   <p className="text-blue-950 font-medium leading-relaxed text-base lg:text-lg whitespace-pre-wrap relative z-10">

@@ -11,6 +11,20 @@ const settingSchema = new mongoose.Schema(
     twitter: { type: String, default: "" },
     instagram: { type: String, default: "" },
     linkedin: { type: String, default: "" },
+    maintenanceMode: { type: Boolean, default: false },
+    footerText: {
+      type: String,
+      default: "© 2024 Mthunzi Trust. All rights reserved.",
+    },
+    primaryColor: { type: String, default: "#1e3a8a" },
+    secondaryColor: { type: String, default: "#10b981" },
+    workingHours: { type: String, default: "Mon - Fri: 8:00 AM - 5:00 PM" },
+    seoTitle: { type: String, default: "Mthunzi Trust - The Umbrella of Hope" },
+    seoDescription: {
+      type: String,
+      default:
+        "Mthunzi Trust is dedicated to providing hope and support to those in need.",
+    },
   },
   {
     timestamps: true,

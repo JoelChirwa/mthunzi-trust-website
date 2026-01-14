@@ -34,6 +34,9 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import AdminInquiries from "./pages/admin/AdminInquiries";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminGuard from "./components/admin/AdminGuard";
+import MaintenancePage from "./pages/MaintenancePage";
+import { getApiUrl } from "./utils/api";
+import { SettingsProvider, useSettings } from "./context/SettingsContext";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -68,111 +71,142 @@ function AnimatedRoutes() {
   );
 }
 
-function App() {
+function AppContent() {
+  const { settings, isLoading } = useSettings();
+
   return (
-    <Router>
-      <ScrollToTop />
-      <Toaster position="top-right" reverseOrder={false} />
-      <div className="relative">
-        <Routes>
-          {/* Admin Routes - Protected */}
-          <Route
-            path="/admin"
-            element={
-              <AdminGuard>
-                <AdminDashboard />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/blogs"
-            element={
-              <AdminGuard>
-                <AdminBlogs />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/programs"
-            element={
-              <AdminGuard>
-                <AdminPrograms />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/jobs"
-            element={
-              <AdminGuard>
-                <AdminJobs />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/gallery"
-            element={
-              <AdminGuard>
-                <AdminGallery />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/team"
-            element={
-              <AdminGuard>
-                <AdminTeam />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/settings"
-            element={
-              <AdminGuard>
-                <AdminSettings />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/inquiries"
-            element={
-              <AdminGuard>
-                <AdminInquiries />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/analytics"
-            element={
-              <AdminGuard>
-                <AdminAnalytics />
-              </AdminGuard>
-            }
-          />
-          <Route
-            path="/admin/partners"
-            element={
-              <AdminGuard>
-                <AdminPartners />
-              </AdminGuard>
-            }
-          />
+    <div className="relative">
+      <Routes>
+        {/* Admin Routes - Protected */}
+        <Route
+          path="/admin"
+          element={
+            <AdminGuard>
+              <AdminDashboard />
+            </AdminGuard>
+          }
+        />
+        <Route
+          path="/admin/blogs"
+          element={
+            <AdminGuard>
+              <AdminBlogs />
+            </AdminGuard>
+          }
+        />
+        <Route
+          path="/admin/programs"
+          element={
+            <AdminGuard>
+              <AdminPrograms />
+            </AdminGuard>
+          }
+        />
+        <Route
+          path="/admin/jobs"
+          element={
+            <AdminGuard>
+              <AdminJobs />
+            </AdminGuard>
+          }
+        />
+        <Route
+          path="/admin/gallery"
+          element={
+            <AdminGuard>
+              <AdminGallery />
+            </AdminGuard>
+          }
+        />
+        <Route
+          path="/admin/team"
+          element={
+            <AdminGuard>
+              <AdminTeam />
+            </AdminGuard>
+          }
+        />
+        <Route
+          path="/admin/settings"
+          element={
+            <AdminGuard>
+              <AdminSettings />
+            </AdminGuard>
+          }
+        />
+        <Route
+          path="/admin/inquiries"
+          element={
+            <AdminGuard>
+              <AdminInquiries />
+            </AdminGuard>
+          }
+        />
+        <Route
+          path="/admin/analytics"
+          element={
+            <AdminGuard>
+              <AdminAnalytics />
+            </AdminGuard>
+          }
+        />
+        <Route
+          path="/admin/partners"
+          element={
+            <AdminGuard>
+              <AdminPartners />
+            </AdminGuard>
+          }
+        />
 
-          {/* Admin Login - No Layout */}
-          <Route path="/admin/login" element={<AdminLogin />} />
+        {/* Admin Login - No Layout */}
+        <Route path="/admin/login" element={<AdminLogin />} />
 
-          {/* Public Routes with Layout */}
-          <Route
-            path="/*"
-            element={
+        {/* Public Routes with Layout */}
+        <Route
+          path="/*"
+          element={
+            <PublicRouteWrapper settings={settings} isLoading={isLoading}>
               <Layout>
                 <AnimatedRoutes />
               </Layout>
-            }
-          />
-        </Routes>
-      </div>
-    </Router>
+            </PublicRouteWrapper>
+          }
+        />
+      </Routes>
+    </div>
   );
 }
+
+function App() {
+  return (
+    <SettingsProvider>
+      <Router>
+        <ScrollToTop />
+        <Toaster position="top-right" reverseOrder={false} />
+        <AppContent />
+      </Router>
+    </SettingsProvider>
+  );
+}
+
+const PublicRouteWrapper = ({ children, settings, isLoading }) => {
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-blue-900 flex flex-col items-center justify-center">
+        <div className="w-12 h-12 border-4 border-white/20 border-t-primary-green rounded-full animate-spin mb-4" />
+        <p className="text-white/50 font-black uppercase tracking-widest text-[10px]">
+          Loading Mthunzi...
+        </p>
+      </div>
+    );
+  }
+
+  if (settings?.maintenanceMode) {
+    return <MaintenancePage settings={settings} />;
+  }
+
+  return children;
+};
 
 export default App;

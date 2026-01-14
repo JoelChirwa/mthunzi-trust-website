@@ -12,8 +12,10 @@ import {
   ArrowRight,
 } from "lucide-react";
 import Contact from "../components/sections/Contact";
+import { useSettings } from "../context/SettingsContext";
 
 const ContactPage = () => {
+  const { settings } = useSettings();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -87,7 +89,7 @@ const ContactPage = () => {
                       Working Hours
                     </h4>
                     <p className="text-white font-bold">
-                      Mon - Fri: 8 AM - 5 PM
+                      {settings?.workingHours || "Mon - Fri: 8 AM - 5 PM"}
                     </p>
                   </div>
                 </div>

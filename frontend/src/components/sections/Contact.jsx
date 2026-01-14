@@ -12,9 +12,11 @@ import {
   Loader2,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { useSettings } from "../../context/SettingsContext";
+import { getApiUrl } from "../../utils/api";
 
 const Contact = ({ showHeader = true }) => {
-  const [settings, setSettings] = useState(null);
+  const { settings } = useSettings();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -24,24 +26,6 @@ const Contact = ({ showHeader = true }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  useEffect(() => {
-    fetchSettings();
-  }, []);
-
-  const fetchSettings = async () => {
-    try {
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_URL || "http://localhost:5000/api"
-        }/settings`
-      );
-      const data = await response.json();
-      setSettings(data);
-    } catch (error) {
-      console.error("Error fetching settings:", error);
-    }
-  };
 
   const inquiryTypes = [
     { id: "general", label: "General Inquiry", icon: MessageSquare },
@@ -65,16 +49,11 @@ const Contact = ({ showHeader = true }) => {
     const loadingToast = toast.loading("Sending your message...");
 
     try {
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_URL || "http://localhost:5000/api"
-        }/inquiries`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch(getApiUrl("/inquiries"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
       if (response.ok) {
         setIsSubmitted(true);
@@ -171,7 +150,7 @@ const Contact = ({ showHeader = true }) => {
                   <ul className="space-y-2 text-white/80 font-medium font-mono text-sm lg:text-base">
                     <li>{settings?.phone || "+265 996 654 088"}</li>
                     <li className="text-white/40 text-[9px] lg:text-[10px] font-black uppercase tracking-widest mt-2">
-                      Mon-Fri, 8AM-5PM
+                      {settings?.workingHours || "Mon-Fri, 8AM-5PM"}
                     </li>
                   </ul>
                 </div>

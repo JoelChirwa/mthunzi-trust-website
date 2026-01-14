@@ -303,7 +303,7 @@ const AdminGallery = () => {
       {/* Add Asset Modal */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -331,7 +331,7 @@ const AdminGallery = () => {
 
               <form onSubmit={handleSubmit} className="p-8 space-y-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-blue-900/40 uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-blue-900/70 uppercase tracking-widest ml-1">
                     Asset Title
                   </label>
                   <input
@@ -341,13 +341,13 @@ const AdminGallery = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, title: e.target.value })
                     }
-                    className="w-full px-5 py-3.5 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-primary-green outline-none transition-all text-sm font-bold"
+                    className="w-full px-5 py-3.5 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none transition-all text-sm font-bold text-blue-900 placeholder:text-gray-300"
                     placeholder="e.g. Youth Workshop 2024"
                   />
                 </div>
 
                 <div className="space-y-4">
-                  <label className="text-[10px] font-black text-blue-900/40 uppercase tracking-widest ml-1">
+                  <label className="text-[10px] font-black text-blue-900/70 uppercase tracking-widest ml-1">
                     Media Upload
                   </label>
                   {formData.url ? (
@@ -374,13 +374,13 @@ const AdminGallery = () => {
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                         disabled={isUploading}
                       />
-                      <div className="w-full p-12 rounded-[2rem] border-2 border-dashed border-gray-100 bg-gray-50 flex flex-col items-center justify-center gap-4 group-hover:bg-white group-hover:border-primary-green transition-all">
+                      <div className="w-full p-12 rounded-[2rem] border-2 border-dashed border-gray-200 bg-gray-100/50 flex flex-col items-center justify-center gap-4 group-hover:bg-white group-hover:border-primary-green transition-all">
                         {isUploading ? (
                           <Loader2 className="w-10 h-10 text-primary-green animate-spin" />
                         ) : (
                           <UploadCloud className="w-10 h-10 text-gray-400 group-hover:text-primary-green transition-colors" />
                         )}
-                        <span className="text-gray-400 font-bold text-xs uppercase tracking-widest">
+                        <span className="text-gray-400 font-black text-[10px] uppercase tracking-widest">
                           {isUploading
                             ? "Uploading..."
                             : "Click to upload media"}

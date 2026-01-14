@@ -64,7 +64,7 @@ const PartnerModal = ({ isOpen, onClose, onSave, partner }) => {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-blue-900/40 backdrop-blur-sm">
+      <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-blue-900/40 backdrop-blur-sm">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -92,7 +92,7 @@ const PartnerModal = ({ isOpen, onClose, onSave, partner }) => {
           {/* Modal Body */}
           <div className="p-8 space-y-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40 ml-1">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
                 Partner Name
               </label>
               <input
@@ -102,12 +102,12 @@ const PartnerModal = ({ isOpen, onClose, onSave, partner }) => {
                   setFormData({ ...formData, name: e.target.value })
                 }
                 placeholder="e.g., World Health Organization"
-                className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-medium transition-all"
+                className="w-full px-6 py-4 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 placeholder:text-gray-300 transition-all"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40 ml-1">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
                 Partner Logo
               </label>
               <div className="flex items-center gap-6 p-6 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
@@ -139,11 +139,11 @@ const PartnerModal = ({ isOpen, onClose, onSave, partner }) => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40 ml-1">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
                 Website URL
               </label>
               <div className="relative">
-                <LinkIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-900/40" />
+                <LinkIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-900/60" />
                 <input
                   type="text"
                   value={formData.url}
@@ -151,7 +151,7 @@ const PartnerModal = ({ isOpen, onClose, onSave, partner }) => {
                     setFormData({ ...formData, url: e.target.value })
                   }
                   placeholder="https://..."
-                  className="w-full pl-14 pr-6 py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-medium transition-all"
+                  className="w-full pl-14 pr-6 py-4 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 placeholder:text-gray-300 transition-all"
                 />
               </div>
             </div>

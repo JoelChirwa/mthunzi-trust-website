@@ -4,7 +4,7 @@ import Team from "../models/teamModel.js";
 // @route   GET /api/team
 export const getTeam = async (req, res) => {
   try {
-    const team = await Team.find({}).sort({ createdAt: 1 });
+    const team = await Team.find({}).sort({ order: 1, createdAt: 1 });
     res.status(200).json(team);
   } catch (error) {
     res
@@ -17,7 +17,7 @@ export const getTeam = async (req, res) => {
 // @route   POST /api/team
 export const createTeamMember = async (req, res) => {
   try {
-    const { name, role, image, linkedin, email } = req.body;
+    const { name, role, image, linkedin, email, order } = req.body;
 
     const member = await Team.create({
       name,
@@ -25,6 +25,7 @@ export const createTeamMember = async (req, res) => {
       image,
       linkedin,
       email,
+      order: order || 0,
     });
 
     res.status(201).json(member);
@@ -47,6 +48,8 @@ export const updateTeamMember = async (req, res) => {
       member.image = req.body.image || member.image;
       member.linkedin = req.body.linkedin || member.linkedin;
       member.email = req.body.email || member.email;
+      member.order =
+        req.body.order !== undefined ? req.body.order : member.order;
 
       const updatedMember = await member.save();
       res.status(200).json(updatedMember);

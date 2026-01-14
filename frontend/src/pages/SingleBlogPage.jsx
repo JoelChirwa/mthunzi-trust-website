@@ -96,7 +96,7 @@ const SingleBlogPage = () => {
           className="absolute inset-0"
         >
           <img
-            src={post.image}
+            src={post.images && post.images[0]}
             alt={post.title}
             className="w-full h-full object-cover"
           />
@@ -150,6 +150,34 @@ const SingleBlogPage = () => {
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
 
+              {/* Gallery Section */}
+              {post.images && post.images.length > 1 && (
+                <div className="mt-16">
+                  <h3 className="text-2xl font-black text-blue-900 uppercase tracking-tighter mb-8 flex items-center gap-3">
+                    <div className="w-8 h-1 bg-primary-green rounded-full" />
+                    Story Gallery
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+                    {post.images.slice(1).map((img, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.1 }}
+                        className="aspect-[4/3] rounded-3xl overflow-hidden shadow-xl border border-gray-100 group"
+                      >
+                        <img
+                          src={img}
+                          alt={`${post.title} gallery ${i}`}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Social Share */}
               <div className="mt-16 pt-10 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
@@ -191,7 +219,7 @@ const SingleBlogPage = () => {
                         <div className="flex gap-4 items-center">
                           <div className="w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0">
                             <img
-                              src={related.image}
+                              src={related.images && related.images[0]}
                               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                               alt=""
                             />

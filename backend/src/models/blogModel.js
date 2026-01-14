@@ -18,9 +18,10 @@ const blogSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    image: {
-      type: String,
+    images: {
+      type: [String],
       required: true,
+      default: [],
     },
     readTime: {
       type: String,
@@ -37,6 +38,10 @@ const blogSchema = new mongoose.Schema(
     author: {
       type: String,
       default: "Mthunzi Trust",
+    },
+    order: {
+      type: Number,
+      default: 999,
     },
   },
   {

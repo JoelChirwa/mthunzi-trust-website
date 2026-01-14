@@ -69,7 +69,7 @@ const ProgramModal = ({ isOpen, onClose, onSave, program }) => {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-blue-900/40 backdrop-blur-sm">
+      <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-blue-900/40 backdrop-blur-sm">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -99,7 +99,7 @@ const ProgramModal = ({ isOpen, onClose, onSave, program }) => {
           {/* Modal Body - Scrollable */}
           <div className="p-8 overflow-y-auto space-y-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40 ml-1">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
                 Program Title
               </label>
               <input
@@ -109,12 +109,12 @@ const ProgramModal = ({ isOpen, onClose, onSave, program }) => {
                   setFormData({ ...formData, title: e.target.value })
                 }
                 placeholder="e.g., Education for All"
-                className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-medium transition-all"
+                className="w-full px-6 py-4 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 placeholder:text-gray-300 transition-all"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40 ml-1">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
                 Program Cover Image
               </label>
               <div className="flex items-center gap-6">
@@ -150,7 +150,7 @@ const ProgramModal = ({ isOpen, onClose, onSave, program }) => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40 ml-1">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
                 Short Description
               </label>
               <textarea
@@ -160,12 +160,12 @@ const ProgramModal = ({ isOpen, onClose, onSave, program }) => {
                 }
                 placeholder="A brief summary for cards..."
                 rows={2}
-                className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-medium transition-all resize-none"
+                className="w-full px-6 py-4 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 placeholder:text-gray-300 transition-all resize-none"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/40 ml-1">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
                 Full Description (HTML Supported)
               </label>
               <textarea
@@ -175,7 +175,7 @@ const ProgramModal = ({ isOpen, onClose, onSave, program }) => {
                 }
                 placeholder="Detailed program content..."
                 rows={5}
-                className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-medium transition-all"
+                className="w-full px-6 py-4 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 placeholder:text-gray-300 transition-all"
               />
             </div>
           </div>

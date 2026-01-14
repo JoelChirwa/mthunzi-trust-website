@@ -129,7 +129,7 @@ const BlogPage = () => {
                     className="block group relative h-[400px] md:h-[500px] rounded-3xl md:rounded-[40px] overflow-hidden shadow-2xl"
                   >
                     <img
-                      src={featuredPost.image}
+                      src={featuredPost.images && featuredPost.images[0]}
                       alt={featuredPost.title}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
@@ -181,7 +181,7 @@ const BlogPage = () => {
                           {/* Image Container with Zoom & Overlay */}
                           <div className="relative h-56 lg:h-72 overflow-hidden">
                             <img
-                              src={post.image}
+                              src={post.images && post.images[0]}
                               alt={post.title}
                               className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                             />
