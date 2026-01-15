@@ -86,7 +86,11 @@ const Hero = () => {
       </div>
 
       {/* Hero Content */}
-      <div className="container mx-auto px-4 z-20 relative text-center pt-20 md:pt-0">
+      <div
+        className={`container mx-auto px-4 z-20 relative text-center transition-all duration-700 ${
+          currentSlide === 0 ? "pt-20 md:pt-0" : "pt-0"
+        }`}
+      >
         <AnimatePresence>
           <motion.div
             key={currentSlide}
