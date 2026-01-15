@@ -28,7 +28,7 @@ const FocusAreas = () => {
 
   return (
     <section
-      className="py-20 md:py-32 bg-[#155799] relative"
+      className="py-20 md:py-20 sm:py-10 bg-[#155799] relative"
       style={{ clipPath: "polygon(0 5vw, 100% 0, 100% 100%, 0 100%)" }}
     >
       <div className="container mx-auto px-6">
