@@ -85,25 +85,25 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
           className="bg-white w-full max-w-2xl rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
         >
           {/* Modal Header */}
-          <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+          <div className="p-6 md:p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
             <div>
-              <h3 className="text-xl font-black text-blue-900 uppercase tracking-tighter">
+              <h3 className="text-lg md:text-xl font-black text-blue-900 uppercase tracking-tighter">
                 {member ? "Update Member" : "New Team Member"}
               </h3>
-              <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mt-1">
+              <p className="text-gray-400 text-[10px] md:text-xs font-bold uppercase tracking-widest mt-1">
                 Organization Leadership & Staff
               </p>
             </div>
             <button
               onClick={onClose}
-              className="w-12 h-12 flex items-center justify-center bg-white rounded-2xl text-gray-400 hover:text-red-500 hover:shadow-lg transition-all border border-gray-100"
+              className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-white rounded-xl md:rounded-2xl text-gray-400 hover:text-red-500 hover:shadow-lg transition-all border border-gray-100"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Modal Body */}
-          <div className="p-8 overflow-y-auto space-y-6">
+          <div className="p-6 md:p-8 overflow-y-auto space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
@@ -176,7 +176,7 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
               <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
                 Profile Photo
               </label>
-              <div className="flex items-center gap-6 p-6 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+              <div className="flex flex-col sm:flex-row items-center gap-6 p-4 md:p-6 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
                 <div className="w-24 h-24 rounded-2xl bg-white shadow-sm overflow-hidden flex-shrink-0 border border-gray-100 flex items-center justify-center">
                   {isUploading ? (
                     <Loader2 className="w-6 h-6 text-primary-green animate-spin" />
@@ -190,7 +190,7 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
                     <ImageIcon className="w-6 h-6 text-gray-300" />
                   )}
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 text-center sm:text-left">
                   <label className="inline-block px-6 py-3 bg-blue-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl cursor-pointer hover:bg-primary-green hover:shadow-lg transition-all">
                     {formData.image ? "Change Photo" : "Upload Photo"}
                     <input
@@ -247,17 +247,17 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
           </div>
 
           {/* Modal Footer */}
-          <div className="p-8 border-t border-gray-100 bg-gray-50/50 flex justify-end gap-4">
+          <div className="p-6 md:p-8 border-t border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row justify-end gap-3 md:gap-4">
             <button
               onClick={onClose}
-              className="px-8 py-4 bg-white text-gray-400 hover:text-blue-900 font-black text-[10px] uppercase tracking-widest rounded-2xl border border-gray-100 hover:shadow-lg transition-all"
+              className="w-full sm:w-auto px-8 py-4 bg-white text-gray-400 hover:text-blue-900 font-black text-[10px] uppercase tracking-widest rounded-2xl border border-gray-100 hover:shadow-lg transition-all"
             >
               Cancel
             </button>
             <button
               onClick={() => onSave(formData)}
               disabled={isUploading}
-              className={`px-8 py-4 bg-blue-900 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl shadow-blue-900/20 flex items-center gap-3 hover:translate-y-[-2px] transition-all ${
+              className={`w-full sm:w-auto px-8 py-4 bg-blue-900 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl shadow-blue-900/20 flex items-center justify-center gap-3 hover:translate-y-[-2px] transition-all ${
                 isUploading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
@@ -411,7 +411,7 @@ const AdminTeam = () => {
       />
 
       {/* Header with Add Button */}
-      <div className="flex justify-between items-center mb-10">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10">
         <div>
           <h2 className="text-2xl font-black text-blue-900 uppercase tracking-tighter">
             Team Members
@@ -422,7 +422,7 @@ const AdminTeam = () => {
         </div>
         <button
           onClick={handleAddNew}
-          className="h-14 px-8 bg-primary-green text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary-green/20 flex items-center gap-3 hover:translate-y-[-2px] transition-all"
+          className="w-full sm:w-auto h-14 px-8 bg-primary-green text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary-green/20 flex items-center justify-center gap-3 hover:translate-y-[-2px] transition-all"
         >
           <UserPlus className="w-4 h-4" /> Add Team Member
         </button>
@@ -445,12 +445,12 @@ const AdminTeam = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="flex items-center justify-between p-6 hover:bg-gray-50/50 transition-all"
+                className="flex flex-col md:flex-row items-start md:items-center justify-between p-6 hover:bg-gray-50/50 transition-all gap-4"
               >
                 {/* Left: Photo/Initials + Info */}
-                <div className="flex items-center gap-4 flex-1">
+                <div className="flex items-center gap-4 flex-1 w-full">
                   {/* Photo or Initials */}
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-900 to-primary-green flex items-center justify-center text-white font-black text-xl shadow-sm flex-shrink-0 overflow-hidden border border-gray-100">
+                  <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-blue-900 to-primary-green flex items-center justify-center text-white font-black text-lg shadow-sm flex-shrink-0 overflow-hidden border border-gray-100">
                     {member.image ? (
                       <img
                         src={member.image}
@@ -463,12 +463,12 @@ const AdminTeam = () => {
                   </div>
 
                   {/* Name & Role */}
-                  <div className="flex flex-col">
-                    <h3 className="text-blue-900 font-black text-lg">
+                  <div className="flex flex-col min-w-0 flex-1">
+                    <h3 className="text-blue-900 font-black text-base md:text-lg truncate">
                       {member.name}
                     </h3>
-                    <div className="flex items-center gap-3">
-                      <p className="text-primary-green text-[10px] font-black uppercase tracking-widest">
+                    <div className="flex items-center flex-wrap gap-x-3 gap-y-1">
+                      <p className="text-primary-green text-[9px] md:text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
                         {member.role}{" "}
                         {member.position && `• ${member.position}`}
                       </p>
@@ -487,16 +487,16 @@ const AdminTeam = () => {
                 </div>
 
                 {/* Right: Action Buttons */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-full md:w-auto">
                   <button
                     onClick={() => handleEdit(member)}
-                    className="py-2.5 px-4 bg-blue-50 text-blue-900 rounded-xl flex items-center gap-2 text-xs font-bold hover:bg-blue-900 hover:text-white transition-all shadow-sm"
+                    className="flex-1 md:flex-none py-2.5 px-4 bg-blue-50 text-blue-900 rounded-xl flex items-center justify-center gap-2 text-xs font-bold hover:bg-blue-900 hover:text-white transition-all shadow-sm"
                   >
                     <Edit3 className="w-3.5 h-3.5" /> Edit
                   </button>
                   <button
                     onClick={() => handleDelete(member._id)}
-                    className="py-2.5 px-4 bg-red-50 text-red-500 rounded-xl flex items-center gap-2 text-xs font-bold hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                    className="flex-1 md:flex-none py-2.5 px-4 bg-red-50 text-red-500 rounded-xl flex items-center justify-center gap-2 text-xs font-bold hover:bg-red-500 hover:text-white transition-all shadow-sm"
                   >
                     <Trash2 className="w-3.5 h-3.5" /> Delete
                   </button>

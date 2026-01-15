@@ -94,12 +94,12 @@ const BlogModal = ({ isOpen, onClose, onSave, blog }) => {
           className="bg-white w-full max-w-4xl rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
         >
           {/* Modal Header */}
-          <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+          <div className="p-6 md:p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
             <div>
-              <h3 className="text-xl font-black text-blue-900 uppercase tracking-tighter">
+              <h3 className="text-lg md:text-xl font-black text-blue-900 uppercase tracking-tighter">
                 {blog ? "Edit Post" : "Draft New Article"}
               </h3>
-              <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mt-1">
+              <p className="text-gray-400 text-[10px] md:text-xs font-bold uppercase tracking-widest mt-1">
                 {blog
                   ? "Refine your story for the community"
                   : "Share a new update or story from Mthunzi"}
@@ -107,14 +107,14 @@ const BlogModal = ({ isOpen, onClose, onSave, blog }) => {
             </div>
             <button
               onClick={onClose}
-              className="w-12 h-12 flex items-center justify-center bg-white rounded-2xl text-gray-400 hover:text-red-500 hover:shadow-lg transition-all border border-gray-100"
+              className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center bg-white rounded-xl md:rounded-2xl text-gray-400 hover:text-red-500 hover:shadow-lg transition-all border border-gray-100"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Modal Body - Scrollable */}
-          <div className="p-8 overflow-y-auto space-y-6">
+          <div className="p-6 md:p-8 overflow-y-auto space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1 flex items-center gap-2">
@@ -327,17 +327,17 @@ const BlogModal = ({ isOpen, onClose, onSave, blog }) => {
           </div>
 
           {/* Modal Footer */}
-          <div className="p-8 border-t border-gray-100 bg-gray-50/50 flex justify-end gap-4">
+          <div className="p-6 md:p-8 border-t border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row justify-end gap-3 md:gap-4">
             <button
               onClick={onClose}
-              className="px-8 py-4 bg-white text-gray-400 hover:text-blue-900 font-black text-[10px] uppercase tracking-widest rounded-2xl border border-gray-100 hover:shadow-lg transition-all"
+              className="w-full sm:w-auto px-8 py-4 bg-white text-gray-400 hover:text-blue-900 font-black text-[10px] uppercase tracking-widest rounded-2xl border border-gray-100 hover:shadow-lg transition-all"
             >
               Cancel
             </button>
             <button
               onClick={() => onSave(formData)}
               disabled={isUploading || !formData.images?.length}
-              className={`px-8 py-4 bg-blue-900 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl shadow-blue-900/20 flex items-center gap-3 hover:translate-y-[-2px] transition-all ${
+              className={`w-full sm:w-auto px-8 py-4 bg-blue-900 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-xl shadow-blue-900/20 flex items-center justify-center gap-3 hover:translate-y-[-2px] transition-all ${
                 isUploading || !formData.images?.length
                   ? "opacity-50 cursor-not-allowed"
                   : ""
@@ -486,7 +486,7 @@ const AdminBlogs = () => {
       />
 
       {/* Header with Add Button */}
-      <div className="flex justify-between items-center mb-10">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10">
         <div>
           <h2 className="text-2xl font-black text-blue-900 uppercase tracking-tighter">
             Blog Posts
@@ -497,7 +497,7 @@ const AdminBlogs = () => {
         </div>
         <button
           onClick={handleAddNew}
-          className="h-14 px-8 bg-primary-green text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary-green/20 flex items-center gap-3 hover:translate-y-[-2px] transition-all"
+          className="w-full sm:w-auto h-14 px-8 bg-primary-green text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary-green/20 flex items-center justify-center gap-3 hover:translate-y-[-2px] transition-all"
         >
           <Plus className="w-4 h-4" /> Add Blog Post
         </button>
@@ -520,12 +520,12 @@ const AdminBlogs = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="flex items-center justify-between p-6 hover:bg-gray-50/50 transition-all"
+                className="flex flex-col md:flex-row items-start md:items-center justify-between p-6 hover:bg-gray-50/50 transition-all gap-4"
               >
                 {/* Left: Thumbnail + Info */}
-                <div className="flex items-center gap-4 flex-1">
+                <div className="flex items-center gap-4 flex-1 w-full">
                   {/* Thumbnail */}
-                  <div className="w-24 h-16 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-100">
+                  <div className="w-20 md:w-24 h-14 md:h-16 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-100">
                     {blog.images && blog.images.length > 0 ? (
                       <img
                         src={blog.images[0]}
@@ -541,22 +541,22 @@ const AdminBlogs = () => {
 
                   {/* Title & Stats */}
                   <div className="flex flex-col flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-1">
-                      <h3 className="text-blue-900 font-black text-base truncate">
+                    <div className="flex items-center flex-wrap gap-2 mb-1">
+                      <h3 className="text-blue-900 font-black text-sm md:text-base truncate">
                         {blog.title}
                       </h3>
                       {blog.featured && (
-                        <span className="px-2 py-0.5 bg-primary-yellow/20 text-blue-900 text-[8px] font-black uppercase rounded-md flex items-center gap-1">
+                        <span className="px-2 py-0.5 bg-primary-yellow/20 text-blue-900 text-[7px] md:text-[8px] font-black uppercase rounded-md flex items-center gap-1">
                           <CheckCircle2 className="w-2.5 h-2.5" /> Featured
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                    <div className="flex items-center flex-wrap gap-x-3 gap-y-1 text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-gray-400">
                       <span className="text-primary-green">
                         {blog.category}
                       </span>
                       <span>{blog.readTime}</span>
-                      <span>
+                      <span className="hidden sm:inline">
                         {new Date(blog.createdAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -564,16 +564,16 @@ const AdminBlogs = () => {
                 </div>
 
                 {/* Right: Action Buttons */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-full md:w-auto">
                   <button
                     onClick={() => handleEdit(blog)}
-                    className="py-2.5 px-4 bg-blue-50 text-blue-900 rounded-xl flex items-center gap-2 text-xs font-bold hover:bg-blue-900 hover:text-white transition-all shadow-sm"
+                    className="flex-1 md:flex-none py-2.5 px-4 bg-blue-50 text-blue-900 rounded-xl flex items-center justify-center gap-2 text-xs font-bold hover:bg-blue-900 hover:text-white transition-all shadow-sm"
                   >
                     <Edit3 className="w-3.5 h-3.5" /> Edit
                   </button>
                   <button
                     onClick={() => handleDelete(blog._id)}
-                    className="py-2.5 px-4 bg-red-50 text-red-500 rounded-xl flex items-center gap-2 text-xs font-bold hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                    className="flex-1 md:flex-none py-2.5 px-4 bg-red-50 text-red-500 rounded-xl flex items-center justify-center gap-2 text-xs font-bold hover:bg-red-500 hover:text-white transition-all shadow-sm"
                   >
                     <Trash2 className="w-3.5 h-3.5" /> Delete
                   </button>

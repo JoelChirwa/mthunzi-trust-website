@@ -188,12 +188,12 @@ const AdminGallery = () => {
 
       {/* Filter and Search Bar */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
-        <div className="flex gap-2 p-1.5 bg-gray-50 rounded-2xl border border-gray-100">
+        <div className="flex gap-2 p-1.5 bg-gray-50 rounded-2xl border border-gray-100 w-full md:w-auto overflow-x-auto no-scrollbar">
           {["All", "Pictures", "Videos"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-6 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
+              className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
                 activeTab === tab
                   ? "bg-blue-900 text-white shadow-md shadow-blue-900/20"
                   : "text-gray-400 hover:text-blue-900"
@@ -216,7 +216,7 @@ const AdminGallery = () => {
       </div>
 
       {/* Media List format */}
-      <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden mb-12">
+      <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden mb-12">
         <div className="divide-y divide-gray-100">
           <AnimatePresence mode="popLayout">
             {isLoading ? (
@@ -232,10 +232,10 @@ const AdminGallery = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ delay: index * 0.05 }}
-                  className="flex items-center justify-between p-6 hover:bg-gray-50/50 transition-all group"
+                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 hover:bg-gray-50/50 transition-all group gap-4 md:gap-6"
                 >
-                  <div className="flex items-center gap-6 flex-1">
-                    <div className="w-16 h-16 rounded-2xl overflow-hidden relative shadow-sm border border-gray-100 flex-shrink-0">
+                  <div className="flex items-center gap-4 md:gap-6 flex-1 w-full">
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden relative shadow-sm border border-gray-100 flex-shrink-0">
                       <img
                         src={item.url}
                         alt={item.title}
@@ -250,11 +250,11 @@ const AdminGallery = () => {
                       </div>
                     </div>
 
-                    <div className="flex flex-col">
-                      <h3 className="text-blue-900 font-black text-base leading-tight">
+                    <div className="flex flex-col flex-1 min-w-0">
+                      <h3 className="text-blue-900 font-black text-sm md:text-base leading-tight truncate">
                         {item.title}
                       </h3>
-                      <div className="flex items-center gap-4 mt-1.5">
+                      <div className="flex flex-wrap items-center gap-y-2 gap-x-3 md:gap-4 mt-1.5">
                         <span
                           className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${
                             item.type === "video"
@@ -264,21 +264,21 @@ const AdminGallery = () => {
                         >
                           {item.type}
                         </span>
-                        <span className="text-gray-400 text-[10px] font-medium border-l border-gray-100 pl-4 flex items-center gap-1.5">
+                        <span className="text-gray-400 text-[9px] md:text-[10px] font-medium sm:border-l border-gray-100 sm:pl-4 flex items-center gap-1.5">
                           <Calendar className="w-3 h-3" />{" "}
                           {new Date(item.createdAt).toLocaleDateString()}
                         </span>
-                        <span className="text-gray-400 text-[10px] font-medium border-l border-gray-100 pl-4">
+                        <span className="text-gray-400 text-[9px] md:text-[10px] font-medium border-l border-gray-100 pl-3 md:pl-4">
                           {item.size}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 w-full sm:w-auto mt-2 sm:mt-0">
                     <button
                       onClick={() => handleDelete(item._id)}
-                      className="h-10 px-5 bg-red-50 text-red-500 rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                      className="flex-1 sm:flex-none h-10 px-5 bg-red-50 text-red-500 rounded-xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all shadow-sm"
                     >
                       <Trash2 className="w-3.5 h-3.5" /> Delete
                     </button>
@@ -315,10 +315,10 @@ const AdminGallery = () => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl overflow-hidden"
+              className="relative w-full max-w-lg bg-white rounded-[2rem] md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
             >
-              <div className="px-8 py-6 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
-                <h3 className="text-xl font-black text-blue-900 uppercase tracking-tighter">
+              <div className="px-6 md:px-8 py-5 md:py-6 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
+                <h3 className="text-lg md:text-xl font-black text-blue-900 uppercase tracking-tighter">
                   Add New Asset
                 </h3>
                 <button
@@ -329,7 +329,10 @@ const AdminGallery = () => {
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-8 space-y-6">
+              <form
+                onSubmit={handleSubmit}
+                className="p-6 md:p-8 space-y-6 overflow-y-auto"
+              >
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-blue-900/70 uppercase tracking-widest ml-1">
                     Asset Title
@@ -351,7 +354,7 @@ const AdminGallery = () => {
                     Media Upload
                   </label>
                   {formData.url ? (
-                    <div className="relative group rounded-[2rem] overflow-hidden border border-gray-100 aspect-video bg-gray-50">
+                    <div className="relative group rounded-[1.5rem] md:rounded-[2rem] overflow-hidden border border-gray-100 aspect-video bg-gray-50">
                       <img
                         src={formData.url}
                         className="w-full h-full object-cover"
@@ -360,7 +363,7 @@ const AdminGallery = () => {
                       <button
                         type="button"
                         onClick={() => setFormData({ ...formData, url: "" })}
-                        className="absolute top-4 right-4 w-10 h-10 bg-red-500 text-white rounded-xl shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all scale-90 group-hover:scale-100"
+                        className="absolute top-4 right-4 w-10 h-10 bg-red-500 text-white rounded-xl shadow-lg flex items-center justify-center opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all scale-100 sm:scale-90 group-hover:scale-100"
                       >
                         <Trash2 className="w-5 h-5" />
                       </button>
@@ -374,16 +377,16 @@ const AdminGallery = () => {
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                         disabled={isUploading}
                       />
-                      <div className="w-full p-12 rounded-[2rem] border-2 border-dashed border-gray-200 bg-gray-100/50 flex flex-col items-center justify-center gap-4 group-hover:bg-white group-hover:border-primary-green transition-all">
+                      <div className="w-full p-8 md:p-12 rounded-[1.5rem] md:rounded-[2rem] border-2 border-dashed border-gray-200 bg-gray-100/50 flex flex-col items-center justify-center gap-4 group-hover:bg-white group-hover:border-primary-green transition-all">
                         {isUploading ? (
-                          <Loader2 className="w-10 h-10 text-primary-green animate-spin" />
+                          <Loader2 className="w-8 md:w-10 h-8 md:h-10 text-primary-green animate-spin" />
                         ) : (
-                          <UploadCloud className="w-10 h-10 text-gray-400 group-hover:text-primary-green transition-colors" />
+                          <UploadCloud className="w-8 md:w-10 h-8 md:h-10 text-gray-400 group-hover:text-primary-green transition-colors" />
                         )}
-                        <span className="text-gray-400 font-black text-[10px] uppercase tracking-widest">
+                        <span className="text-gray-400 font-black text-[9px] md:text-[10px] uppercase tracking-widest text-center">
                           {isUploading
                             ? "Uploading..."
-                            : "Click to upload media"}
+                            : "Click or tap to upload media"}
                         </span>
                       </div>
                     </div>
