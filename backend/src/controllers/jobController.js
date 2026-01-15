@@ -39,6 +39,12 @@ export const createJob = async (req, res) => {
     res.status(201).json(job);
   } catch (error) {
     console.error("Error creating job:", error);
+    if (error.code === 11000) {
+      return res.status(409).json({
+        message:
+          "A job with this title already exists. Please use a unique title.",
+      });
+    }
     res
       .status(500)
       .json({ message: "Error creating job", error: error.message });

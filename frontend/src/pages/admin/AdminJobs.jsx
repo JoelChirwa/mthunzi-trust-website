@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
+import { getApiUrl } from "../../utils/api";
 
 const AdminJobs = () => {
   const [activeTab, setActiveTab] = useState("All");
@@ -39,13 +40,12 @@ const AdminJobs = () => {
   const fetchJobs = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs`
-      );
+      const response = await fetch(getApiUrl("/jobs"));
       const data = await response.json();
       setJobs(data);
     } catch (error) {
       console.error("Error fetching jobs:", error);
+      toast.error("Failed to load vacancies");
     } finally {
       setIsLoading(false);
     }
@@ -93,13 +93,9 @@ const AdminJobs = () => {
                 toast.dismiss(t.id);
                 const loadingToast = toast.loading("Closing vacancy...");
                 try {
-                  const response = await fetch(
-                    `${
-                      import.meta.env.VITE_API_URL ||
-                      "http://localhost:5000/api"
-                    }/jobs/${id}`,
-                    { method: "DELETE" }
-                  );
+                  const response = await fetch(getApiUrl(`/jobs/${id}`), {
+                    method: "DELETE",
+                  });
                   if (response.ok) {
                     fetchJobs();
                     toast.success("Vacancy closed successfully", {
@@ -140,10 +136,8 @@ const AdminJobs = () => {
     );
     try {
       const url = editingJob
-        ? `${
-            import.meta.env.VITE_API_URL || "http://localhost:5000/api"
-          }/jobs/${editingJob._id}`
-        : `${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/jobs`;
+        ? getApiUrl(`/jobs/${editingJob._id}`)
+        : getApiUrl("/jobs");
 
       const method = editingJob ? "PUT" : "POST";
 
@@ -176,11 +170,14 @@ const AdminJobs = () => {
           id: loadingToast,
         });
       } else {
-        toast.error("Cloud synchronization failed", { id: loadingToast });
+        const errorData = await response.json().catch(() => ({}));
+        toast.error(errorData.message || "Cloud synchronization failed", {
+          id: loadingToast,
+        });
       }
     } catch (error) {
       console.error("Error saving job:", error);
-      toast.error("Fatal systems error", { id: loadingToast });
+      toast.error("Systems communication error", { id: loadingToast });
     } finally {
       setIsSaving(false);
     }

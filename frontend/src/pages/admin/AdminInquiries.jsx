@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
+import { getApiUrl } from "../../utils/api";
 
 const AdminInquiries = () => {
   const [inquiries, setInquiries] = useState([]);
@@ -27,11 +28,7 @@ const AdminInquiries = () => {
   const fetchInquiries = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_URL || "http://localhost:5000/api"
-        }/inquiries`
-      );
+      const response = await fetch(getApiUrl("/inquiries"));
       const data = await response.json();
       setInquiries(data);
     } catch (error) {
@@ -61,10 +58,7 @@ const AdminInquiries = () => {
                 const loadingToast = toast.loading("Removing inquiry...");
                 try {
                   const response = await fetch(
-                    `${
-                      import.meta.env.VITE_API_URL ||
-                      "http://localhost:5000/api"
-                    }/inquiries/${inquiry._id}`,
+                    getApiUrl(`/inquiries/${inquiry._id}`),
                     { method: "DELETE" }
                   );
                   if (response.ok) {

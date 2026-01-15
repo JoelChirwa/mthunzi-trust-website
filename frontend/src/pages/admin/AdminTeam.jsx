@@ -364,9 +364,6 @@ const AdminTeam = () => {
       currentMember ? "Updating..." : "Saving..."
     );
     try {
-      const baseUrl = (
-        import.meta.env.VITE_API_URL || "http://localhost:5000"
-      ).replace(/\/api$/, "");
       const url = currentMember
         ? getApiUrl(`/team/${currentMember._id}`)
         : getApiUrl("/team");

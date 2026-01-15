@@ -447,9 +447,6 @@ const AdminBlogs = () => {
       currentBlog ? "Updating Story..." : "Publishing Story..."
     );
     try {
-      const baseUrl = (
-        import.meta.env.VITE_API_URL || "http://localhost:5000"
-      ).replace(/\/api$/, "");
       const url = currentBlog
         ? getApiUrl(`/blogs/${currentBlog._id}`)
         : getApiUrl("/blogs");
