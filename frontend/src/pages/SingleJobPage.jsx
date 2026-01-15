@@ -90,7 +90,7 @@ const SingleJobPage = () => {
       className="bg-gray-50 min-h-screen"
     >
       {/* Cinematic Hero */}
-      <section className="relative min-h-[65vh] md:min-h-[75vh] flex items-start overflow-hidden bg-blue-900">
+      <section className="relative min-h-[40vh] md:min-h-[75vh] flex items-start overflow-hidden bg-blue-900">
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=1600&auto=format&fit=crop&q=80"

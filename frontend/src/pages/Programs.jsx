@@ -54,7 +54,7 @@ const Programs = () => {
       className="bg-white min-h-screen"
     >
       {/* Cinematic Hero */}
-      <section className="relative min-h-[60vh] md:min-h-[70vh] flex items-start overflow-hidden bg-blue-900">
+      <section className="relative min-h-[40vh] md:min-h-[70vh] flex items-start overflow-hidden bg-blue-900">
         <motion.div
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}

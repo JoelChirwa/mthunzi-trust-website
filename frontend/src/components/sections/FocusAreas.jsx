@@ -73,36 +73,56 @@ const FocusAreas = () => {
           <div className="lg:w-2/3 grid sm:grid-cols-2 gap-10 md:gap-16">
             <AnimatePresence mode="wait">
               {isLoading ? (
-                <div className="sm:col-span-2 flex justify-center py-20">
+                <motion.div
+                  key="loader"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="sm:col-span-2 flex justify-center py-20"
+                >
                   <Loader2 className="w-10 h-10 text-yellow-400 animate-spin" />
-                </div>
+                </motion.div>
               ) : areas.length > 0 ? (
-                areas.map((area, idx) => (
-                  <motion.div
-                    key={area._id}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: idx * 0.1, duration: 0.6 }}
-                    className="relative group"
-                  >
-                    <span className="absolute -left-4 -top-6 text-[80px] md:text-[100px] font-black text-white/5 select-none z-0 group-hover:text-primary-green/10 transition-colors">
-                      {(idx + 1).toString().padStart(2, "0")}
-                    </span>
-                    <div className="relative z-10">
-                      <h3 className="text-2xl font-black text-lime-300 mb-4 uppercase tracking-tight">
-                        {area.title}
-                      </h3>
-                      <p className="text-white/80 text-base font-medium leading-relaxed">
-                        {area.shortDesc}
-                      </p>
-                    </div>
-                  </motion.div>
-                ))
+                <motion.div
+                  key="content"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="sm:col-span-2 grid sm:grid-cols-2 gap-10 md:gap-16"
+                >
+                  {areas.map((area, idx) => (
+                    <motion.div
+                      key={area._id}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: idx * 0.1, duration: 0.6 }}
+                      className="relative group"
+                    >
+                      <span className="absolute -left-4 -top-6 text-[80px] md:text-[100px] font-black text-white/5 select-none z-0 group-hover:text-primary-green/10 transition-colors">
+                        {(idx + 1).toString().padStart(2, "0")}
+                      </span>
+                      <div className="relative z-10">
+                        <h3 className="text-2xl font-black text-lime-300 mb-4 uppercase tracking-tight">
+                          {area.title}
+                        </h3>
+                        <p className="text-white/80 text-base font-medium leading-relaxed">
+                          {area.shortDesc}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
               ) : (
-                <p className="text-white/60 sm:col-span-2 text-center py-10">
+                <motion.p
+                  key="empty"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="text-white/60 sm:col-span-2 text-center py-10"
+                >
                   No programs currently available.
-                </p>
+                </motion.p>
               )}
             </AnimatePresence>
           </div>

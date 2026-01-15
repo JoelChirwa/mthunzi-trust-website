@@ -121,7 +121,7 @@ const AboutPage = () => {
       className="bg-white"
     >
       {/* Cinematic Hero */}
-      <section className="relative min-h-[70vh] md:min-h-[80vh] flex items-start overflow-hidden bg-blue-900">
+      <section className="relative min-h-[40vh] md:min-h-[80vh] flex items-start overflow-hidden bg-blue-900">
         <motion.div
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}

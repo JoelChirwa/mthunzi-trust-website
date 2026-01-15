@@ -58,10 +58,10 @@ const Hero = () => {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black text-white">
+    <section className="relative min-h-[50vh] md:min-h-screen flex items-center justify-center overflow-hidden bg-black text-white">
       {/* Background Layer */}
       <div className="absolute inset-0 z-0">
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           <motion.div
             key={currentSlide}
             initial={{ opacity: 0 }}
@@ -86,7 +86,7 @@ const Hero = () => {
 
       {/* Hero Content */}
       <div className="container mx-auto px-4 z-20 relative text-center">
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           <motion.div
             key={currentSlide}
             initial="hidden"

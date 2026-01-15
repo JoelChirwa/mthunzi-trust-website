@@ -52,7 +52,7 @@ const GalleryPage = () => {
       className="bg-white min-h-screen pb-24"
     >
       {/* Cinematic Header */}
-      <section className="relative min-h-[55vh] md:min-h-[65vh] flex items-start overflow-hidden">
+      <section className="relative min-h-[35vh] md:min-h-[65vh] flex items-start overflow-hidden">
         <div className="absolute inset-0 bg-blue-900">
           <img
             src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1600&auto=format&fit=crop&q=80"

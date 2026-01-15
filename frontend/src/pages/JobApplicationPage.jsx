@@ -112,7 +112,7 @@ const JobApplicationPage = () => {
       className="bg-gray-50 min-h-screen"
     >
       {/* Cinematic Hero */}
-      <section className="relative h-[40vh] flex items-center overflow-hidden bg-blue-900">
+      <section className="relative min-h-[30vh] md:min-h-[40vh] flex items-center overflow-hidden bg-blue-900">
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1454165833767-027ffea10c37?w=1600&auto=format&fit=crop&q=80"

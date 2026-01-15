@@ -43,7 +43,7 @@ const BlogPage = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Cinematic Hero Section */}
-      <section className="relative min-h-[50vh] md:min-h-[60vh] flex items-start overflow-hidden bg-blue-900">
+      <section className="relative min-h-[30vh] md:min-h-[60vh] flex items-start overflow-hidden bg-blue-900">
         <motion.div
           initial={{ scale: 1.1, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
