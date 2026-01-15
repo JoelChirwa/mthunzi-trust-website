@@ -36,6 +36,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
     { name: "Blogs", icon: FileText, path: "/admin/blogs" },
     { name: "Programs", icon: Layers, path: "/admin/programs" },
     { name: "Careers", icon: Briefcase, path: "/admin/jobs" },
+    { name: "Applications", icon: Award, path: "/admin/applications" },
     { name: "Gallery", icon: ImageIcon, path: "/admin/gallery" },
     { name: "Our Team", icon: Users, path: "/admin/team" },
     { name: "Partners", icon: Handshake, path: "/admin/partners" },

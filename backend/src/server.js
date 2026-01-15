@@ -20,6 +20,7 @@ import galleryRoutes from "./routes/galleryRoutes.js";
 import settingRoutes from "./routes/settingRoutes.js";
 import inquiryRoutes from "./routes/inquiryRoutes.js";
 import subscriberRoutes from "./routes/subscriberRoutes.js";
+import applicationRoutes from "./routes/applicationRoutes.js";
 
 const app = express();
 
@@ -59,6 +60,7 @@ app.use("/api/gallery", galleryRoutes);
 app.use("/api/settings", settingRoutes);
 app.use("/api/inquiries", inquiryRoutes);
 app.use("/api/subscribers", subscriberRoutes);
+app.use("/api/applications", applicationRoutes);
 
 app.get("/", (req, res) => {
   res.json({

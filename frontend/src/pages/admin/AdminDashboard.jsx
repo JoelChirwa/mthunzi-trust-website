@@ -14,6 +14,7 @@ import {
   Globe,
   Loader2,
   Mail,
+  Award,
 } from "lucide-react";
 import { getApiUrl } from "../../utils/api";
 
@@ -27,6 +28,7 @@ const AdminDashboard = () => {
     blogs: 0,
     jobs: 0,
     subscribers: 0,
+    applications: 0,
   });
   const [countryData, setCountryData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -84,6 +86,12 @@ const AdminDashboard = () => {
       icon: Mail,
       color: "blue",
     },
+    {
+      label: "Applications",
+      value: stats.applications?.toString() || "0",
+      icon: Award,
+      color: "purple",
+    },
   ];
 
   const analytics = [
@@ -127,6 +135,12 @@ const AdminDashboard = () => {
       title: "Subscribers",
       path: "/admin/subscribers",
       color: "blue",
+    },
+    {
+      icon: Award,
+      title: "Applications",
+      path: "/admin/applications",
+      color: "purple",
     },
   ];
 

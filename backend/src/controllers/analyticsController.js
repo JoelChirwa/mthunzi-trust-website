@@ -6,6 +6,7 @@ import Partner from "../models/partnerModel.js";
 import Job from "../models/jobModel.js";
 import Subscriber from "../models/subscriberModel.js";
 import Visitor from "../models/visitorModel.js";
+import Application from "../models/applicationModel.js";
 
 export const getAdminStats = async (req, res) => {
   try {
@@ -18,6 +19,7 @@ export const getAdminStats = async (req, res) => {
       subscribers,
       pageViews,
       visitors,
+      applications,
     ] = await Promise.all([
       Blog.countDocuments(),
       Program.countDocuments(),
@@ -27,6 +29,7 @@ export const getAdminStats = async (req, res) => {
       Subscriber.countDocuments({ status: "active" }),
       Visitor.countDocuments(),
       Visitor.distinct("ip").then((ips) => ips.length),
+      Application.countDocuments(),
     ]);
 
     res.status(200).json({
@@ -40,6 +43,7 @@ export const getAdminStats = async (req, res) => {
         subscribers,
         visitors,
         pageViews,
+        applications,
       },
     });
   } catch (error) {
