@@ -17,6 +17,8 @@ import { getApiUrl } from "../../utils/api";
 const AdminAnalytics = () => {
   const [countryData, setCountryData] = useState([]);
   const [stats, setStats] = useState(null);
+  const [popularPages, setPopularPages] = useState([]);
+  const [viewsByDate, setViewsByDate] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -44,9 +46,38 @@ const AdminAnalytics = () => {
       }
     };
 
+    const fetchPopularPages = async () => {
+      try {
+        const response = await fetch(getApiUrl("/analytics/popular-pages"));
+        const data = await response.json();
+        if (data.success) {
+          setPopularPages(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching popular pages:", error);
+      }
+    };
+
+    const fetchViewsByDate = async () => {
+      try {
+        const response = await fetch(getApiUrl("/analytics/views-by-date"));
+        const data = await response.json();
+        if (data.success) {
+          setViewsByDate(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching views by date:", error);
+      }
+    };
+
     const loadData = async () => {
       setIsLoading(true);
-      await Promise.all([fetchGeographicReach(), fetchStats()]);
+      await Promise.all([
+        fetchGeographicReach(),
+        fetchStats(),
+        fetchPopularPages(),
+        fetchViewsByDate(),
+      ]);
       setIsLoading(false);
     };
 
@@ -88,12 +119,7 @@ const AdminAnalytics = () => {
     },
   ];
 
-  const topContent = [
-    { title: "Organization Programs", views: "5.2k", trend: "+12%" },
-    { title: "Latest Community Blog", views: "3.8k", trend: "+8%" },
-    { title: "Career Opportunities", views: "2.5k", trend: "+25%" },
-    { title: "About Mthunzi Trust", views: "2.1k", trend: "+3%" },
-  ];
+  const maxViews = Math.max(...viewsByDate.map((v) => v.views), 10);
 
   return (
     <AdminLayout title="Analytics">
@@ -162,6 +188,72 @@ const AdminAnalytics = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+        {/* Monthly Performance Chart */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="lg:col-span-3 bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm"
+        >
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10">
+            <div className="flex items-center gap-3">
+              <TrendingUp className="w-5 h-5 text-blue-900" />
+              <h3 className="text-lg font-black text-blue-900 uppercase tracking-tight">
+                Traffic Performance
+              </h3>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-primary-green" />
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                  Daily Views
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="h-64 flex items-end justify-between gap-2 px-2">
+            {isLoading ? (
+              Array.from({ length: 14 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="flex-1 bg-gray-50 rounded-t-lg animate-pulse"
+                  style={{ height: `${Math.random() * 80 + 20}%` }}
+                />
+              ))
+            ) : viewsByDate.length > 0 ? (
+              viewsByDate.map((day, index) => (
+                <div
+                  key={day.date}
+                  className="flex-1 flex flex-col items-center gap-3 group relative"
+                >
+                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-blue-900 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
+                    {day.views} Views
+                  </div>
+                  <motion.div
+                    initial={{ height: 0 }}
+                    animate={{ height: `${(day.views / maxViews) * 100}%` }}
+                    transition={{ delay: index * 0.02, duration: 0.5 }}
+                    className="w-full bg-gradient-to-t from-primary-green/80 to-primary-green rounded-t-xl group-hover:to-blue-900 transition-colors shadow-sm"
+                  />
+                  <span className="text-[8px] font-black text-gray-300 uppercase rotate-45 sm:rotate-0 origin-left mt-2 whitespace-nowrap">
+                    {new Date(day.date).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center text-center">
+                <Calendar className="w-12 h-12 text-gray-100 mb-4" />
+                <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">
+                  No traffic data for this period
+                </p>
+              </div>
+            )}
+          </div>
+        </motion.div>
+
         {/* Visitors by Country */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -250,26 +342,42 @@ const AdminAnalytics = () => {
           </div>
 
           <div className="space-y-6">
-            {topContent.map((content, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-4 rounded-2xl bg-gray-50/50 hover:bg-gray-50 transition-colors cursor-default"
-              >
-                <div className="min-w-0">
-                  <h4 className="text-xs font-black text-blue-900 uppercase tracking-tight truncate mb-1">
-                    {content.title}
-                  </h4>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold text-gray-400">
-                      {content.views} Views
-                    </span>
+            {isLoading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-20 bg-gray-50 rounded-2xl animate-pulse"
+                />
+              ))
+            ) : popularPages.length > 0 ? (
+              popularPages.map((content, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-4 rounded-2xl bg-gray-50/50 hover:bg-gray-50 transition-colors cursor-default"
+                >
+                  <div className="min-w-0 flex-1">
+                    <h4 className="text-[10px] font-black text-blue-900 uppercase tracking-tight truncate mb-1">
+                      {content.title}
+                    </h4>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[9px] font-bold text-gray-400 uppercase">
+                        {content.views.toLocaleString()} Views
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-[9px] font-black text-green-500 bg-green-50 px-2 py-1 rounded-lg">
+                    {content.trend}
                   </div>
                 </div>
-                <div className="text-[10px] font-black text-green-500 bg-green-50 px-2 py-1 rounded-lg">
-                  {content.trend}
-                </div>
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center py-10 text-center">
+                <MousePointer2 className="w-10 h-10 text-gray-100 mb-2" />
+                <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest">
+                  No views recorded
+                </p>
               </div>
-            ))}
+            )}
           </div>
         </motion.div>
       </div>

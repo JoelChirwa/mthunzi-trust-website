@@ -146,6 +146,99 @@ export const trackVisit = async (req, res) => {
   }
 };
 
+export const getPopularPages = async (req, res) => {
+  try {
+    const pages = await Visitor.aggregate([
+      {
+        $group: {
+          _id: "$page",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { count: -1 },
+      },
+      {
+        $limit: 10,
+      },
+      {
+        $project: {
+          _id: 0,
+          page: "$_id",
+          views: "$count",
+        },
+      },
+    ]);
+
+    // Map paths to readable titles
+    const pageMap = {
+      "/": "Home Page",
+      "/about": "About Us",
+      "/programs": "Our Programs",
+      "/blog": "Community Blog",
+      "/careers": "Careers",
+      "/contact": "Contact Us",
+      "/gallery": "Media Gallery",
+      "/impact": "Our Impact",
+    };
+
+    const formattedPages = pages.map((item) => ({
+      ...item,
+      title: pageMap[item.page] || item.page,
+      trend: "+12%", // Mock trend for now as we don't have historical snapshots
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: formattedPages,
+    });
+  } catch (error) {
+    console.error("Error fetching popular pages:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getViewsByDate = async (req, res) => {
+  try {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const views = await Visitor.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: thirtyDaysAgo },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+      {
+        $project: {
+          _id: 0,
+          date: "$_id",
+          views: "$count",
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: views,
+    });
+  } catch (error) {
+    console.error("Error fetching views by date:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const getFlag = (country) => {
   const flags = {
     Malawi: "🇲🇼",
