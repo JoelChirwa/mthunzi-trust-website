@@ -12,12 +12,46 @@ import {
   Heart,
   ArrowRight,
   Send,
+  Loader2,
 } from "lucide-react";
 import logoImg from "../../assets/images/logo.jpg";
 import { useSettings } from "../../context/SettingsContext";
+import toast from "react-hot-toast";
+import { getApiUrl } from "../../utils/api";
 
 const Footer = () => {
   const { settings } = useSettings();
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(getApiUrl("subscribers"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(data.message || "Subscribed successfully!");
+        setEmail("");
+      } else {
+        toast.error(data.message || "Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      toast.error("Network error. Please check your connection.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const quickLinks = [
     { name: "About Us", href: "/about" },
@@ -208,17 +242,26 @@ const Footer = () => {
               Join our community and stay updated with our latest impact
               stories.
             </p>
-            <form className="relative group">
+            <form onSubmit={handleNewsletterSubmit} className="relative group">
               <input
                 type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email Address"
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-sm outline-none focus:border-primary-green focus:bg-white/10 transition-all font-medium"
+                disabled={isSubmitting}
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-sm outline-none focus:border-primary-green focus:bg-white/10 transition-all font-medium disabled:opacity-50"
               />
               <button
                 type="submit"
-                className="absolute right-2 top-2 bottom-2 bg-primary-green hover:bg-white hover:text-blue-950 px-4 rounded-xl transition-all duration-300 disabled:opacity-50"
+                disabled={isSubmitting}
+                className="absolute right-2 top-2 bottom-2 bg-primary-green hover:bg-white hover:text-blue-950 px-4 rounded-xl transition-all duration-300 disabled:opacity-50 flex items-center justify-center min-w-[44px]"
               >
-                <Send className="w-4 h-4" />
+                {isSubmitting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4" />
+                )}
               </button>
             </form>
             <div className="mt-8 pt-8 border-t border-white/5">

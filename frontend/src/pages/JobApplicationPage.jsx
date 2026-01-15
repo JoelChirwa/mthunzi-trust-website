@@ -6,7 +6,6 @@ import {
   Upload,
   Send,
   CheckCircle,
-  Briefcase,
   User,
   Mail,
   Phone,
@@ -134,10 +133,6 @@ const JobApplicationPage = () => {
             <h1 className="text-4xl md:text-6xl font-black text-white leading-tight mb-4 tracking-tighter uppercase">
               Apply for <span className="text-primary-green">{job.title}</span>
             </h1>
-            <p className="text-lg text-white/60 font-medium uppercase tracking-widest flex items-center gap-3">
-              <Briefcase className="w-5 h-5 text-primary-yellow" />{" "}
-              {job.department} Department
-            </p>
           </div>
         </div>
       </section>

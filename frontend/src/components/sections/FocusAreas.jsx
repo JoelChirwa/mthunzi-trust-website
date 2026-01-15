@@ -33,19 +33,42 @@ const FocusAreas = () => {
     >
       <div className="container mx-auto px-6">
         <div className="mb-16 flex flex-col lg:flex-row lg:items-start lg:gap-24">
-          <div className="lg:w-1/3 mb-12 lg:mb-0">
-            <h2
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={{
+              hidden: { opacity: 0, x: -30 },
+              visible: {
+                opacity: 1,
+                x: 0,
+                transition: { duration: 0.8, staggerChildren: 0.2 },
+              },
+            }}
+            className="lg:w-1/3 mb-12 lg:mb-0"
+          >
+            <motion.h2
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
               className="text-4xl md:text-5xl font-black mb-6 text-yellow-400 uppercase tracking-tighter leading-none"
               style={{ textShadow: "0 2px 8px rgba(0,0,0,0.18)" }}
             >
               Our <br className="hidden lg:block" /> Programmes
-            </h2>
-            <p className="text-white/90 font-medium text-lg leading-relaxed">
+            </motion.h2>
+            <motion.p
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              className="text-white/90 font-medium text-lg leading-relaxed"
+            >
               We are organising our activities in{" "}
               {areas.length > 0 ? areas.length : "6"} main programme areas that
               are strongly interconnected.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
           <div className="lg:w-2/3 grid sm:grid-cols-2 gap-10 md:gap-16">
             <AnimatePresence mode="wait">
@@ -57,9 +80,10 @@ const FocusAreas = () => {
                 areas.map((area, idx) => (
                   <motion.div
                     key={area._id}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: idx * 0.1, duration: 0.6 }}
                     className="relative group"
                   >
                     <span className="absolute -left-4 -top-6 text-[80px] md:text-[100px] font-black text-white/5 select-none z-0 group-hover:text-primary-green/10 transition-colors">

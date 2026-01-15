@@ -19,19 +19,24 @@ import {
   Mail,
   Loader2,
   ArrowRight,
+  ChevronDown,
+  CheckCircle,
+  FileText,
 } from "lucide-react";
 import { getApiUrl } from "../utils/api";
+import { useSettings } from "../context/SettingsContext";
 
 const AboutPage = () => {
   const [teamMembers, setTeamMembers] = useState([]);
-  const [achievements, setAchievements] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [achievementsLoading, setAchievementsLoading] = useState(true);
+  const { settings } = useSettings();
+
+  const [openValueIndex, setOpenValueIndex] = useState(null);
+  const [openTargetIndex, setOpenTargetIndex] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchTeamMembers();
-    fetchAchievements();
   }, []);
 
   const fetchTeamMembers = async () => {
@@ -45,19 +50,6 @@ const AboutPage = () => {
       console.error("Error fetching team members:", error);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const fetchAchievements = async () => {
-    try {
-      setAchievementsLoading(true);
-      const response = await fetch(getApiUrl("/achievements"));
-      const data = await response.json();
-      setAchievements(data);
-    } catch (error) {
-      console.error("Error fetching achievements:", error);
-    } finally {
-      setAchievementsLoading(false);
     }
   };
 
@@ -92,6 +84,12 @@ const AboutPage = () => {
       desc: "We advocate for fairness and equal access to opportunities for all, regardless of background or status.",
       color: "bg-purple-500",
     },
+    {
+      icon: CheckCircle,
+      title: "Accountability",
+      desc: "We take responsibility for our actions and outcomes, continuously measuring our impact to ensure we deliver on our promises.",
+      color: "bg-teal-500",
+    },
   ];
 
   const targetGroups = [
@@ -103,15 +101,15 @@ const AboutPage = () => {
     },
     {
       icon: Users,
-      title: "Youth & Women Groups",
+      title: "Youth, Women & People with Disabilities",
       content:
-        "Empowering the backbone of our society through specialized programs and resources.",
+        "Empowering the backbone of our society through inclusive programs, specialized resources, and dedicated advocacy for persons with disabilities.",
     },
     {
       icon: School,
-      title: "Schools & Faith-based Institutions",
+      title: "Schools, Clubs, Community & Faith-based Organisations",
       content:
-        "Partnering with established social pillars to foster education and moral guidance.",
+        "Partnering with established social pillars and grassroots groups to foster education, leadership, and moral guidance.",
     },
   ];
 
@@ -147,8 +145,7 @@ const AboutPage = () => {
             className="max-w-4xl"
           >
             <h1 className="text-4xl md:text-8xl font-black text-white leading-none mb-8 tracking-tighter">
-              The umbrella <br />
-              <span className="text-primary-green">of Hope.</span>
+              {settings?.tagline || "The umbrella of Hope."}
             </h1>
             <p className="text-lg md:text-2xl text-white max-w-2xl font-light leading-relaxed mb-12">
               Registered Youth-led Non-profit Organization dedicated to holistic
@@ -158,80 +155,36 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* Quick Facts Section */}
-      <section className="py-12 bg-white relative z-30">
+      {/* Who We Are Section */}
+      <section className="py-20 md:py-32 bg-white overflow-hidden">
         <div className="container mx-auto px-4">
-          <div className="bg-white -mt-24 rounded-3xl md:rounded-[3rem] shadow-2xl p-6 lg:p-12 grid grid-cols-1 md:grid-cols-3 gap-8 border border-gray-100">
-            <div className="flex items-center gap-5">
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-primary-green/10 flex items-center justify-center text-primary-green">
-                <Calendar className="w-6 h-6 md:w-7 md:h-7" />
-              </div>
-              <div>
-                <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-1">
-                  Established
-                </p>
-                <p className="text-blue-900 font-black text-sm md:text-base">
-                  20 January 2021
-                </p>
-                <p className="text-gray-500 text-[10px] leading-none mt-1">
-                  (Registered June 2023)
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-5">
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500">
-                <MapPin className="w-6 h-6 md:w-7 md:h-7" />
-              </div>
-              <div>
-                <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-1">
-                  Locations
-                </p>
-                <p className="text-blue-900 font-black text-sm md:text-base">
-                  Lilongwe & Blantyre
-                </p>
-                <p className="text-gray-500 text-[10px] mt-1">Malawi, Africa</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-5">
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-primary-yellow/10 flex items-center justify-center text-primary-yellow">
-                <Award className="w-6 h-6 md:w-7 md:h-7" />
-              </div>
-              <div>
-                <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-1">
-                  Legal Status
-                </p>
-                <p className="text-blue-900 font-black text-sm md:text-base">
-                  Registered Trust
-                </p>
-                <p className="text-gray-500 text-[10px] mt-1">
-                  Youth-led Non-profit
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Vision & Mission */}
-      <section className="py-20 md:py-24 overflow-hidden bg-white">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-16 lg:gap-32">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="space-y-6 md:space-y-8"
+              className="space-y-6"
             >
-              <div className="flex items-center gap-4 text-primary-green">
-                <Eye className="w-7 h-7 md:w-8 md:h-8" />
-                <h2 className="text-3xl md:text-4xl font-black uppercase tracking-widest">
-                  Our Vision
-                </h2>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-1 bg-primary-green rounded" />
+                <span className="text-primary-green font-black uppercase tracking-[0.3em] text-xs md:text-sm">
+                  Who We Are
+                </span>
               </div>
-              <p className="text-2xl md:text-3xl lg:text-4xl font-black text-blue-900 leading-tight">
-                "A thrives Malawi where{" "}
-                <span className="text-primary-green">empowered youth lead</span>{" "}
-                in sustainable development and environmental protection."
+              <h2 className="text-3xl md:text-5xl font-black text-blue-900 uppercase tracking-tighter leading-none">
+                {settings?.organizationName || "Mthunzi Trust"}
+              </h2>
+              <p className="text-gray-600 text-lg leading-relaxed font-medium">
+                {settings?.organizationName || "Mthunzi Trust"} was founded in
+                2021 by visionary youth leader Symon Satiele and formally
+                registered in 2023 with the Government of Malawi at the
+                Registrar General under the Trustees Incorporation Rules.
+                Established as a youth-led, non-profit organization,{" "}
+                {settings?.organizationName || "Mthunzi Trust"} exists as an{" "}
+                {settings?.tagline || "“Umbrella of Hope”"} for marginalized and
+                underserved communities across Malawi, grounded in the belief
+                that inclusive, community-driven development is essential for
+                building resilient and equitable societies.
               </p>
             </motion.div>
 
@@ -239,21 +192,154 @@ const AboutPage = () => {
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="space-y-6 md:space-y-8"
+              className="lg:pt-20"
             >
-              <div className="flex items-center gap-4 text-primary-yellow">
-                <Target className="w-7 h-7 md:w-8 md:h-8" />
-                <h2 className="text-3xl md:text-4xl font-black uppercase tracking-widest">
-                  Our Mission
-                </h2>
+              <div className="bg-blue-50 p-8 md:p-12 rounded-[2.5rem] relative">
+                <div className="absolute -top-6 -right-6 w-24 h-24 bg-primary-yellow/20 rounded-full blur-2xl" />
+                <p className="text-gray-700 text-lg leading-relaxed relative z-10">
+                  The Trust was created in response to persistent gaps in
+                  development processes, where youth, women, persons with
+                  disabilities, and other marginalized groups are often excluded
+                  or insufficiently engaged.{" "}
+                  {settings?.organizationName || "Mthunzi Trust"} recognizes
+                  these groups as critical agents of change and works to break
+                  systemic barriers to participation, amplify marginalized
+                  voices, and enable meaningful involvement in social, economic,
+                  environmental, and governance initiatives that shape
+                  sustainable development outcomes.
+                </p>
               </div>
-              <p className="text-2xl md:text-3xl lg:text-4xl font-black text-blue-900 leading-tight">
-                To{" "}
-                <span className="text-primary-yellow">
-                  empower youth and communities
-                </span>{" "}
-                through holistic and sustainable development.
-              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Foundation & Objectives Section */}
+      <section className="py-20 md:py-32 bg-gradient-to-br from-emerald-950 via-blue-900 to-slate-900 relative overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary-green/10 rounded-full blur-[120px] -mr-48 -mt-48" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary-yellow/5 rounded-full blur-[120px] -ml-48 -mb-48" />
+
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-stretch">
+            {/* Left Column: Mission, Vision, Legality */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="lg:w-[45%] flex flex-col"
+            >
+              <div className="h-full border-2 border-white/20 rounded-[3rem] p-8 md:p-12 background-blur-md bg-white/5 space-y-12">
+                {/* Mission */}
+                <div className="flex gap-6">
+                  <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full bg-primary-yellow/20 flex items-center justify-center text-primary-yellow">
+                    <Lightbulb className="w-6 h-6 md:w-7 md:h-7" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight mb-3">
+                      Our Mission
+                    </h3>
+                    <p className="text-white/80 leading-relaxed font-medium">
+                      To empower youth and communities through education,
+                      entrepreneurship, environmental sustainability, and sexual
+                      and reproductive health rights (SRHR), fostering holistic
+                      and sustainable development in Malawi.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Vision */}
+                <div className="flex gap-6">
+                  <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full bg-primary-green/20 flex items-center justify-center text-primary-green">
+                    <Eye className="w-6 h-6 md:w-7 md:h-7" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight mb-3">
+                      Our Vision
+                    </h3>
+                    <p className="text-white/80 leading-relaxed font-medium">
+                      A thriving Malawi where empowered youth lead in
+                      sustainable development, economic growth, and
+                      environmental protection, achieving healthier, educated,
+                      and resilient communities.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Legality */}
+                <div className="flex gap-6 pt-4 border-t border-white/10">
+                  <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/10 flex items-center justify-center text-blue-300">
+                    <FileText className="w-6 h-6 md:w-7 md:h-7" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight mb-4">
+                      Legality
+                    </h3>
+                    <ul className="space-y-3">
+                      <li className="flex gap-3 text-white/70 text-sm md:text-base font-medium">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary-yellow mt-2 flex-shrink-0" />
+                        Registered Youth-led Non-profit Organization (Trust)
+                      </li>
+                      <li className="flex gap-3 text-white/70 text-sm md:text-base font-medium">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary-yellow mt-2 flex-shrink-0" />
+                        Affiliated with National Youth Council of Malawi - in
+                        process
+                      </li>
+                      <li className="flex gap-3 text-white/70 text-sm md:text-base font-medium">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary-yellow mt-2 flex-shrink-0" />
+                        In-Country Focal Point for the African Youth Adaptation
+                        Network
+                      </li>
+                      <li className="flex gap-3 text-white/70 text-sm md:text-base font-medium">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary-yellow mt-2 flex-shrink-0" />
+                        Member of SDSN-Youth Network
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Right Column: Specific Objectives */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="lg:w-[55%] flex flex-col"
+            >
+              <div className="mb-10">
+                <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter leading-none mb-6">
+                  Specific{" "}
+                  <span className="text-primary-green">Objectives</span>
+                </h2>
+                <div className="w-16 h-1 bg-primary-yellow rounded" />
+              </div>
+
+              <div className="space-y-8">
+                {[
+                  "To unlock inclusive, high-quality education by reducing school dropout rates—especially among girls—while strengthening safe water, sanitation, and hygiene in schools and communities.",
+                  "To advance environmental sustainability and climate resilience through community-led action, advocacy, education, and equitable stewardship of natural resources.",
+                  "To transform youth and women’s livelihoods by strengthening entrepreneurial skills, promoting youth-led economic development, and advancing sustainable agriculture and food security.",
+                  "To protect and empower adolescents and young people by expanding access to sexual and reproductive health and rights information and services, reducing early pregnancies, STIs, HIV/AIDS, mental health risks, and gender-based violence.",
+                  "To amplify youth and women’s leadership by enabling meaningful participation in decision-making and governance processes that drive accountable, inclusive, and sustainable development.",
+                ].map((obj, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className="flex gap-6 items-start group"
+                  >
+                    <div className="mt-1 w-6 h-6 rounded-full border border-primary-green/40 flex items-center justify-center flex-shrink-0 group-hover:bg-primary-green transition-colors duration-300">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary-yellow group-hover:bg-white" />
+                    </div>
+                    <p className="text-white/80 text-base md:text-lg font-medium leading-relaxed group-hover:text-white transition-colors">
+                      {obj}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
             </motion.div>
           </div>
         </div>
@@ -267,9 +353,12 @@ const AboutPage = () => {
               Our Core <span className="text-primary-green">Values</span>
             </h2>
             <div className="w-20 md:w-24 h-2 bg-primary-green mx-auto rounded-full mb-8" />
+            <p className="text-gray-500 text-sm md:text-base">
+              Click on each value to learn more
+            </p>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
             {coreValues.map((value, i) => (
               <motion.div
                 key={i}
@@ -277,20 +366,49 @@ const AboutPage = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                whileHover={{ y: -5 }}
-                className="bg-white p-6 md:p-8 rounded-3xl md:rounded-[2.5rem] shadow-xl shadow-blue-900/5 hover:shadow-primary-green/10 transition-all border border-gray-100 flex flex-col items-center text-center col-span-1 last:col-span-2 lg:last:col-span-1"
+                className="bg-white rounded-3xl md:rounded-[2.5rem] shadow-xl shadow-blue-900/5 hover:shadow-primary-green/10 transition-all border border-gray-100 overflow-hidden"
               >
-                <div
-                  className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl ${value.color} flex items-center justify-center text-white mb-4 md:mb-6 shadow-lg shadow-current/20`}
+                <button
+                  onClick={() =>
+                    setOpenValueIndex(openValueIndex === i ? null : i)
+                  }
+                  className="w-full p-6 md:p-8 flex flex-col items-center text-center cursor-pointer group"
                 >
-                  <value.icon className="w-6 h-6 md:w-8 md:h-8" />
-                </div>
-                <h3 className="text-base md:text-xl font-black text-blue-900 mb-3 md:mb-4 uppercase tracking-wider">
-                  {value.title}
-                </h3>
-                <p className="text-gray-500 text-[10px] md:text-sm leading-relaxed line-clamp-3">
-                  {value.desc}
-                </p>
+                  <div
+                    className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl ${value.color} flex items-center justify-center text-white mb-4 md:mb-6 shadow-lg shadow-current/20 group-hover:scale-110 transition-transform`}
+                  >
+                    <value.icon className="w-6 h-6 md:w-8 md:h-8" />
+                  </div>
+                  <h3 className="text-base md:text-xl font-black text-blue-900 mb-3 uppercase tracking-wider">
+                    {value.title}
+                  </h3>
+                  <motion.div
+                    animate={{ rotate: openValueIndex === i ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ChevronDown className="w-5 h-5 text-primary-green" />
+                  </motion.div>
+                </button>
+
+                <motion.div
+                  initial={false}
+                  animate={{
+                    height: openValueIndex === i ? "auto" : 0,
+                    opacity: openValueIndex === i ? 1 : 0,
+                  }}
+                  transition={{
+                    height: { duration: 0.4, ease: "easeInOut" },
+                    opacity: { duration: 0.3, ease: "easeInOut" },
+                  }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-6 md:px-8 pb-6 md:pb-8">
+                    <div className="w-12 h-px bg-gray-200 mx-auto mb-4" />
+                    <p className="text-gray-600 text-sm md:text-base leading-relaxed text-center">
+                      {value.desc}
+                    </p>
+                  </div>
+                </motion.div>
               </motion.div>
             ))}
           </div>
@@ -314,9 +432,12 @@ const AboutPage = () => {
             <h2 className="text-3xl md:text-6xl font-black text-white mb-6 uppercase tracking-tighter">
               Who We <span className="text-primary-yellow">Target</span>
             </h2>
+            <p className="text-white/70 text-sm md:text-base">
+              Click on each group to learn more
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 text-center md:text-left">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
             {targetGroups.map((group, i) => (
               <motion.div
                 key={i}
@@ -324,120 +445,50 @@ const AboutPage = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.2 }}
-                className="bg-white/5 backdrop-blur-xl p-8 lg:p-10 rounded-3xl lg:rounded-[3rem] border border-white/10 hover:bg-white/10 transition-all"
+                className="bg-white/5 backdrop-blur-xl rounded-3xl lg:rounded-[3rem] border border-white/10 hover:bg-white/10 transition-all overflow-hidden"
               >
-                <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-primary-green mx-auto md:mx-0 flex items-center justify-center text-white mb-6 lg:mb-8 shadow-2xl shadow-primary-green/30">
-                  <group.icon className="w-8 h-8 lg:w-10 lg:h-10" />
-                </div>
-                <h3 className="text-xl lg:text-2xl font-black text-white mb-4 uppercase tracking-tight">
-                  {group.title}
-                </h3>
-                <p className="text-white/60 text-sm lg:text-base leading-relaxed">
-                  {group.content}
-                </p>
+                <button
+                  onClick={() =>
+                    setOpenTargetIndex(openTargetIndex === i ? null : i)
+                  }
+                  className="w-full p-8 lg:p-10 text-center cursor-pointer group"
+                >
+                  <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-primary-green mx-auto flex items-center justify-center text-white mb-6 lg:mb-8 shadow-2xl shadow-primary-green/30 group-hover:scale-110 transition-transform">
+                    <group.icon className="w-8 h-8 lg:w-10 lg:h-10" />
+                  </div>
+                  <h3 className="text-xl lg:text-2xl font-black text-white mb-4 uppercase tracking-tight">
+                    {group.title}
+                  </h3>
+                  <motion.div
+                    animate={{ rotate: openTargetIndex === i ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ChevronDown className="w-5 h-5 text-primary-yellow mx-auto" />
+                  </motion.div>
+                </button>
+
+                <motion.div
+                  initial={false}
+                  animate={{
+                    height: openTargetIndex === i ? "auto" : 0,
+                    opacity: openTargetIndex === i ? 1 : 0,
+                  }}
+                  transition={{
+                    height: { duration: 0.4, ease: "easeInOut" },
+                    opacity: { duration: 0.3, ease: "easeInOut" },
+                  }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-8 lg:px-10 pb-8 lg:pb-10">
+                    <div className="w-12 h-px bg-white/20 mx-auto mb-4" />
+                    <p className="text-white/80 text-sm lg:text-base leading-relaxed text-center">
+                      {group.content}
+                    </p>
+                  </div>
+                </motion.div>
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Achievements Section */}
-      <section className="py-20 md:py-32 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-16 md:mb-20">
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <div className="w-12 h-1 bg-primary-yellow rounded" />
-              <span className="text-primary-yellow font-black uppercase tracking-[0.3em] text-xs md:text-sm">
-                Our Milestones
-              </span>
-            </div>
-            <h2 className="text-3xl md:text-6xl font-black text-blue-900 mb-6 uppercase tracking-tighter">
-              Achievements &{" "}
-              <span className="text-primary-yellow">Recognition</span>
-            </h2>
-            <p className="text-gray-500 text-base md:text-lg font-medium">
-              Celebrating the impact we've made together in building a better
-              future for Malawi
-            </p>
-          </div>
-
-          {achievementsLoading ? (
-            <div className="flex flex-col items-center justify-center py-20 gap-4">
-              <Loader2 className="w-12 h-12 text-primary-yellow animate-spin" />
-              <p className="text-gray-400 font-black uppercase tracking-widest text-xs">
-                Loading achievements...
-              </p>
-            </div>
-          ) : achievements.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {achievements.slice(0, 6).map((achievement, i) => (
-                <motion.div
-                  key={achievement._id || i}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="group bg-white border border-gray-100 rounded-[2rem] overflow-hidden shadow-lg shadow-blue-900/5 hover:shadow-2xl hover:shadow-primary-yellow/20 transition-all duration-500"
-                >
-                  {/* Image */}
-                  {achievement.images && achievement.images.length > 0 && (
-                    <div className="relative h-56 overflow-hidden bg-gradient-to-br from-blue-900 to-primary-green">
-                      <img
-                        src={achievement.images[0]}
-                        alt={achievement.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-transparent to-transparent" />
-                    </div>
-                  )}
-
-                  {/* Content */}
-                  <div className="p-8">
-                    {/* Category */}
-                    <span className="inline-block px-3 py-1 bg-primary-green/10 text-primary-green text-[9px] font-black uppercase tracking-widest rounded-lg mb-4">
-                      {achievement.category}
-                    </span>
-
-                    {/* Title */}
-                    <h3 className="text-xl font-black text-blue-900 mb-4 leading-tight group-hover:text-primary-yellow transition-colors">
-                      {achievement.title}
-                    </h3>
-
-                    {/* Description */}
-                    <p className="text-gray-600 text-sm leading-relaxed mb-6 line-clamp-3">
-                      {achievement.description}
-                    </p>
-
-                    {/* Learn More Button */}
-                    <Link
-                      to={`/achievements/${achievement.slug}`}
-                      className="inline-flex items-center gap-2 text-blue-900 font-black text-xs uppercase tracking-widest hover:text-primary-yellow transition-colors group"
-                    >
-                      Learn More
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                    </Link>
-                  </div>
-
-                  {/* Featured Badge */}
-                  {achievement.featured && (
-                    <div className="absolute top-6 left-6 px-3 py-1.5 bg-blue-900 text-white text-[8px] font-black uppercase rounded-xl shadow-xl flex items-center gap-2">
-                      <Award className="w-3 h-3" />
-                      Featured
-                    </div>
-                  )}
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-20">
-              <div className="w-20 h-20 bg-gray-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
-                <Award className="w-10 h-10 text-gray-200" />
-              </div>
-              <p className="text-gray-400 text-sm font-bold uppercase tracking-widest">
-                More achievements coming soon
-              </p>
-            </div>
-          )}
         </div>
       </section>
 
@@ -516,8 +567,8 @@ const AboutPage = () => {
                     <h3 className="text-2xl font-black text-blue-900 group-hover:text-primary-green transition-colors">
                       {member.name}
                     </h3>
-                    <p className="text-primary-green font-bold uppercase tracking-widest text-xs mt-1">
-                      {member.role}
+                    <p className="text-primary-green font-bold uppercase tracking-widest text-[10px] mt-1">
+                      {member.role} {member.position && `• ${member.position}`}
                     </p>
                   </div>
                 </motion.div>

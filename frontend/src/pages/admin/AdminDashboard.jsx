@@ -13,6 +13,7 @@ import {
   Calendar,
   Globe,
   Loader2,
+  Mail,
 } from "lucide-react";
 import { getApiUrl } from "../../utils/api";
 
@@ -25,6 +26,7 @@ const AdminDashboard = () => {
     programs: 0,
     blogs: 0,
     jobs: 0,
+    subscribers: 0,
   });
   const [countryData, setCountryData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -77,17 +79,17 @@ const AdminDashboard = () => {
       color: "yellow",
     },
     {
-      label: "Careers",
-      value: stats.jobs.toString(),
-      icon: Briefcase,
-      color: "purple",
+      label: "Subscribers",
+      value: stats.subscribers.toString(),
+      icon: Mail,
+      color: "blue",
     },
   ];
 
   const analytics = [
     {
       label: "Total Website Visits",
-      value: isLoading ? "..." : (stats.blogs * 150 + 1200).toLocaleString(), // Aggregated mock for now
+      value: isLoading ? "..." : (stats.visitors || 0).toLocaleString(),
       change: "+12.5%",
       trendingUp: true,
       period: "Last 30 days",
@@ -121,10 +123,10 @@ const AdminDashboard = () => {
       color: "purple",
     },
     {
-      icon: Briefcase,
-      title: "Careers",
-      path: "/admin/jobs",
-      color: "yellow",
+      icon: Mail,
+      title: "Subscribers",
+      path: "/admin/subscribers",
+      color: "blue",
     },
   ];
 

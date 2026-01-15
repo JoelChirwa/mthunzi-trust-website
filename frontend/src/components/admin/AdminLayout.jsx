@@ -10,10 +10,12 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useUser } from "@clerk/clerk-react";
+import { useSettings } from "../../context/SettingsContext";
 
 const AdminLayout = ({ children, title }) => {
   const { user } = useUser();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { settings } = useSettings();
 
   return (
     <div className="flex bg-gray-50 min-h-screen">
@@ -101,7 +103,9 @@ const AdminLayout = ({ children, title }) => {
         {/* System Status Footer */}
         <footer className="px-4 lg:px-10 py-6 bg-white border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-center sm:text-left text-[10px] lg:text-xs font-bold text-gray-400 uppercase tracking-widest">
-            © 2024 Mthunzi Trust • Infrastructure Active
+            © {new Date().getFullYear()}{" "}
+            {settings?.organizationName || "Mthunzi Trust"} • Infrastructure
+            Active
           </p>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-green-500">

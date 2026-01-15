@@ -12,6 +12,10 @@ const teamSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    position: {
+      type: String,
+      trim: true,
+    },
     image: {
       type: String,
       required: true,

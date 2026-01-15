@@ -16,6 +16,7 @@ import { getApiUrl } from "../../utils/api";
 
 const AdminAnalytics = () => {
   const [countryData, setCountryData] = useState([]);
+  const [stats, setStats] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -28,42 +29,58 @@ const AdminAnalytics = () => {
         }
       } catch (error) {
         console.error("Error fetching geographic reach:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
-    fetchGeographicReach();
+    const fetchStats = async () => {
+      try {
+        const response = await fetch(getApiUrl("/analytics/admin-stats"));
+        const data = await response.json();
+        if (data.success) {
+          setStats(data.stats);
+        }
+      } catch (error) {
+        console.error("Error fetching admin stats:", error);
+      }
+    };
+
+    const loadData = async () => {
+      setIsLoading(true);
+      await Promise.all([fetchGeographicReach(), fetchStats()]);
+      setIsLoading(false);
+    };
+
+    loadData();
   }, []);
 
   const kpis = [
     {
-      label: "Avg. Session",
-      value: "4m 32s",
-      change: "+12%",
+      label: "Active Outreach",
+      value: stats ? (stats.programs || 0) + (stats.blogs || 0) : "-",
+      change: "+4%",
       trendingUp: true,
-      icon: Clock,
+      icon: TrendingUp,
       color: "blue",
     },
     {
-      label: "Bounce Rate",
-      value: "32.4%",
-      change: "-5%",
-      trendingUp: true, // Lower bounce rate is better
-      icon: MousePointer2,
+      label: "Community Members",
+      value: stats ? stats.subscribers?.toLocaleString() : "-",
+      change: "+12%",
+      trendingUp: true,
+      icon: Users,
       color: "green",
     },
     {
-      label: "New Visitors",
-      value: "1,284",
+      label: "Total Visitors",
+      value: stats ? stats.visitors?.toLocaleString() : "-",
       change: "+18%",
       trendingUp: true,
-      icon: Users,
+      icon: Globe,
       color: "purple",
     },
     {
       label: "Page Views",
-      value: "12,405",
+      value: stats ? stats.pageViews?.toLocaleString() : "-",
       change: "+7%",
       trendingUp: true,
       icon: Eye,

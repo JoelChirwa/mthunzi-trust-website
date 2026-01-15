@@ -108,9 +108,6 @@ const SingleJobPage = () => {
             <ChevronLeft className="w-4 h-4" /> Back to All Careers
           </Link>
           <div className="max-w-4xl">
-            <span className="inline-block px-4 py-2 bg-primary-green text-white rounded-full text-xs font-black uppercase tracking-widest mb-6">
-              {job.department} Department
-            </span>
             <h1 className="text-4xl md:text-7xl font-black text-white leading-tight mb-8 tracking-tighter uppercase">
               {job.title}
             </h1>

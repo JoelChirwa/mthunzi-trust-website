@@ -7,7 +7,6 @@ import {
   MapPin,
   Trash2,
   Edit3,
-  Building2,
   Calendar,
   X,
   Loader2,
@@ -25,7 +24,6 @@ const AdminJobs = () => {
   const [editingJob, setEditingJob] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
-    department: "",
     location: "Lilongwe, Malawi",
     type: "Full-Time",
     deadline: "",
@@ -55,9 +53,9 @@ const AdminJobs = () => {
 
   const filteredJobs = jobs.filter((job) => {
     const matchesTab = activeTab === "All" || job.type === activeTab;
-    const matchesSearch =
-      job.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.department?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = job.title
+      ?.toLowerCase()
+      .includes(searchQuery.toLowerCase());
     return matchesTab && matchesSearch;
   });
 
@@ -65,14 +63,13 @@ const AdminJobs = () => {
     setEditingJob(job);
     setFormData({
       title: job.title,
-      department: job.department,
       location: job.location,
       type: job.type,
       deadline: job.deadline
         ? new Date(job.deadline).toISOString().split("T")[0]
         : "",
       description: job.description,
-      requirements: job.requirements?.join("\n"),
+      requirements: job.requirements?.join("\n") || "",
     });
     setIsModalOpen(true);
   };
@@ -168,7 +165,6 @@ const AdminJobs = () => {
         setEditingJob(null);
         setFormData({
           title: "",
-          department: "",
           location: "Lilongwe, Malawi",
           type: "Full-Time",
           deadline: "",
@@ -207,7 +203,6 @@ const AdminJobs = () => {
             setEditingJob(null);
             setFormData({
               title: "",
-              department: "",
               location: "Lilongwe, Malawi",
               type: "Full-Time",
               deadline: "",
@@ -291,10 +286,6 @@ const AdminJobs = () => {
                       </h3>
                       <div className="flex flex-wrap items-center gap-y-2 gap-x-4 mt-2">
                         <span className="flex items-center gap-1.5 text-primary-green text-[9px] font-black uppercase tracking-widest">
-                          <Building2 className="w-3.5 h-3.5" />
-                          {job.department}
-                        </span>
-                        <span className="text-gray-400 text-[10px] font-bold border-l border-gray-100 pl-4 flex items-center gap-1.5">
                           <MapPin className="w-3.5 h-3.5" /> {job.location}
                         </span>
                         <span
@@ -372,7 +363,7 @@ const AdminJobs = () => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden"
+              className="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
             >
               <div className="px-8 py-6 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -391,7 +382,10 @@ const AdminJobs = () => {
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-8">
+              <form
+                onSubmit={handleSubmit}
+                className="flex-1 overflow-y-auto p-8"
+              >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-blue-900/70 uppercase tracking-widest ml-1">
@@ -406,21 +400,6 @@ const AdminJobs = () => {
                       }
                       className="w-full px-5 py-3.5 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none transition-all text-sm font-bold text-blue-900 placeholder:text-gray-300"
                       placeholder="e.g. Program Coordinator"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-blue-900/70 uppercase tracking-widest ml-1">
-                      Department
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.department}
-                      onChange={(e) =>
-                        setFormData({ ...formData, department: e.target.value })
-                      }
-                      className="w-full px-5 py-3.5 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none transition-all text-sm font-bold text-blue-900 placeholder:text-gray-300"
-                      placeholder="e.g. Climate Action"
                     />
                   </div>
                   <div className="space-y-2">
@@ -509,29 +488,30 @@ const AdminJobs = () => {
                     />
                   </div>
                 </div>
-
-                <div className="flex gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setIsModalOpen(false)}
-                    className="flex-1 h-14 bg-gray-50 text-gray-400 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gray-100 transition-all"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSaving}
-                    className="flex-[2] h-14 bg-primary-green text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary-green/20 flex items-center justify-center gap-3 hover:translate-y-[-2px] disabled:opacity-50 disabled:translate-y-0 transition-all"
-                  >
-                    {isSaving ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Plus className="w-4 h-4" />
-                    )}
-                    {editingJob ? "Update Vacancy" : "Post Vacancy"}
-                  </button>
-                </div>
               </form>
+
+              {/* Modal Footer - Fixed at bottom */}
+              <div className="p-8 border-t border-gray-100 bg-gray-50 flex justify-end gap-4">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-8 py-4 bg-white text-gray-400 hover:text-blue-900 font-black text-[10px] uppercase tracking-widest rounded-2xl border border-gray-100 hover:shadow-lg transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  disabled={isSaving}
+                  className="px-10 py-4 bg-primary-green text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-primary-green/20 flex items-center justify-center gap-3 hover:translate-y-[-2px] disabled:opacity-50 disabled:translate-y-0 transition-all font-bold"
+                >
+                  {isSaving ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Plus className="w-4 h-4" />
+                  )}
+                  {editingJob ? "Update Vacancy" : "Post Vacancy"}
+                </button>
+              </div>
             </motion.div>
           </div>
         )}

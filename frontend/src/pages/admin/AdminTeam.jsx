@@ -20,6 +20,7 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
   const [formData, setFormData] = useState({
     name: "",
     role: "",
+    position: "",
     image: "",
     linkedin: "",
     email: "",
@@ -34,6 +35,7 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
       setFormData({
         name: "",
         role: "",
+        position: "",
         image: "",
         linkedin: "",
         email: "",
@@ -141,7 +143,7 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
 
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
-                  Job Position
+                  Job Role
                 </label>
                 <input
                   type="text"
@@ -149,7 +151,22 @@ const MemberModal = ({ isOpen, onClose, onSave, member }) => {
                   onChange={(e) =>
                     setFormData({ ...formData, role: e.target.value })
                   }
-                  placeholder="e.g., Program Director"
+                  placeholder="e.g., Executive Director"
+                  className="w-full px-6 py-4 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 placeholder:text-gray-300 transition-all"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-900/70 ml-1">
+                  Position/Department
+                </label>
+                <input
+                  type="text"
+                  value={formData.position}
+                  onChange={(e) =>
+                    setFormData({ ...formData, position: e.target.value })
+                  }
+                  placeholder="e.g., Management"
                   className="w-full px-6 py-4 bg-gray-100/50 border-2 border-gray-200 focus:bg-white focus:border-primary-green rounded-2xl outline-none text-sm font-bold text-blue-900 placeholder:text-gray-300 transition-all"
                 />
               </div>
@@ -455,7 +472,8 @@ const AdminTeam = () => {
                     </h3>
                     <div className="flex items-center gap-3">
                       <p className="text-primary-green text-[10px] font-black uppercase tracking-widest">
-                        {member.role}
+                        {member.role}{" "}
+                        {member.position && `• ${member.position}`}
                       </p>
                       {(member.linkedin || member.email) && (
                         <div className="flex items-center gap-2 border-l border-gray-200 pl-3">

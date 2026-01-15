@@ -85,32 +85,43 @@ const PartnersSection = () => {
 
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         {/* Title */}
-        <div className="flex items-center justify-center gap-4 mb-6">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="flex items-center justify-center gap-4 mb-6"
+        >
           <div className="flex-1 h-1 bg-white/30 rounded max-w-xs" />
           <h2 className="text-4xl font-bold text-white whitespace-nowrap uppercase tracking-wider">
             Our Partners
           </h2>
           <div className="flex-1 h-1 bg-white/30 rounded max-w-xs" />
-        </div>
+        </motion.div>
 
         {/* Description */}
-        <p className="text-white text-lg leading-relaxed mb-16 max-w-4xl mx-auto text-center opacity-90 font-medium">
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+          className="text-white text-lg leading-relaxed mb-16 max-w-4xl mx-auto text-center opacity-90 font-medium"
+        >
           We are deeply grateful for the trust and partnership of organizations
           who share our vision. Through meaningful collaboration, our partners
           strengthen our capacity to advocate, empower, and drive sustainable
           change in communities across Malawi.
-        </p>
+        </motion.p>
 
         {/* Carousel Outer Container */}
         <div
-          className="relative group px-12"
+          className="relative group px-4 md:px-12"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          {/* Functional Arrows */}
+          {/* Functional Arrows - Hidden on Mobile for cleaner UI */}
           <button
             onClick={prevSlide}
-            className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all duration-300 z-30 border border-white/20 shadow-xl opacity-0 group-hover:opacity-100 cursor-pointer"
+            className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full hidden md:flex items-center justify-center text-white transition-all duration-300 z-30 border border-white/20 shadow-xl opacity-0 group-hover:opacity-100 cursor-pointer"
             aria-label="Previous partners"
           >
             <svg
@@ -130,7 +141,7 @@ const PartnersSection = () => {
 
           <button
             onClick={nextSlide}
-            className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all duration-300 z-30 border border-white/20 shadow-xl opacity-0 group-hover:opacity-100 cursor-pointer"
+            className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full hidden md:flex items-center justify-center text-white transition-all duration-300 z-30 border border-white/20 shadow-xl opacity-0 group-hover:opacity-100 cursor-pointer"
             aria-label="Next partners"
           >
             <svg
@@ -148,9 +159,9 @@ const PartnersSection = () => {
             </svg>
           </button>
 
-          {/* Gradient Side Fades */}
-          <div className="absolute left-10 top-0 bottom-0 w-32 bg-gradient-to-r from-green-500 via-green-500/80 to-transparent z-20 pointer-events-none" />
-          <div className="absolute right-10 top-0 bottom-0 w-32 bg-gradient-to-l from-green-600 via-green-600/80 to-transparent z-20 pointer-events-none" />
+          {/* Gradient Side Fades - Removed on mobile to prevent covering content */}
+          <div className="absolute left-10 top-0 bottom-0 w-32 bg-gradient-to-r from-green-500 via-green-500/80 to-transparent z-20 pointer-events-none hidden lg:block" />
+          <div className="absolute right-10 top-0 bottom-0 w-32 bg-gradient-to-l from-green-600 via-green-600/80 to-transparent z-20 pointer-events-none hidden lg:block" />
 
           {/* Smooth Scrolling Track */}
           <div className="overflow-hidden py-4">

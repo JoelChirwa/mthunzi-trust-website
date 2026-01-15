@@ -1,71 +1,167 @@
-import React from "react";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Users,
+  TrendingUp,
+  Handshake,
+  Globe,
+  Lightbulb,
+  Heart,
+  ChevronDown,
+  Megaphone,
+} from "lucide-react";
 
-const howWeWork = [
+const workMethods = [
   {
-    icon: (
-      <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-green-500"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-    ),
-    title: 'ADVOCACY',
-    desc: 'We advocate for youth, women, and Persons With Disabilities(PWDs).',
+    icon: Megaphone,
+    title: "ADVOCACY",
+    desc: "We advocate for youth, women, and Persons With Disabilities(PWDs).",
+    color: "bg-blue-500",
   },
   {
-    icon: (
-      <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-green-500"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-4a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-    ),
-    title: 'CAPACITY BUILDING',
-    desc: 'We help develop capacity of the member organizations and the young people that we work with.',
+    icon: TrendingUp,
+    title: "CAPACITY BUILDING",
+    desc: "We help develop capacity of the member organizations and the young people that we work with.",
+    color: "bg-primary-green",
   },
   {
-    icon: (
-      <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-green-500"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-4a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-    ),
-    title: 'PARTNERSHIP',
-    desc: 'We collaborate with organizations in and out country to meet our joint objectives.',
+    icon: Handshake,
+    title: "PARTNERSHIP",
+    desc: "We collaborate with organizations in and out country to meet our joint objectives.",
+    color: "bg-primary-yellow",
   },
   {
-    icon: (
-      <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-green-500"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2s2-.9 2-2v-2c0-1.1-.9-2-2-2zm0 10c-4.41 0-8-1.79-8-4V6c0-2.21 3.59-4 8-4s8 1.79 8 4v8c0 2.21-3.59 4-8 4z"/></svg>
-    ),
-    title: 'COMMUNITY ENGAGEMENT & ACTION',
-    desc: 'We engage communities to drive local action and sustainable change.',
+    icon: Globe,
+    title: "COMMUNITY ENGAGEMENT & ACTION",
+    desc: "We engage communities to drive local action and sustainable change.",
+    color: "bg-purple-500",
   },
   {
-    icon: (
-      <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-green-500"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2s2-.9 2-2v-2c0-1.1-.9-2-2-2zm0 10c-4.41 0-8-1.79-8-4V6c0-2.21 3.59-4 8-4s8 1.79 8 4v8c0 2.21-3.59 4-8 4z"/></svg>
-    ),
-    title: 'EMPOWERMENT',
-    desc: 'We empower individuals and groups to realize their full potential.',
+    icon: Heart,
+    title: "EMPOWERMENT",
+    desc: "We empower individuals and groups to realize their full potential.",
+    color: "bg-red-500",
   },
   {
-    icon: (
-      <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-green-500"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m4 0h-1v4h-1m-4 0h-1v-4h-1"/></svg>
-    ),
-    title: 'INNOVATION',
-    desc: 'We foster innovative solutions to address emerging challenges.',
+    icon: Lightbulb,
+    title: "INNOVATION",
+    desc: "We foster innovative solutions to address emerging challenges.",
+    color: "bg-teal-500",
   },
 ];
 
+const HowWeWork = () => {
+  const [activeIndex, setActiveIndex] = useState(null);
 
-const HowWeWork = () => (
-  <section className="py-16 bg-white">
-    <div className="max-w-7xl mx-auto px-4">
-      <div className="flex items-center gap-4 mb-12">
-        <div className="w-20 h-1 bg-gray-300 rounded" />
-        <h2 className="text-4xl font-bold text-blue-900">HOW WE WORK</h2>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-        {howWeWork.map((item, idx) => (
-          <div key={idx} className="flex items-start">
-            <div className="mr-4 flex-shrink-0">{item.icon}</div>
-            <div>
-              <h3 className="text-lg font-bold tracking-wide mb-1 text-gray-900">{item.title}</h3>
-              <p className="text-gray-700 text-base leading-relaxed">{item.desc}</p>
+  return (
+    <section className="py-24 bg-gray-50 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-16">
+          <div className="space-y-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-1 bg-primary-green rounded" />
+              <span className="text-primary-green font-black uppercase tracking-[0.3em] text-sm">
+                Our Methodology
+              </span>
             </div>
+            <h2 className="text-4xl md:text-6xl font-black text-blue-900 uppercase tracking-tighter">
+              How We <span className="text-primary-green">Work</span>
+            </h2>
           </div>
-        ))}
+          <p className="md:max-w-md text-gray-500 font-medium leading-relaxed">
+            Our strategic approach is built on inclusive participation and
+            community-driven solutions to ensure sustainable impact across
+            Malawi.
+          </p>
+        </div>
+
+        {/* Interaction Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {workMethods.map((method, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.1 }}
+              className={`group rounded-[2.5rem] border-2 transition-all duration-500 overflow-hidden bg-white ${
+                activeIndex === idx
+                  ? "border-primary-green shadow-2xl shadow-primary-green/10"
+                  : "border-transparent shadow-sm hover:border-gray-100 hover:shadow-xl"
+              }`}
+            >
+              <button
+                onClick={() => setActiveIndex(activeIndex === idx ? null : idx)}
+                className="w-full p-8 md:p-10 flex items-center justify-between text-left cursor-pointer"
+              >
+                <div className="flex items-center gap-6">
+                  <div
+                    className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center text-white transition-transform duration-500 ${
+                      method.color
+                    } ${
+                      activeIndex === idx
+                        ? "scale-110"
+                        : "group-hover:scale-110"
+                    }`}
+                  >
+                    <method.icon className="w-6 h-6 md:w-8 md:h-8" />
+                  </div>
+                  <h3 className="text-lg md:text-xl font-black text-blue-900 uppercase tracking-tight leading-tight max-w-[200px] md:max-w-none">
+                    {method.title}
+                  </h3>
+                </div>
+
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
+                    activeIndex === idx
+                      ? "bg-primary-green text-white rotate-180"
+                      : "bg-gray-50 text-gray-400 group-hover:bg-primary-green/10 group-hover:text-primary-green"
+                  }`}
+                >
+                  <ChevronDown className="w-5 h-5" />
+                </div>
+              </button>
+
+              <AnimatePresence>
+                {activeIndex === idx && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                  >
+                    <div className="px-8 md:px-10 pb-10">
+                      <div className="w-full h-px bg-gray-100 mb-8" />
+                      <p className="text-gray-600 text-lg leading-relaxed font-medium pl-2 md:pl-22 relative">
+                        <span className="absolute left-0 top-0 text-5xl text-primary-green/10 font-black hidden md:block">
+                          “
+                        </span>
+                        {method.desc}
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Bottom Call to Action */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="mt-20 text-center"
+        >
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-white rounded-full border border-gray-100 shadow-sm text-[10px] font-black uppercase tracking-widest text-gray-400">
+            <span className="w-2 h-2 bg-primary-green rounded-full animate-pulse" />
+            Continuous Growth • Holistic Solutions
+          </div>
+        </motion.div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default HowWeWork;

@@ -17,11 +17,12 @@ export const getTeam = async (req, res) => {
 // @route   POST /api/team
 export const createTeamMember = async (req, res) => {
   try {
-    const { name, role, image, linkedin, email, order } = req.body;
+    const { name, role, position, image, linkedin, email, order } = req.body;
 
     const member = await Team.create({
       name,
       role,
+      position,
       image,
       linkedin,
       email,
@@ -45,6 +46,7 @@ export const updateTeamMember = async (req, res) => {
     if (member) {
       member.name = req.body.name || member.name;
       member.role = req.body.role || member.role;
+      member.position = req.body.position || member.position;
       member.image = req.body.image || member.image;
       member.linkedin = req.body.linkedin || member.linkedin;
       member.email = req.body.email || member.email;

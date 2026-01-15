@@ -9,7 +9,6 @@ const jobSchema = new mongoose.Schema(
     },
     department: {
       type: String,
-      required: [true, "Department is required"],
       trim: true,
     },
     location: {
@@ -51,7 +50,7 @@ const jobSchema = new mongoose.Schema(
 );
 
 // Pre-save middleware to generate slug
-jobSchema.pre("validate", function (next) {
+jobSchema.pre("validate", function () {
   if (this.title && !this.slug) {
     this.slug = this.title
       .toLowerCase()
@@ -59,9 +58,13 @@ jobSchema.pre("validate", function (next) {
       .join("-")
       .replace(/[^\w-]+/g, "");
   }
-  next();
 });
 
-const Job = mongoose.models.Job || mongoose.model("Job", jobSchema);
+// Force refresh the model if it exists to apply schema changes (like removing department required)
+if (mongoose.models.Job) {
+  delete mongoose.models.Job;
+}
+
+const Job = mongoose.model("Job", jobSchema);
 
 export default Job;

@@ -212,13 +212,20 @@ const Contact = ({ showHeader = true }) => {
                     <div className="w-24 h-24 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
                       <CheckCircle className="w-12 h-12" />
                     </div>
-                    <h3 className="text-4xl font-black text-blue-900 mb-4 tracking-tighter uppercase">
+                    <h2 className="text-4xl font-black text-blue-900 mb-4 tracking-tighter uppercase">
                       Inquiry Received!
-                    </h3>
+                    </h2>
                     <p className="text-gray-500 mb-10 max-w-md mx-auto text-lg leading-relaxed">
-                      Thank you for reaching out. A representative will contact
-                      you shortly using the details provided.
+                      Thank you for reaching out to Mthunzi Trust. A
+                      representative will review your discovery and contact you
+                      shortly using the details provided.
                     </p>
+                    <button
+                      onClick={() => setIsSubmitted(false)}
+                      className="px-10 py-4 bg-blue-900 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl hover:bg-primary-green transition-all"
+                    >
+                      Send Another Message
+                    </button>
                   </motion.div>
                 ) : (
                   <motion.div key="form" className="relative z-10">
@@ -245,10 +252,16 @@ const Contact = ({ showHeader = true }) => {
                             className={`px-6 py-3 rounded-xl transition-all duration-300 flex items-center gap-3 border ${
                               formData.subject === type.label
                                 ? "bg-blue-900 text-white border-blue-900 shadow-xl"
-                                : "bg-gray-50 text-gray-500 border-gray-100 hover:border-primary-green hover:text-primary-green hover:bg-white"
+                                : "bg-gray-50 text-gray-400 border-gray-100 hover:border-primary-green hover:text-primary-green hover:bg-white"
                             }`}
                           >
-                            <type.icon className="w-4 h-4" />
+                            <type.icon
+                              className={`w-4 h-4 ${
+                                formData.subject === type.label
+                                  ? "text-primary-yellow"
+                                  : ""
+                              }`}
+                            />
                             <span className="text-[10px] font-black uppercase tracking-widest">
                               {type.label}
                             </span>
@@ -269,7 +282,7 @@ const Contact = ({ showHeader = true }) => {
                             value={formData.name}
                             onChange={handleChange}
                             required
-                            className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary-green outline-none transition-all text-gray-900 font-bold text-sm shadow-sm"
+                            className="w-full px-6 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green outline-none transition-all text-gray-900 font-bold text-sm shadow-sm"
                             placeholder="John Doe"
                           />
                         </div>
@@ -284,8 +297,8 @@ const Contact = ({ showHeader = true }) => {
                             value={formData.email}
                             onChange={handleChange}
                             required
-                            className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary-green outline-none transition-all text-gray-900 font-bold text-sm shadow-sm"
-                            placeholder="hello@world.com"
+                            className="w-full px-6 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green outline-none transition-all text-gray-900 font-bold text-sm shadow-sm"
+                            placeholder="hello@mthunzi.org"
                           />
                         </div>
                       </div>
@@ -300,7 +313,7 @@ const Contact = ({ showHeader = true }) => {
                             name="phone"
                             value={formData.phone}
                             onChange={handleChange}
-                            className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary-green outline-none transition-all text-gray-900 font-bold text-sm shadow-sm"
+                            className="w-full px-6 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green outline-none transition-all text-gray-900 font-bold text-sm shadow-sm"
                             placeholder="+265..."
                           />
                         </div>
@@ -315,7 +328,7 @@ const Contact = ({ showHeader = true }) => {
                             value={formData.subject}
                             onChange={handleChange}
                             required
-                            className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary-green outline-none transition-all text-gray-900 font-bold text-sm shadow-sm"
+                            className="w-full px-6 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green outline-none transition-all text-gray-900 font-bold text-sm shadow-sm"
                           />
                         </div>
                       </div>
@@ -330,19 +343,22 @@ const Contact = ({ showHeader = true }) => {
                           onChange={handleChange}
                           required
                           rows="5"
-                          className="w-full px-6 py-4 rounded-3xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary-green outline-none transition-all text-gray-900 font-medium text-sm shadow-sm resize-none"
+                          className="w-full px-6 py-4 rounded-3xl bg-gray-50 border-2 border-transparent focus:bg-white focus:border-primary-green outline-none transition-all text-gray-900 font-medium text-sm shadow-sm resize-none"
                           placeholder="How can we help your community today?"
                         />
                       </div>
 
-                      <div className="flex items-center justify-between pt-4">
-                        <div className="text-[10px] text-gray-400 font-black uppercase tracking-widest bg-gray-50 px-4 py-2 rounded-full">
-                          * Direct Dispatch
+                      <div className="flex items-center justify-between pt-6 border-t border-gray-50">
+                        <div className="hidden sm:flex items-center gap-2 text-gray-300">
+                          <Shield className="w-3.5 h-3.5" />
+                          <span className="text-[9px] font-black uppercase tracking-[0.2em]">
+                            Secure Transmission
+                          </span>
                         </div>
                         <button
                           type="submit"
                           disabled={isSubmitting}
-                          className="bg-blue-900 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] shadow-xl hover:bg-primary-green transition-all flex items-center gap-3 disabled:opacity-50"
+                          className="w-full sm:w-auto bg-blue-900 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] shadow-xl hover:bg-primary-green hover:shadow-primary-green/20 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                         >
                           {isSubmitting ? (
                             <Loader2 className="w-4 h-4 animate-spin" />

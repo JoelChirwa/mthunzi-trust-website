@@ -1,6 +1,16 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Hammer, Cog, MessageCircle, Mail, Phone } from "lucide-react";
+import {
+  Hammer,
+  Cog,
+  MessageCircle,
+  Mail,
+  Phone,
+  Facebook,
+  Instagram,
+  Linkedin,
+  Twitter,
+} from "lucide-react";
 import logoImg from "../assets/images/logo.jpg";
 
 const MaintenancePage = ({ settings }) => {
@@ -64,25 +74,58 @@ const MaintenancePage = ({ settings }) => {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-gray-100 flex flex-col items-center gap-4">
+        <div className="pt-8 border-t border-gray-100 flex flex-col items-center gap-6">
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
             Follow our updates
           </p>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap justify-center gap-4">
             {settings?.facebook && (
               <a
                 href={settings.facebook}
-                className="w-10 h-10 bg-blue-900 text-white rounded-xl flex items-center justify-center hover:bg-primary-green transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-12 h-12 bg-blue-900 text-white rounded-2xl flex items-center justify-center hover:bg-primary-green transition-all shadow-lg hover:-translate-y-1"
               >
-                <Cog className="w-5 h-5" />
+                <Facebook className="w-5 h-5" />
               </a>
             )}
-            <div className="flex items-center gap-2 text-primary-green animate-pulse">
-              <Cog className="w-4 h-4 spin-slow" />
-              <span className="text-[10px] font-black uppercase tracking-widest">
-                Working on it...
-              </span>
-            </div>
+            {settings?.instagram && (
+              <a
+                href={settings.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-12 h-12 bg-blue-900 text-white rounded-2xl flex items-center justify-center hover:bg-primary-green transition-all shadow-lg hover:-translate-y-1"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
+            )}
+            {settings?.twitter && (
+              <a
+                href={settings.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-12 h-12 bg-blue-900 text-white rounded-2xl flex items-center justify-center hover:bg-primary-green transition-all shadow-lg hover:-translate-y-1"
+              >
+                <Twitter className="w-5 h-5" />
+              </a>
+            )}
+            {settings?.linkedin && (
+              <a
+                href={settings.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-12 h-12 bg-blue-900 text-white rounded-2xl flex items-center justify-center hover:bg-primary-green transition-all shadow-lg hover:-translate-y-1"
+              >
+                <Linkedin className="w-5 h-5" />
+              </a>
+            )}
+          </div>
+
+          <div className="flex items-center gap-3 text-primary-green bg-primary-green/5 px-6 py-3 rounded-2xl border border-primary-green/10 mt-4">
+            <Cog className="w-5 h-5 spin-slow" />
+            <span className="text-[10px] font-black uppercase tracking-[0.2em]">
+              Real-time optimization in progress
+            </span>
           </div>
         </div>
       </motion.div>

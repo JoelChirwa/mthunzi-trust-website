@@ -34,9 +34,11 @@ export const getJobBySlug = async (req, res) => {
 // @route   POST /api/jobs
 export const createJob = async (req, res) => {
   try {
+    console.log("Creating job with payload:", req.body);
     const job = await Job.create(req.body);
     res.status(201).json(job);
   } catch (error) {
+    console.error("Error creating job:", error);
     res
       .status(500)
       .json({ message: "Error creating job", error: error.message });
@@ -47,6 +49,7 @@ export const createJob = async (req, res) => {
 // @route   PUT /api/jobs/:id
 export const updateJob = async (req, res) => {
   try {
+    console.log("Updating job:", req.params.id, "with payload:", req.body);
     const job = await Job.findById(req.params.id);
 
     if (job) {
@@ -57,6 +60,7 @@ export const updateJob = async (req, res) => {
       res.status(404).json({ message: "Job not found" });
     }
   } catch (error) {
+    console.error("Error updating job:", error);
     res
       .status(500)
       .json({ message: "Error updating job", error: error.message });

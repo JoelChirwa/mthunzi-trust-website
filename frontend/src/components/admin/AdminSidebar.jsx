@@ -39,9 +39,9 @@ const AdminSidebar = ({ isOpen, onClose }) => {
     { name: "Gallery", icon: ImageIcon, path: "/admin/gallery" },
     { name: "Our Team", icon: Users, path: "/admin/team" },
     { name: "Partners", icon: Handshake, path: "/admin/partners" },
-    { name: "Achievements", icon: Award, path: "/admin/achievements" },
     { name: "Settings", icon: Settings, path: "/admin/settings" },
     { name: "Inquiries", icon: Mail, path: "/admin/inquiries" },
+    { name: "Subscribers", icon: Users, path: "/admin/subscribers" },
   ];
 
   return (

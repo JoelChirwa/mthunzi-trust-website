@@ -4,6 +4,7 @@ import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import heroImage1 from "../../assets/images/hero.jpg";
 import heroImage2 from "../../assets/images/hero2.jpeg";
+import { useSettings } from "../../context/SettingsContext";
 
 /**
  * Hero Section Component
@@ -14,11 +15,14 @@ import heroImage2 from "../../assets/images/hero2.jpeg";
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const navigate = useNavigate();
+  const { settings } = useSettings();
 
   const slides = [
     {
       id: 1,
-      tagline: "Welcome to The Umbrella of Hope",
+      tagline: settings?.tagline
+        ? `Welcome to ${settings.tagline}`
+        : "Welcome to The Umbrella of Hope",
       title: "",
       description:
         "We are a youth-led non-profit driving sustainable development, education, environmental protection, and community empowerment in Malawi. Join us in making a difference!",
@@ -35,7 +39,7 @@ const Hero = () => {
         {
           text: "Learn More",
           type: "primary",
-          path: "/achievements/in-country-focal-point-for-the-african-youth-adaptation-network",
+          path: "/about",
         },
       ],
     },

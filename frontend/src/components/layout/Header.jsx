@@ -3,11 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Phone, Mail } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import logoImg from "../../assets/images/logo.jpg";
+import { useSettings } from "../../context/SettingsContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { settings } = useSettings();
 
   // Scroll logic to toggle navbar background
   useEffect(() => {
@@ -43,8 +45,7 @@ const Header = () => {
     ].includes(location.pathname) ||
     location.pathname.startsWith("/blog/") ||
     location.pathname.startsWith("/programs/") ||
-    location.pathname.startsWith("/careers/") ||
-    location.pathname.startsWith("/achievements/");
+    location.pathname.startsWith("/careers/");
 
   return (
     <motion.header
@@ -87,10 +88,15 @@ const Header = () => {
                     scrolled ? "text-lg md:text-xl" : "text-xl md:text-2xl"
                   }`}
                 >
-                  MTHUNZI<span className="text-primary-yellow">.</span>
+                  {settings?.organizationName?.split(" ")[0] || "MTHUNZI"}
+                  <span className="text-primary-yellow">
+                    {settings?.organizationName?.split(" ")[1]
+                      ? ` ${settings.organizationName.split(" ")[1]}`
+                      : "."}
+                  </span>
                 </h1>
                 <span className="text-[9px] md:text-[10px] text-white/70 uppercase tracking-[0.2em] font-bold">
-                  Trust
+                  {settings?.tagline || "Trust"}
                 </span>
               </div>
             </Link>
@@ -181,11 +187,15 @@ const Header = () => {
                 <div className="p-8 space-y-6">
                   <div className="flex items-center gap-4 text-white/60">
                     <Phone className="w-5 h-5" />
-                    <span className="font-bold">+265 996 654 088</span>
+                    <span className="font-bold">
+                      {settings?.phone || "+265 996 654 088"}
+                    </span>
                   </div>
                   <div className="flex items-center gap-4 text-white/60">
                     <Mail className="w-5 h-5" />
-                    <span className="font-bold">info@mthunzi.org</span>
+                    <span className="font-bold">
+                      {settings?.email || "info@mthunzi.org"}
+                    </span>
                   </div>
                 </div>
               </motion.div>

@@ -4,15 +4,29 @@ import Program from "../models/programModel.js";
 import Team from "../models/teamModel.js";
 import Partner from "../models/partnerModel.js";
 import Job from "../models/jobModel.js";
+import Subscriber from "../models/subscriberModel.js";
+import Visitor from "../models/visitorModel.js";
 
 export const getAdminStats = async (req, res) => {
   try {
-    const [blogs, programs, team, partners, jobs] = await Promise.all([
+    const [
+      blogs,
+      programs,
+      team,
+      partners,
+      jobs,
+      subscribers,
+      pageViews,
+      visitors,
+    ] = await Promise.all([
       Blog.countDocuments(),
       Program.countDocuments(),
       Team.countDocuments(),
       Partner.countDocuments(),
       Job.countDocuments(),
+      Subscriber.countDocuments({ status: "active" }),
+      Visitor.countDocuments(),
+      Visitor.distinct("ip").then((ips) => ips.length),
     ]);
 
     res.status(200).json({
@@ -23,6 +37,9 @@ export const getAdminStats = async (req, res) => {
         team,
         partners,
         jobs,
+        subscribers,
+        visitors,
+        pageViews,
       },
     });
   } catch (error) {
@@ -33,7 +50,7 @@ export const getAdminStats = async (req, res) => {
 
 export const getGeographicReach = async (req, res) => {
   try {
-    const reach = await User.aggregate([
+    const reach = await Visitor.aggregate([
       {
         $group: {
           _id: "$country",
@@ -49,9 +66,34 @@ export const getGeographicReach = async (req, res) => {
       },
     ]);
 
+    // Add registered users to the mix for better coverage
+    const registeredUsers = await User.aggregate([
+      {
+        $group: {
+          _id: "$country",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    // Merge logic
+    const merger = {};
+    reach.forEach((item) => {
+      merger[item.country] = item.visitors;
+    });
+    registeredUsers.forEach((item) => {
+      const country = item._id || "Malawi";
+      merger[country] = (merger[country] || 0) + item.count;
+    });
+
+    const finalReach = Object.entries(merger).map(([country, visitors]) => ({
+      country,
+      visitors,
+    }));
+
     // Calculate percentages
-    const total = reach.reduce((sum, item) => sum + item.visitors, 0);
-    const reachWithPercentage = reach.map((item) => ({
+    const total = finalReach.reduce((sum, item) => sum + item.visitors, 0);
+    const reachWithPercentage = finalReach.map((item) => ({
       ...item,
       percentage: total > 0 ? Math.round((item.visitors / total) * 100) : 0,
       // Mapping flags for common countries
@@ -67,6 +109,36 @@ export const getGeographicReach = async (req, res) => {
   } catch (error) {
     console.error("Error fetching geographic reach:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const trackVisit = async (req, res) => {
+  try {
+    const { country, page } = req.body;
+    const ip = req.ip || req.headers["x-forwarded-for"] || "anonymous";
+
+    // Simple cooldown: Don't record same IP on same page within 1 hour
+    const cooldown = new Date(Date.now() - 60 * 60 * 1000);
+    const recentVisit = await Visitor.findOne({
+      ip,
+      page: page || "/",
+      createdAt: { $gte: cooldown },
+    });
+
+    if (!recentVisit) {
+      await Visitor.create({
+        ip,
+        country: country || "Malawi",
+        page: page || "/",
+        userAgent: req.headers["user-agent"],
+      });
+    }
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Error tracking visit:", error);
+    // Don't fail the request if tracking fails
+    res.status(200).json({ success: true });
   }
 };
 
