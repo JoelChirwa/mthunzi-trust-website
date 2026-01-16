@@ -10,6 +10,7 @@ import {
   Users,
   MessageSquare,
   Loader2,
+  ShieldCheck,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useSettings } from "../../context/SettingsContext";
@@ -350,7 +351,7 @@ const Contact = ({ showHeader = true }) => {
 
                       <div className="flex items-center justify-between pt-6 border-t border-gray-50">
                         <div className="hidden sm:flex items-center gap-2 text-gray-300">
-                          <Shield className="w-3.5 h-3.5" />
+                          <ShieldCheck className="w-3.5 h-3.5" />
                           <span className="text-[9px] font-black uppercase tracking-[0.2em]">
                             Secure Transmission
                           </span>
