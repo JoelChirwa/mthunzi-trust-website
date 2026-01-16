@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Target,
@@ -16,11 +16,49 @@ import {
   Sprout,
   Handshake,
   ArrowRight,
+  Loader2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { getApiUrl } from "../utils/api";
 
 const ImpactPage = () => {
   const navigate = useNavigate();
+  const [featuredProjects, setFeaturedProjects] = useState([]);
+  const [isLoadingProjects, setIsLoadingProjects] = useState(true);
+  const [voices, setVoices] = useState([]);
+  const [isLoadingVoices, setIsLoadingVoices] = useState(true);
+
+  useEffect(() => {
+    fetchFeaturedProjects();
+    fetchVoices();
+  }, []);
+
+  const fetchFeaturedProjects = async () => {
+    try {
+      setIsLoadingProjects(true);
+      const response = await fetch(getApiUrl("/projects?featured=true"));
+      const data = await response.json();
+      // Limit to 4 featured projects for the preview
+      setFeaturedProjects(data.slice(0, 4));
+    } catch (error) {
+      console.error("Error fetching featured projects:", error);
+    } finally {
+      setIsLoadingProjects(false);
+    }
+  };
+
+  const fetchVoices = async () => {
+    try {
+      setIsLoadingVoices(true);
+      const response = await fetch(getApiUrl("/voices?featured=true"));
+      const data = await response.json();
+      setVoices(data.slice(0, 3)); // Limit to 3 for impact page
+    } catch (error) {
+      console.error("Error fetching voices:", error);
+    } finally {
+      setIsLoadingVoices(false);
+    }
+  };
 
   // Key Impact Metrics - Clear and measurable
   const impactMetrics = [
@@ -71,54 +109,6 @@ const ImpactPage = () => {
       subtitle: "Regional impact",
       color: "text-red-600",
       bgColor: "bg-red-50",
-    },
-  ];
-
-  // Featured Projects - Preview only
-  const featuredProjects = [
-    {
-      id: 1,
-      slug: "chimwasongwe-tree-planting",
-      title: "Chimwasongwe Primary School Tree Planting",
-      shortDescription:
-        "Planted 100 fruit trees creating a sustainable learning environment and food security for over 400 students.",
-      image:
-        "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&auto=format&fit=crop&q=80",
-      category: "Environment",
-      year: "2024",
-    },
-    {
-      id: 2,
-      slug: "regional-srhr-advocacy",
-      title: "Regional SRHR Youth Advocacy",
-      shortDescription:
-        "Successfully advocated for improved youth access to sexual and reproductive health services across Southern Africa.",
-      image:
-        "https://images.unsplash.com/photo-1529390079861-591de354faf5?w=800&auto=format&fit=crop&q=80",
-      category: "Health",
-      year: "2023-2024",
-    },
-    {
-      id: 3,
-      slug: "youth-entrepreneurship-program",
-      title: "Youth Entrepreneurship Program",
-      shortDescription:
-        "Trained over 300 young people in business skills, resulting in the creation of 50+ small businesses.",
-      image:
-        "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&auto=format&fit=crop&q=80",
-      category: "Entrepreneurship",
-      year: "2023-2024",
-    },
-    {
-      id: 4,
-      slug: "waste-management-initiative",
-      title: "Waste Management & Environmental Education",
-      shortDescription:
-        "Reduced pollution by 40% through community-based waste management training and environmental education.",
-      image:
-        "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800&auto=format&fit=crop&q=80",
-      category: "Environment",
-      year: "2024",
     },
   ];
 
@@ -231,50 +221,76 @@ const ImpactPage = () => {
             </motion.div>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {featuredProjects.map((project, index) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all"
-              >
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                  />
-                  <div className="absolute top-4 right-4 flex gap-2">
-                    <span className="px-3 py-1 bg-white/95 backdrop-blur-sm rounded-full text-xs font-bold text-gray-700">
-                      {project.category}
-                    </span>
-                    <span className="px-3 py-1 bg-primary-yellow/95 backdrop-blur-sm rounded-full text-xs font-bold text-gray-900">
-                      {project.year}
-                    </span>
-                  </div>
+          <div className="relative">
+            {isLoadingProjects ? (
+              <div className="flex flex-col items-center justify-center py-20 gap-4">
+                <Loader2 className="w-10 h-10 text-primary-green animate-spin" />
+                <p className="text-gray-400 text-sm font-medium uppercase tracking-widest">
+                  Fetching Impact Stories...
+                </p>
+              </div>
+            ) : featuredProjects.length > 0 ? (
+              <>
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                  {featuredProjects.map((project, index) => (
+                    <motion.div
+                      key={project._id}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.1 }}
+                      className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all h-full flex flex-col"
+                    >
+                      <div className="relative h-48 overflow-hidden">
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                        />
+                        <div className="absolute top-4 right-4 flex gap-2">
+                          <span className="px-3 py-1 bg-white/95 backdrop-blur-sm rounded-full text-[10px] font-black uppercase tracking-wider text-gray-700">
+                            {project.category}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="p-6 flex flex-col flex-1">
+                        <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2">
+                          {project.title}
+                        </h3>
+
+                        <button
+                          onClick={() => navigate(`/impact/${project.slug}`)}
+                          className="w-full btn-primary py-3 flex items-center justify-center gap-2 text-xs uppercase tracking-widest font-black"
+                        >
+                          Learn More
+                          <ArrowRight className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
 
-                <div className="p-6">
-                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3 line-clamp-2">
-                    {project.title}
-                  </h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed text-sm line-clamp-3">
-                    {project.shortDescription}
-                  </p>
-
-                  <button
-                    onClick={() => navigate(`/impact/${project.slug}`)}
-                    className="w-full btn-primary py-3 flex items-center justify-center gap-2 text-sm"
+                <div className="mt-16 text-center">
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    onClick={() => navigate("/impact/projects")}
+                    className="inline-flex items-center gap-3 bg-primary-green text-white px-10 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-xs shadow-xl shadow-primary-green/20 hover:bg-blue-900 transition-all transform hover:-translate-y-1"
                   >
-                    Learn More
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
+                    See All Projects
+                    <ArrowRight className="w-5 h-5" />
+                  </motion.button>
                 </div>
-              </motion.div>
-            ))}
+              </>
+            ) : (
+              <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
+                <p className="text-gray-400 font-medium italic">
+                  No featured projects found at the moment.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -297,32 +313,55 @@ const ImpactPage = () => {
             </motion.div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {impactVideos.map((video, index) => (
-              <motion.div
-                key={video.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white/5 backdrop-blur-md rounded-3xl overflow-hidden border border-white/10 group hover:bg-white/10 transition-all"
-              >
-                <div className="aspect-video relative">
-                  <iframe
-                    className="w-full h-full"
-                    src={`https://www.youtube.com/embed/${video.youtubeId}`}
-                    title={video.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-white text-center">
-                    {video.title}
-                  </h3>
-                </div>
-              </motion.div>
-            ))}
+          <div className="relative">
+            {isLoadingVoices ? (
+              <div className="flex flex-col items-center justify-center py-20 gap-4">
+                <Loader2 className="w-10 h-10 text-white animate-spin" />
+                <p className="text-white/50 text-sm font-medium uppercase tracking-widest text-center">
+                  Loading Community Stories...
+                </p>
+              </div>
+            ) : voices.length > 0 ? (
+              <div className="grid md:grid-cols-3 gap-8">
+                {voices.map((voice, index) => (
+                  <motion.div
+                    key={voice._id}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-white/5 backdrop-blur-md rounded-3xl overflow-hidden border border-white/10 group hover:bg-white/10 transition-all"
+                  >
+                    <div className="aspect-video relative">
+                      <iframe
+                        className="w-full h-full"
+                        src={`https://www.youtube.com/embed/${voice.youtubeId}`}
+                        title={voice.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      ></iframe>
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-white text-center line-clamp-2">
+                        {voice.title}
+                      </h3>
+                      {voice.speaker && (
+                        <p className="text-white/40 text-[10px] font-black uppercase tracking-widest text-center mt-2 group-hover:text-primary-green transition-colors">
+                          Story by {voice.speaker}
+                        </p>
+                      )}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-20 bg-white/5 backdrop-blur-sm rounded-3xl border border-dashed border-white/20">
+                <p className="text-white/50 font-medium italic">
+                  No community voices shared yet. Support us to reach more
+                  lives!
+                </p>
+              </div>
+            )}
           </div>
           <div className="mt-12 text-center">
             <button

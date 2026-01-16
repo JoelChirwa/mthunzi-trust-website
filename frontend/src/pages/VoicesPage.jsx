@@ -1,47 +1,31 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, PlayCircle } from "lucide-react";
+import { ArrowLeft, PlayCircle, Loader2 } from "lucide-react";
+import { getApiUrl } from "../utils/api";
 
 const VoicesPage = () => {
   const navigate = useNavigate();
+  const [voices, setVoices] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchVoices();
   }, []);
 
-  const allVideos = [
-    {
-      id: "video1",
-      title: "Mthunzi awards best Essay Writers",
-      youtubeId: "dQw4w9WgXcQ", // Placeholder
-    },
-    {
-      id: "video2",
-      title: "Sustainable Agriculture Success",
-      youtubeId: "dQw4w9WgXcQ", // Placeholder
-    },
-    {
-      id: "video3",
-      title: "Youth Empowerment Stories",
-      youtubeId: "dQw4w9WgXcQ", // Placeholder
-    },
-    {
-      id: "video4",
-      title: "Environmental Restoration Project",
-      youtubeId: "dQw4w9WgXcQ", // Placeholder
-    },
-    {
-      id: "video5",
-      title: "Community Health Outreach",
-      youtubeId: "dQw4w9WgXcQ", // Placeholder
-    },
-    {
-      id: "video6",
-      title: "Education for All Initiative",
-      youtubeId: "dQw4w9WgXcQ", // Placeholder
-    },
-  ];
+  const fetchVoices = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(getApiUrl("/voices"));
+      const data = await response.json();
+      setVoices(data);
+    } catch (error) {
+      console.error("Error fetching voices:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <motion.div
@@ -75,35 +59,69 @@ const VoicesPage = () => {
         </div>
 
         {/* Video Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {allVideos.map((video, index) => (
-            <motion.div
-              key={video.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 group hover:shadow-2xl transition-all"
-            >
-              <div className="aspect-video relative">
-                <iframe
-                  className="w-full h-full"
-                  src={`https://www.youtube.com/embed/${video.youtubeId}`}
-                  title={video.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              </div>
-              <div className="p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <PlayCircle className="w-5 h-5 text-primary-green" />
-                  <h3 className="text-xl font-bold text-gray-900">
-                    {video.title}
-                  </h3>
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-40 gap-4">
+            <Loader2 className="w-12 h-12 text-primary-green animate-spin" />
+            <p className="text-gray-400 font-black uppercase tracking-widest text-[10px]">
+              Tuning in to community voices...
+            </p>
+          </div>
+        ) : voices.length > 0 ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {voices.map((voice, index) => (
+              <motion.div
+                key={voice._id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 group hover:shadow-2xl transition-all h-full flex flex-col"
+              >
+                <div className="aspect-video relative">
+                  <iframe
+                    className="w-full h-full"
+                    src={`https://www.youtube.com/embed/${voice.youtubeId}`}
+                    title={voice.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                <div className="p-6 flex-1 flex flex-col">
+                  <div className="flex items-start gap-3 mb-4">
+                    <PlayCircle className="w-5 h-5 text-primary-green flex-shrink-0 mt-1" />
+                    <h3 className="text-xl font-bold text-gray-900 line-clamp-2">
+                      {voice.title}
+                    </h3>
+                  </div>
+                  {voice.speaker && (
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mt-auto">
+                      Shared by{" "}
+                      <span className="text-primary-green">
+                        {voice.speaker}
+                      </span>
+                    </p>
+                  )}
+                  {voice.description && (
+                    <p className="text-sm text-gray-500 mt-4 line-clamp-3 italic">
+                      {voice.description}
+                    </p>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-24 bg-white rounded-3xl border-2 border-dashed border-gray-100">
+            <p className="text-gray-400 font-medium mb-6">
+              No community stories found yet.
+            </p>
+            <button
+              onClick={() => navigate("/contact")}
+              className="btn-primary px-8 py-3 text-xs uppercase tracking-widest font-black"
+            >
+              Share Your Story
+            </button>
+          </div>
+        )}
 
         {/* Call to Action */}
         <motion.div

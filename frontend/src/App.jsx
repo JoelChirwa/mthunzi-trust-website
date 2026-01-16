@@ -13,6 +13,7 @@ import AboutPage from "./pages/AboutPage";
 
 import ImpactPage from "./pages/ImpactPage";
 import VoicesPage from "./pages/VoicesPage";
+import ProjectsPage from "./pages/ProjectsPage";
 import SingleProjectPage from "./pages/SingleProjectPage";
 import BlogPage from "./pages/BlogPage";
 import SingleBlogPage from "./pages/SingleBlogPage";
@@ -28,6 +29,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminBlogs from "./pages/admin/AdminBlogs";
 import AdminPrograms from "./pages/admin/AdminPrograms";
+import AdminProjects from "./pages/admin/AdminProjects";
+import AdminVoices from "./pages/admin/AdminVoices";
 import AdminJobs from "./pages/admin/AdminJobs";
 import AdminGallery from "./pages/admin/AdminGallery";
 import AdminTeam from "./pages/admin/AdminTeam";
@@ -66,6 +69,7 @@ function AnimatedRoutes() {
         <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/impact" element={<ImpactPage />} />
         <Route path="/impact/voices" element={<VoicesPage />} />
+        <Route path="/impact/projects" element={<ProjectsPage />} />
         <Route path="/impact/:slug" element={<SingleProjectPage />} />
         <Route path="/careers" element={<CareersPage />} />
         <Route path="/careers/:slug" element={<SingleJobPage />} />
@@ -106,6 +110,22 @@ function AppContent() {
           element={
             <AdminGuard>
               <AdminPrograms />
+            </AdminGuard>
+          }
+        />
+        <Route
+          path="/admin/projects"
+          element={
+            <AdminGuard>
+              <AdminProjects />
+            </AdminGuard>
+          }
+        />
+        <Route
+          path="/admin/voices"
+          element={
+            <AdminGuard>
+              <AdminVoices />
             </AdminGuard>
           }
         />

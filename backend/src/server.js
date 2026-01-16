@@ -11,6 +11,7 @@ import { ensureDbConnection } from "./middleware/dbMiddleware.js";
 import userRoutes from "./routes/userRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import programRoutes from "./routes/programRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import teamRoutes from "./routes/teamRoutes.js";
@@ -21,6 +22,7 @@ import settingRoutes from "./routes/settingRoutes.js";
 import inquiryRoutes from "./routes/inquiryRoutes.js";
 import subscriberRoutes from "./routes/subscriberRoutes.js";
 import applicationRoutes from "./routes/applicationRoutes.js";
+import voiceRoutes from "./routes/voiceRoutes.js";
 
 const app = express();
 
@@ -51,6 +53,7 @@ app.use("/api/inngest", serve({ client: inngest, functions }));
 app.use("/api/users", userRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/programs", programRoutes);
+app.use("/api/projects", projectRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/team", teamRoutes);
@@ -61,6 +64,7 @@ app.use("/api/settings", settingRoutes);
 app.use("/api/inquiries", inquiryRoutes);
 app.use("/api/subscribers", subscriberRoutes);
 app.use("/api/applications", applicationRoutes);
+app.use("/api/voices", voiceRoutes);
 
 app.get("/", (req, res) => {
   res.json({

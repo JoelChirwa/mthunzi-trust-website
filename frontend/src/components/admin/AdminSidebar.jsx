@@ -17,6 +17,8 @@ import {
   Handshake,
   Mail,
   Award,
+  FolderKanban,
+  Video,
 } from "lucide-react";
 import logoImg from "../../assets/images/logo.jpg";
 
@@ -35,6 +37,8 @@ const AdminSidebar = ({ isOpen, onClose }) => {
     { name: "Analytics", icon: BarChart3, path: "/admin/analytics" },
     { name: "Blogs", icon: FileText, path: "/admin/blogs" },
     { name: "Programs", icon: Layers, path: "/admin/programs" },
+    { name: "Projects", icon: FolderKanban, path: "/admin/projects" },
+    { name: "Voices", icon: Video, path: "/admin/voices" },
     { name: "Careers", icon: Briefcase, path: "/admin/jobs" },
     { name: "Applications", icon: Award, path: "/admin/applications" },
     { name: "Gallery", icon: ImageIcon, path: "/admin/gallery" },
