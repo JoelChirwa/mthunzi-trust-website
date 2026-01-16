@@ -221,16 +221,20 @@ function AppContent() {
   );
 }
 
+import { HelmetProvider } from "react-helmet-async";
+
 function App() {
   return (
-    <SettingsProvider>
-      <Router>
-        <ScrollToTop />
-        <VisitorTracker />
-        <Toaster position="top-right" reverseOrder={false} />
-        <AppContent />
-      </Router>
-    </SettingsProvider>
+    <HelmetProvider>
+      <SettingsProvider>
+        <Router>
+          <ScrollToTop />
+          <VisitorTracker />
+          <Toaster position="top-right" reverseOrder={false} />
+          <AppContent />
+        </Router>
+      </SettingsProvider>
+    </HelmetProvider>
   );
 }
 

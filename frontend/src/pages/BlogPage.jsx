@@ -10,6 +10,7 @@ import {
   FileText,
 } from "lucide-react";
 import { getApiUrl } from "../utils/api";
+import SEO from "../components/SEO";
 
 const BlogPage = () => {
   const [blogs, setBlogs] = useState([]);
@@ -42,6 +43,12 @@ const BlogPage = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen">
+      <SEO
+        title="Impact Stories & Insights"
+        description="Read the latest stories, achievements, and lessons from Mthunzi Trust's missions across Malawi. Stay updated with our community impact."
+        keywords="Mthunzi Trust blog, Malawi impact stories, NGO news Malawi, community development updates"
+        url="/blog"
+      />
       {/* Cinematic Hero Section */}
       <section className="relative min-h-[30vh] md:min-h-[60vh] flex items-start overflow-hidden bg-blue-900">
         <motion.div

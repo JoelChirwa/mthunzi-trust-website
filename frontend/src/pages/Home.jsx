@@ -9,6 +9,8 @@ import ImpactPreview from "../components/sections/ImpactPreview";
 import BlogSection from "../components/sections/BlogSection";
 import PartnersSection from "../components/sections/PartnersSection";
 
+import SEO from "../components/SEO";
+
 const HomePage = () => {
   return (
     <motion.div
@@ -16,6 +18,11 @@ const HomePage = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
+      <SEO
+        title="Home"
+        description="Mthunzi Trust - The Umbrella of Hope. Empowering youth and communities in Malawi through sustainable development, education, and health initiatives."
+        keywords="Mthunzi Trust, Malawi, NGO, youth empowerment, sustainable development, education, charity"
+      />
       <Hero />
       <MthunziMission />
       <FocusAreas />

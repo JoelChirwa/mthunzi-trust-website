@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { getApiUrl } from "../utils/api";
+import SEO from "../components/SEO";
 
 const SingleProjectPage = () => {
   const { slug } = useParams();
@@ -81,6 +82,12 @@ const SingleProjectPage = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
+      <SEO
+        title={project.title}
+        description={project.description?.substring(0, 160)}
+        image={project.image}
+        url={`/impact/${slug}`}
+      />
       {/* Hero Section */}
       <section className="relative min-h-[40vh] md:min-h-[60vh] flex items-end overflow-hidden bg-gray-900">
         <motion.div

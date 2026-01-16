@@ -14,6 +14,7 @@ import {
   Clock,
   Loader2,
 } from "lucide-react";
+import SEO from "../components/SEO";
 
 const CareersPage = () => {
   const [openPositions, setOpenPositions] = useState([]);
@@ -46,6 +47,12 @@ const CareersPage = () => {
       exit={{ opacity: 0 }}
       className="bg-white min-h-screen"
     >
+      <SEO
+        title="Careers & Volunteering"
+        description="Join the movement at Mthunzi Trust. Explore career and volunteering opportunities to build a better Malawi through sustainable development."
+        keywords="careers Malawi, NGO jobs Malawi, volunteering Malawi, work at Mthunzi Trust"
+        url="/careers"
+      />
       {/* Cinematic Hero */}
       <section className="relative min-h-[40vh] md:min-h-[70vh] flex items-start overflow-hidden bg-blue-900">
         <motion.div

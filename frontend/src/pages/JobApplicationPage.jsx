@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { getApiUrl } from "../utils/api";
+import SEO from "../components/SEO";
 
 const JobApplicationPage = () => {
   const { slug } = useParams();
@@ -307,6 +308,13 @@ const JobApplicationPage = () => {
       exit={{ opacity: 0 }}
       className="bg-gray-50 min-h-screen"
     >
+      <SEO
+        title={job ? `Apply for ${job.title}` : "Job Application"}
+        description={`Submit your application for the ${
+          job?.title || "job"
+        } position at Mthunzi Trust. Join our team and make a difference in Malawi.`}
+        url={`/careers/${slug}/apply`}
+      />
       {/* Cinematic Hero */}
       <section className="relative min-h-[30vh] md:min-h-[40vh] flex items-center overflow-hidden bg-blue-900">
         <div className="absolute inset-0">

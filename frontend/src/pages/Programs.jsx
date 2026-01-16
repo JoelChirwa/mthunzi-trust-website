@@ -14,6 +14,7 @@ import {
   Layers,
 } from "lucide-react";
 import { getApiUrl } from "../utils/api";
+import SEO from "../components/SEO";
 
 const ICON_MAP = {
   GraduationCap,
@@ -53,6 +54,12 @@ const Programs = () => {
       exit={{ opacity: 0 }}
       className="bg-white min-h-screen"
     >
+      <SEO
+        title="Our Programs"
+        description="Explore Mthunzi Trust's sustainable development programs in Malawi. Focusing on education, entrepreneurship, environment, and health."
+        keywords="Malawi NGO programs, sustainable education, youth entrepreneurship Malawi, climate resilience"
+        url="/programs"
+      />
       {/* Cinematic Hero */}
       <section className="relative min-h-[40vh] md:min-h-[70vh] flex items-start overflow-hidden bg-blue-900">
         <motion.div

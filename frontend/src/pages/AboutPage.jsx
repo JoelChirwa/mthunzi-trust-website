@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { getApiUrl } from "../utils/api";
 import { useSettings } from "../context/SettingsContext";
+import SEO from "../components/SEO";
 
 const AboutPage = () => {
   const [teamMembers, setTeamMembers] = useState([]);
@@ -120,6 +121,12 @@ const AboutPage = () => {
       exit={{ opacity: 0 }}
       className="bg-white"
     >
+      <SEO
+        title="About Us"
+        description="Learn about Mthunzi Trust, a youth-led non-profit organization in Malawi dedicated to education, sustainability, and community empowerment since 2021."
+        keywords="Mthunzi Trust history, youth-led NGO Malawi, Symon Satiele, community development Malawi"
+        url="/about"
+      />
       {/* Cinematic Hero */}
       <section className="relative min-h-[40vh] md:min-h-[80vh] flex items-start overflow-hidden bg-blue-900">
         <motion.div

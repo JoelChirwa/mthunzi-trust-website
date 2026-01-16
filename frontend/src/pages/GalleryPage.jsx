@@ -8,6 +8,7 @@ import {
   Play,
   Loader2,
 } from "lucide-react";
+import SEO from "../components/SEO";
 
 const GalleryPage = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -51,6 +52,12 @@ const GalleryPage = () => {
       exit={{ opacity: 0 }}
       className="bg-white min-h-screen pb-24"
     >
+      <SEO
+        title="Visual Gallery"
+        description="Explore the visual journey of Mthunzi Trust. Photos and videos documenting our impact, community projects, and smiles enabled across Malawi."
+        keywords="Malawi NGO gallery, community development photos, impact videos Malawi, NGO visual documentation"
+        url="/gallery"
+      />
       {/* Cinematic Header */}
       <section className="relative min-h-[35vh] md:min-h-[65vh] flex items-start overflow-hidden">
         <div className="absolute inset-0 bg-blue-900">

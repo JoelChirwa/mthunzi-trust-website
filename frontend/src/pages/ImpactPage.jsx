@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getApiUrl } from "../utils/api";
+import SEO from "../components/SEO";
 
 const ImpactPage = () => {
   const navigate = useNavigate();
@@ -151,6 +152,12 @@ const ImpactPage = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
+      <SEO
+        title="Our Impact"
+        description="See the measurable impact Mthunzi Trust is making in Malawi. 2,000+ youth reached, 500+ trees planted, and sustainable development goals aligned."
+        keywords="NGO impact Malawi, sustainable development results, community empowerment metrics, SDG alignment Malawi"
+        url="/impact"
+      />
       {/* Hero Section */}
       <section className="relative min-h-[40vh] md:min-h-[60vh] flex items-start overflow-hidden bg-primary-green border-b-4 border-primary-yellow">
         <motion.div

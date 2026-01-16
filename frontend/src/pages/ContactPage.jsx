@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Contact from "../components/sections/Contact";
 import { useSettings } from "../context/SettingsContext";
+import SEO from "../components/SEO";
 
 const ContactPage = () => {
   const { settings } = useSettings();
@@ -27,6 +28,12 @@ const ContactPage = () => {
       exit={{ opacity: 0 }}
       className="bg-white min-h-screen"
     >
+      <SEO
+        title="Contact Us"
+        description="Get in touch with Mthunzi Trust. Contact us for partnerships, inquiries, or to learn more about our work in Malawi."
+        keywords="contact Mthunzi Trust, NGO contact Malawi, partner with us, community support"
+        url="/contact"
+      />
       {/* Cinematic Hero */}
       <section className="relative min-h-[30vh] md:min-h-[60vh] flex items-start overflow-hidden bg-blue-900">
         <motion.div

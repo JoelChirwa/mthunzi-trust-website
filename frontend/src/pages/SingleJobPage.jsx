@@ -12,6 +12,7 @@ import {
   ArrowRight,
   Loader2,
 } from "lucide-react";
+import SEO from "../components/SEO";
 
 const SingleJobPage = () => {
   const { slug } = useParams();
@@ -89,6 +90,12 @@ const SingleJobPage = () => {
       exit={{ opacity: 0 }}
       className="bg-gray-50 min-h-screen"
     >
+      <SEO
+        title={`${job.title} - Career Opportunity`}
+        description={job.description?.substring(0, 160)}
+        url={`/careers/${slug}`}
+        type="article"
+      />
       {/* Cinematic Hero */}
       <section className="relative min-h-[40vh] md:min-h-[75vh] flex items-start overflow-hidden bg-blue-900">
         <div className="absolute inset-0">

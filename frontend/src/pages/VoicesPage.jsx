@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, PlayCircle, Loader2 } from "lucide-react";
 import { getApiUrl } from "../utils/api";
+import SEO from "../components/SEO";
 
 const VoicesPage = () => {
   const navigate = useNavigate();
@@ -34,6 +35,12 @@ const VoicesPage = () => {
       exit={{ opacity: 0 }}
       className="min-h-screen bg-gray-50 pt-24 pb-16"
     >
+      <SEO
+        title="Community Voices"
+        description="Experience stories of transformation through the eyes and voices of the people we serve in Malawi. Watch video testimonials and community impact stories."
+        keywords="community voices Malawi, Mthunzi Trust testimonials, community transformation, NGO impact videos"
+        url="/impact/voices"
+      />
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="mb-12">

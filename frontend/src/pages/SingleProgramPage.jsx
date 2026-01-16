@@ -16,6 +16,7 @@ import {
   Layers,
 } from "lucide-react";
 import { getApiUrl } from "../utils/api";
+import SEO from "../components/SEO";
 
 const ICON_MAP = {
   GraduationCap,
@@ -102,6 +103,14 @@ const SingleProgramPage = () => {
       exit={{ opacity: 0 }}
       className="bg-white min-h-screen"
     >
+      <SEO
+        title={program.title}
+        description={program.description
+          ?.replace(/<[^>]*>?/gm, "")
+          ?.substring(0, 160)}
+        image={program.image}
+        url={`/programs/${slug}`}
+      />
       {/* Cinematic Hero */}
       <section className="relative min-h-[40vh] md:min-h-[75vh] flex items-start overflow-hidden bg-blue-900">
         <motion.div

@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getApiUrl } from "../utils/api";
+import SEO from "../components/SEO";
 
 const ProjectsPage = () => {
   const navigate = useNavigate();
@@ -61,6 +62,12 @@ const ProjectsPage = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEO
+        title="Our Projects"
+        description="Comprehensive list of community-driven projects by Mthunzi Trust. From agriculture to education, see how we are driving change in Malawi."
+        keywords="community projects Malawi, sustainable agriculture NGO, youth empowerment projects, rural development Malawi"
+        url="/impact/projects"
+      />
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 bg-primary-green overflow-hidden">
         <div className="absolute inset-0 opacity-10">

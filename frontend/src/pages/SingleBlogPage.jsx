@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { getApiUrl } from "../utils/api";
+import SEO from "../components/SEO";
 
 const SingleBlogPage = () => {
   const { slug } = useParams();
@@ -123,6 +124,13 @@ const SingleBlogPage = () => {
 
   return (
     <div className="bg-white min-h-screen">
+      <SEO
+        title={post.title}
+        description={post.content?.replace(/<[^>]*>?/gm, "")?.substring(0, 160)}
+        image={post.images && post.images[0]}
+        type="article"
+        url={`/blog/${slug}`}
+      />
       {/* Cinematic Hero */}
       <section className="relative min-h-[40vh] md:min-h-[70vh] flex items-start overflow-hidden bg-blue-900">
         <motion.div
