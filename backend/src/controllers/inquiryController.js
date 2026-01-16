@@ -43,3 +43,23 @@ export const deleteInquiry = async (req, res) => {
       .json({ message: "Error deleting inquiry", error: error.message });
   }
 };
+// @desc    Update inquiry status
+// @route   PATCH /api/inquiries/:id/status
+export const updateInquiryStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const inquiry = await Inquiry.findById(req.params.id);
+
+    if (inquiry) {
+      inquiry.status = status;
+      await inquiry.save();
+      res.status(200).json({ success: true, inquiry });
+    } else {
+      res.status(404).json({ message: "Inquiry not found" });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error updating status", error: error.message });
+  }
+};

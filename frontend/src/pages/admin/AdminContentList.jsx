@@ -24,15 +24,33 @@ const AdminContentList = ({
   onView,
   onAdd,
   loading = false,
+  customFilters,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
 
+  // Enhanced search logic: check all column keys and subkeys for matches
+  const filteredItems = items.filter((item) => {
+    const searchString = searchTerm.toLowerCase();
+    return columns.some((col) => {
+      const value = String(item[col.key] || "").toLowerCase();
+      const subValue = col.subKey
+        ? String(item[col.subKey] || "").toLowerCase()
+        : "";
+      return value.includes(searchString) || subValue.includes(searchString);
+    });
+  });
+
   const toggleSelectAll = () => {
-    if (selectedItems.length === items.length) {
+    if (
+      selectedItems.length === filteredItems.length &&
+      filteredItems.length > 0
+    ) {
       setSelectedItems([]);
     } else {
-      setSelectedItems(items.map((item) => item.id || item.slug));
+      setSelectedItems(
+        filteredItems.map((item) => item.id || item.slug || item._id)
+      );
     }
   };
 
@@ -50,31 +68,31 @@ const AdminContentList = ({
       <div className="flex flex-col xl:flex-row gap-4 lg:gap-6 justify-between items-stretch lg:items-center mb-6 lg:mb-10">
         <div className="flex flex-col sm:flex-row items-stretch gap-4 w-full xl:w-auto">
           <div className="relative group flex-1 min-w-0">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-primary-green transition-colors" />
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
             <input
               type="text"
-              placeholder={`Search...`}
+              placeholder={`Search ${title.toLowerCase()}...`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-14 pr-8 py-3.5 lg:py-4 bg-white border border-gray-100 rounded-2xl lg:rounded-[2rem] shadow-sm outline-none focus:border-primary-green focus:shadow-xl focus:shadow-primary-green/5 transition-all font-medium text-sm"
+              className="w-full pl-14 pr-8 py-3.5 lg:py-4 bg-white border border-gray-100 rounded-2xl lg:rounded-[2rem] shadow-sm outline-none focus:border-blue-600 focus:shadow-xl focus:shadow-blue-600/5 transition-all font-medium text-sm"
             />
           </div>
 
-          <button className="px-6 lg:px-8 h-12 lg:h-[56px] bg-white border border-gray-100 rounded-2xl lg:rounded-[2rem] shadow-sm flex items-center justify-center gap-3 text-blue-900 font-black text-[10px] uppercase tracking-widest hover:bg-gray-50 transition-all">
-            <Filter className="w-4 h-4" /> Filter
-          </button>
+          {customFilters}
         </div>
 
         <div className="flex items-center gap-2 lg:gap-4 w-full xl:w-auto">
           <button className="flex-1 lg:flex-initial h-12 lg:h-[56px] px-6 lg:px-8 bg-white border border-gray-100 rounded-2xl lg:rounded-[2rem] shadow-sm flex items-center justify-center gap-3 text-gray-400 font-black text-[10px] uppercase tracking-widest hover:text-blue-900 transition-all truncate">
             <Download className="w-4 h-4" /> Export
           </button>
-          <button
-            onClick={onAdd}
-            className="flex-1 lg:flex-initial h-12 lg:h-[56px] px-6 lg:px-10 bg-blue-900 text-white rounded-2xl lg:rounded-[2rem] shadow-xl shadow-blue-900/20 flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-widest hover:bg-primary-green transition-all"
-          >
-            <Plus className="w-4 h-4" /> New Entry
-          </button>
+          {onAdd && (
+            <button
+              onClick={onAdd}
+              className="flex-1 lg:flex-initial h-12 lg:h-[56px] px-6 lg:px-10 bg-blue-900 text-white rounded-2xl lg:rounded-[2rem] shadow-xl shadow-blue-900/20 flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all"
+            >
+              <Plus className="w-4 h-4" /> New Entry
+            </button>
+          )}
         </div>
       </div>
 
@@ -88,13 +106,14 @@ const AdminContentList = ({
                   <div
                     onClick={toggleSelectAll}
                     className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center cursor-pointer transition-all ${
-                      selectedItems.length === items.length && items.length > 0
-                        ? "bg-primary-green border-primary-green"
-                        : "border-gray-200 hover:border-primary-green"
+                      selectedItems.length === filteredItems.length &&
+                      filteredItems.length > 0
+                        ? "bg-blue-600 border-blue-600"
+                        : "border-gray-200 hover:border-blue-600"
                     }`}
                   >
-                    {selectedItems.length === items.length &&
-                      items.length > 0 && (
+                    {selectedItems.length === filteredItems.length &&
+                      filteredItems.length > 0 && (
                         <div className="w-2 h-2 bg-white rounded-sm" />
                       )}
                   </div>
@@ -114,10 +133,10 @@ const AdminContentList = ({
             </thead>
             <tbody className="divide-y divide-gray-50">
               <AnimatePresence>
-                {items.length > 0 ? (
-                  items.map((item, index) => (
+                {filteredItems.length > 0 ? (
+                  filteredItems.map((item, index) => (
                     <motion.tr
-                      key={item.id || item.slug}
+                      key={item.id || item.slug || item._id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: index * 0.05 }}
@@ -125,16 +144,20 @@ const AdminContentList = ({
                     >
                       <td className="p-4 lg:p-8">
                         <div
-                          onClick={() => toggleItem(item.id || item.slug)}
+                          onClick={() =>
+                            toggleItem(item.id || item.slug || item._id)
+                          }
                           className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center cursor-pointer transition-all ${
-                            selectedItems.includes(item.id || item.slug)
-                              ? "bg-primary-green border-primary-green"
-                              : "border-gray-200 hover:border-primary-green"
+                            selectedItems.includes(
+                              item.id || item.slug || item._id
+                            )
+                              ? "bg-blue-600 border-blue-600"
+                              : "border-gray-200 hover:border-blue-600"
                           }`}
                         >
-                          {selectedItems.includes(item.id || item.slug) && (
-                            <div className="w-2 h-2 bg-white rounded-sm" />
-                          )}
+                          {selectedItems.includes(
+                            item.id || item.slug || item._id
+                          ) && <div className="w-2 h-2 bg-white rounded-sm" />}
                         </div>
                       </td>
                       {columns.map((col) => (
@@ -157,24 +180,33 @@ const AdminContentList = ({
                       ))}
                       <td className="p-4 lg:p-8 whitespace-nowrap">
                         <div className="flex items-center justify-end gap-2 lg:gap-3">
-                          <button
-                            onClick={() => onEdit && onEdit(item)}
-                            className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-blue-50 hover:text-blue-600 transition-all group/btn"
-                            title="Edit"
-                          >
-                            <Edit3 className="w-3.5 h-3.5 lg:w-4 lg:h-4 group-hover/btn:scale-110 transition-transform" />
-                          </button>
-                          <button
-                            onClick={() => onDelete && onDelete(item)}
-                            className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition-all group/btn"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-3.5 h-3.5 lg:w-4 lg:h-4 group-hover/btn:scale-110 transition-transform" />
-                          </button>
-                          <div className="hidden sm:block w-px h-6 bg-gray-100 mx-1" />
-                          <button className="hidden sm:flex w-10 h-10 rounded-xl bg-gray-50 text-gray-400 items-center justify-center hover:bg-white hover:text-blue-900 transition-all shadow-sm">
-                            <MoreHorizontal className="w-4 h-4" />
-                          </button>
+                          {onView && (
+                            <button
+                              onClick={() => onView(item)}
+                              className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-blue-50 hover:text-blue-600 transition-all group/btn"
+                              title="View"
+                            >
+                              <Eye className="w-3.5 h-3.5 lg:w-4 lg:h-4 group-hover/btn:scale-110 transition-transform" />
+                            </button>
+                          )}
+                          {onEdit && (
+                            <button
+                              onClick={() => onEdit(item)}
+                              className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-emerald-50 hover:text-emerald-600 transition-all group/btn"
+                              title="Edit"
+                            >
+                              <Edit3 className="w-3.5 h-3.5 lg:w-4 lg:h-4 group-hover/btn:scale-110 transition-transform" />
+                            </button>
+                          )}
+                          {onDelete && (
+                            <button
+                              onClick={() => onDelete(item)}
+                              className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition-all group/btn"
+                              title="Delete"
+                            >
+                              <Trash2 className="w-3.5 h-3.5 lg:w-4 lg:h-4 group-hover/btn:scale-110 transition-transform" />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </motion.tr>
@@ -209,8 +241,9 @@ const AdminContentList = ({
         {/* Pagination Section */}
         <div className="p-10 bg-gray-50/50 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-6">
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-            Showing <span className="text-blue-900">1 to {items.length}</span>{" "}
-            of {items.length} records
+            Showing{" "}
+            <span className="text-blue-900">1 to {filteredItems.length}</span>{" "}
+            of {filteredItems.length} records
           </p>
           <div className="flex items-center gap-4">
             <button
