@@ -5,6 +5,7 @@ import Hero from "../components/sections/Hero";
 import MthunziMission from "../components/sections/MthunziMission";
 import FocusAreas from "../components/sections/FocusAreas";
 import HowWeWork from "../components/sections/HowWeWork";
+import ImpactPreview from "../components/sections/ImpactPreview";
 import BlogSection from "../components/sections/BlogSection";
 import PartnersSection from "../components/sections/PartnersSection";
 
@@ -19,6 +20,7 @@ const HomePage = () => {
       <MthunziMission />
       <FocusAreas />
       <HowWeWork />
+      <ImpactPreview />
       <BlogSection />
       <PartnersSection />
     </motion.div>

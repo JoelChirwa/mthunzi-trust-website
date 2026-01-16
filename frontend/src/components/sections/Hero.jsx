@@ -38,9 +38,9 @@ const Hero = () => {
       bgImage: heroImage2,
       buttons: [
         {
-          text: "Learn More",
+          text: "Partner With Us",
           type: "primary",
-          path: "/about",
+          path: "/contact",
         },
       ],
     },

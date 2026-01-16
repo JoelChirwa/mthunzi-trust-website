@@ -12,6 +12,8 @@ import Home from "./pages/Home";
 import AboutPage from "./pages/AboutPage";
 
 import ImpactPage from "./pages/ImpactPage";
+import VoicesPage from "./pages/VoicesPage";
+import SingleProjectPage from "./pages/SingleProjectPage";
 import BlogPage from "./pages/BlogPage";
 import SingleBlogPage from "./pages/SingleBlogPage";
 import ContactPage from "./pages/ContactPage";
@@ -63,6 +65,8 @@ function AnimatedRoutes() {
         <Route path="/programs/:slug" element={<SingleProgramPage />} />
         <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/impact" element={<ImpactPage />} />
+        <Route path="/impact/voices" element={<VoicesPage />} />
+        <Route path="/impact/:slug" element={<SingleProjectPage />} />
         <Route path="/careers" element={<CareersPage />} />
         <Route path="/careers/:slug" element={<SingleJobPage />} />
         <Route path="/careers/:slug/apply" element={<JobApplicationPage />} />
