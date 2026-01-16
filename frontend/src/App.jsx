@@ -40,6 +40,7 @@ import AdminInquiries from "./pages/admin/AdminInquiries";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminSubscribers from "./pages/admin/AdminSubscribers";
 import AdminApplications from "./pages/admin/AdminApplications";
+import AdminUsers from "./pages/admin/AdminUsers";
 import AdminGuard from "./components/admin/AdminGuard";
 import MaintenancePage from "./pages/MaintenancePage";
 import { getApiUrl } from "./utils/api";
@@ -198,6 +199,14 @@ function AppContent() {
           element={
             <AdminGuard>
               <AdminApplications />
+            </AdminGuard>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <AdminGuard>
+              <AdminUsers />
             </AdminGuard>
           }
         />

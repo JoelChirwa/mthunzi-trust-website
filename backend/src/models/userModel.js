@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "user"],
+      enum: ["admin", "user", "super-admin"],
       default: "user",
     },
     clerkId: {
@@ -28,6 +28,10 @@ const userSchema = new mongoose.Schema(
     country: {
       type: String,
       default: "Malawi",
+    },
+    permissions: {
+      type: [String],
+      default: [],
     },
   },
   { timestamps: true }

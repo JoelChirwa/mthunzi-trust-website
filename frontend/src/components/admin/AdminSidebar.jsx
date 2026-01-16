@@ -19,14 +19,43 @@ import {
   Award,
   FolderKanban,
   Video,
+  ShieldCheck,
 } from "lucide-react";
 import logoImg from "../../assets/images/logo.jpg";
+import { getApiUrl } from "../../utils/api";
 
 const AdminSidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { signOut } = useAuth();
+  const { signOut, getToken } = useAuth();
   const { user } = useUser();
+  const [dbUser, setDbUser] = useState(null);
+
+  React.useEffect(() => {
+    const fetchDbUser = async () => {
+      if (!user) return;
+      try {
+        const token = await getToken();
+        const res = await fetch(getApiUrl("/users/sync"), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            email: user.primaryEmailAddress.emailAddress,
+            name: user.fullName || "User",
+            imageUrl: user.imageUrl,
+          }),
+        });
+        const data = await res.json();
+        setDbUser(data.user);
+      } catch (error) {
+        console.error("Sidebar sync error:", error);
+      }
+    };
+    fetchDbUser();
+  }, [user]);
 
   const handleSignOut = () => {
     signOut(() => navigate("/admin/login"));
@@ -34,20 +63,93 @@ const AdminSidebar = ({ isOpen, onClose }) => {
 
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/admin" },
-    { name: "Analytics", icon: BarChart3, path: "/admin/analytics" },
-    { name: "Blogs", icon: FileText, path: "/admin/blogs" },
-    { name: "Programs", icon: Layers, path: "/admin/programs" },
-    { name: "Projects", icon: FolderKanban, path: "/admin/projects" },
-    { name: "Voices", icon: Video, path: "/admin/voices" },
-    { name: "Careers", icon: Briefcase, path: "/admin/jobs" },
-    { name: "Applications", icon: Award, path: "/admin/applications" },
-    { name: "Gallery", icon: ImageIcon, path: "/admin/gallery" },
-    { name: "Our Team", icon: Users, path: "/admin/team" },
-    { name: "Partners", icon: Handshake, path: "/admin/partners" },
-    { name: "Settings", icon: Settings, path: "/admin/settings" },
-    { name: "Inquiries", icon: Mail, path: "/admin/inquiries" },
-    { name: "Subscribers", icon: Users, path: "/admin/subscribers" },
+    {
+      name: "Analytics",
+      icon: BarChart3,
+      path: "/admin/analytics",
+      permission: "analytics",
+    },
+    {
+      name: "Blogs",
+      icon: FileText,
+      path: "/admin/blogs",
+      permission: "blogs",
+    },
+    {
+      name: "Programs",
+      icon: Layers,
+      path: "/admin/programs",
+      permission: "programs",
+    },
+    {
+      name: "Projects",
+      icon: FolderKanban,
+      path: "/admin/projects",
+      permission: "projects",
+    },
+    {
+      name: "Voices",
+      icon: Video,
+      path: "/admin/voices",
+      permission: "voices",
+    },
+    {
+      name: "Careers",
+      icon: Briefcase,
+      path: "/admin/jobs",
+      permission: "jobs",
+    },
+    {
+      name: "Applications",
+      icon: Award,
+      path: "/admin/applications",
+      permission: "applications",
+    },
+    {
+      name: "Gallery",
+      icon: ImageIcon,
+      path: "/admin/gallery",
+      permission: "gallery",
+    },
+    { name: "Our Team", icon: Users, path: "/admin/team", permission: "team" },
+    {
+      name: "Partners",
+      icon: Handshake,
+      path: "/admin/partners",
+      permission: "partners",
+    },
+    {
+      name: "Settings",
+      icon: Settings,
+      path: "/admin/settings",
+      permission: "settings",
+    },
+    {
+      name: "Manage Users",
+      icon: ShieldCheck,
+      path: "/admin/users",
+      permission: "users",
+    },
+    {
+      name: "Inquiries",
+      icon: Mail,
+      path: "/admin/inquiries",
+      permission: "inquiries",
+    },
+    {
+      name: "Subscribers",
+      icon: Users,
+      path: "/admin/subscribers",
+      permission: "subscribers",
+    },
   ];
+
+  const filteredMenuItems = menuItems.filter((item) => {
+    if (!item.permission) return true;
+    if (!dbUser) return false;
+    if (dbUser.role === "super-admin") return true;
+    return dbUser.permissions?.includes(item.permission);
+  });
 
   return (
     <>
@@ -97,7 +199,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
         </div>
 
         <div className="flex-1 p-4 px-6 space-y-2 mt-4 overflow-y-auto custom-scrollbar">
-          {menuItems.map((item) => {
+          {filteredMenuItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <Link
